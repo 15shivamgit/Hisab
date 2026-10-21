@@ -32,9 +32,11 @@ Rules:
 - `expo-dev-client` development build installed on the owner's phone and emulator.
 - Record pinned versions in TECH_STACK.md.
 **Acceptance:**
-- [ ] `npm run typecheck`, `lint`, `test` pass (one sample test).
-- [ ] Dev build runs on a real phone; tabs navigate; light/dark follows system.
-- [ ] Release-variant APK builds once (unsigned/debug-signed is fine here) to prove the pipeline.
+- [x] `npm run typecheck`, `lint`, `test` pass (one sample test). (2026-10-21: 3 suites, 40 tests)
+- [ ] Dev build runs on a real phone; tabs navigate; light/dark follows system. — **blocked: Android Studio not installed**
+- [ ] Release-variant APK builds once (unsigned/debug-signed is fine here) to prove the pipeline. — **blocked: Android Studio not installed** (JS bundle export and prebuild manifest already verified)
+
+Report: [reports/PHASE_02.md](reports/PHASE_02.md)
 
 ## Phase 3 — Database foundation
 

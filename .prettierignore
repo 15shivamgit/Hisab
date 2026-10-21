@@ -1,0 +1,8 @@
+node_modules/
+android/
+ios/
+coverage/
+.expo/
+package-lock.json
+# Specs are hand-formatted; tables would be reflowed.
+docs/

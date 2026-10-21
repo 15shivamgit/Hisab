@@ -1,6 +1,6 @@
 # Tech Stack
 
-Status: Approved (versions to be pinned in Phase 2) · Last updated: 2026-10-21
+Status: Approved (versions pinned in Phase 2; expo-symbols pending approval) · Last updated: 2026-10-21
 
 All items are free and open-source. **`Verify:`** before Phase 2, check the latest stable Expo SDK, install every package with `npx expo install <pkg>` (which picks SDK-compatible versions), and record the exact installed versions in the table at the bottom.
 
@@ -38,6 +38,7 @@ All items are free and open-source. **`Verify:`** before Phase 2, check the late
 |---|---|
 | `typescript` (strict) | Type checking |
 | `eslint` + `eslint-config-expo`, `prettier`, `eslint-config-prettier` | Lint and format |
+| `@types/jest` | Jest types (TypeScript) |
 | `jest`, `jest-expo` | Unit/component tests |
 | `@testing-library/react-native` | Component tests |
 | `better-sqlite3` + `@types/better-sqlite3` | Run real SQLite in Node for repository tests via the `DbClient` adapter. `Verify:` prebuilt binaries install on Windows for the Node version used. |
@@ -53,10 +54,36 @@ All items are free and open-source. **`Verify:`** before Phase 2, check the late
 | Git | Version control (repo initialised in Phase 2) |
 | EAS CLI (Free plan, optional) | Cloud builds if local builds are inconvenient |
 
-## Pinned versions (fill in Phase 2)
+## Pinned versions (Phase 2, verified 2026-10-21)
 
-| Package | Version | Verified on |
+Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29). Installed with `npx expo install`; `npx expo-doctor` 20/20 checks pass.
+
+| Package | Version | Notes |
 |---|---|---|
-| expo | | |
-| react-native | | |
-| … | | |
+| expo | 58.0.16 | |
+| react-native | 0.88.0 | New Architecture, edge-to-edge |
+| react | 19.3.0 | |
+| expo-router | 58.0.24 | Routes live in `src/app/` (SDK 58 template convention) |
+| expo-dev-client | 58.0.14 | |
+| expo-splash-screen | 58.0.10 | |
+| expo-status-bar | 58.0.3 | |
+| expo-system-ui | 58.0.6 | Required for `userInterfaceStyle` on Android |
+| expo-constants, expo-linking | 58.0.12, 58.0.13 | expo-router peers |
+| expo-symbols | 58.0.4 | **Added in Phase 2 — pending owner approval** (see below) |
+| expo-font | 58.0.9 | Peer of expo-symbols (already part of `expo`) |
+| react-native-gesture-handler | 3.3.0 | |
+| react-native-reanimated / react-native-worklets | 4.7.1 / 0.13.0 | |
+| react-native-safe-area-context | 5.10.1 | |
+| react-native-screens | 4.30.0 | |
+| typescript | 6.0.3 | `strict` + `noUncheckedIndexedAccess` |
+| jest / jest-expo / @types/jest | 30.5.2 / 58.0.11 / 30.0.0 | SDK 58 requires Jest 30 |
+| @testing-library/react-native | 14.1.0 | v14: `render` and `fireEvent.*` are async (`await`) |
+| eslint / eslint-config-expo | 9.39.5 / 58.0.4 | Flat config `eslint.config.js` |
+| prettier / eslint-config-prettier | 3.9.10 / 10.1.8 | `eslint-plugin-prettier` not used; `npm run lint` runs `prettier --check` |
+
+### Phase 2 findings
+
+- **`@expo/vector-icons` is deprecated** in current Expo docs (migration to `@react-native-vector-icons/*`). It is not installed. DESIGN_TOKENS.md § Icons is updated.
+- **Tab icons use `expo-symbols`** (Material Symbols via native tabs' `md` prop). Checked: the font `MaterialSymbols_400Regular.ttf` (972 KB, from `@expo-google-fonts/material-symbols`, MIT/Apache-2.0) is bundled into the app as a local asset — no network. Only the regular weight is imported. Licence of expo-symbols: MIT. Fallback if not approved: PNG tab icons via the `src` prop.
+- Removed from the template (web/iOS-only or unused): `@expo/ui`, `expo-device`, `expo-glass-effect`, `expo-web-browser`, `expo-image`, `react-dom`, `react-native-web`.
+- Windows: `npx expo install <pkg> -- --dev` needs the `--` quoted in PowerShell (`"--"`), otherwise packages land in `dependencies`.

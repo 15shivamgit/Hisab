@@ -4,11 +4,20 @@ Status: Approved (`Verify:` versions in Phase 2) · Last updated: 2026-10-21
 
 Everything here is free.
 
+## Status on the owner's machine (checked 2026-10-21)
+
+| Tool | Status |
+|---|---|
+| Node.js | v24.20.0, npm 11.19.0 — works for all Phase 2 tooling (install, typecheck, lint, test, export, prebuild) |
+| Git | 2.55.0 |
+| GitHub CLI | Logged in as `shivam-quark` (active) and `15shivamgit`; see WORKFLOW.md for pushing as `15shivamgit` |
+| Android Studio / SDK / JDK | **Not installed** — needed for dev builds, emulator, and APKs |
+
 ## Install
 
 | Tool | Notes |
 |---|---|
-| Node.js LTS | `Verify:` minimum Node version for the chosen Expo SDK |
+| Node.js LTS | Node 24 verified with Expo SDK 58 tooling (see above) |
 | Git for Windows | Then: `git config --global core.longpaths true` |
 | VS Code | Extensions: ESLint, Prettier |
 | Android Studio | Install: Android SDK Platform (SDK's target API), SDK Build-Tools, Platform-Tools, Android Emulator, one system image (e.g. a Pixel with Google APIs) |
@@ -43,8 +52,11 @@ New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name
 
 | Task | Command |
 |---|---|
-| Build + install dev build on phone/emulator | `npx expo run:android` |
-| Start Metro for the installed dev build | `npx expo start --dev-client` |
+| Build + install dev build on phone/emulator | `npm run android` (`expo run:android`) |
+| Start Metro for the installed dev build | `npm start` (`expo start --dev-client`) |
+| Format code | `npm run format` |
+| Check SDK compatibility | `npx expo-doctor` · `npx expo install --check` |
+| Add a package | `npx expo install <pkg>`; dev tools: `npx expo install <pkg> "--" --dev` (quote the `--` in PowerShell) |
 | Typecheck / lint / test | `npm run typecheck` · `npm run lint` · `npm test` |
 | Install an APK | `adb install -r path\to\app.apk` |
 | See device logs | `adb logcat *:E ReactNativeJS:V` |

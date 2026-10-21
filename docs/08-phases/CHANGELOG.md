@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-21 — Phase 2 (in progress): Expo SDK 58 app in `src/app/` with TypeScript strict, Expo Router native tabs (Home, Transactions, Udhaar, Reports, More — placeholders), sky-blue theme tokens + ThemeProvider (light/dark/system), base components (AppText, Screen, Button, Card, EmptyState), `app.config.ts` with dev/release variants (`com.shivambgs15.hisaab[.dev]`, `allowBackup=false`, INTERNET blocked in release), app icon PNGs, ESLint + Prettier, Jest 30 + RNTL 14 with token-contrast, theme, and Button tests. Dependency `expo-symbols` added for tab icons, pending owner approval.
 - 2026-10-21 — Phase 1 approved by the owner.
 - 2026-10-21 — Phase 1: initial specification set in `docs/` (overview, requirements, financial rules, architecture, ADRs, schema, internal API, feature specs, design, content, phases, config, testing).
 
@@ -24,4 +25,5 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
   - Receipts: EXIF orientation applied before stripping; camera process-death recovery; edit-form receipt changes apply on save (`transactionService.update` with `receiptChanges`).
   - Udhaar reminders: notification channel, inexact triggers, reboot survival.
   - Diagnostics error log + "Copy diagnostic info" (SET-09); About shows versionCode.
+- 2026-10-21 — Workflow: single `main` branch, no phase branches (owner decision). Design tokens: added `primarySoft` and `onDanger`; dark `primarySoft` set to `#082F49` after the contrast test failed `#0C4A6E`. Routes moved to `src/app/` (SDK 58 template). `@expo/vector-icons` found deprecated; category icon library is an open decision before Phase 3.
 - 2026-10-21 — Added from review suggestions: search by exact amount (TXN-05), Duplicate transaction (TXN-10), "+ Add person" in the dashboard person picker, ARM-only smaller APK build, FlatList (no FlashList), dark `border` token `#334155`, CSV import listed as out of scope.

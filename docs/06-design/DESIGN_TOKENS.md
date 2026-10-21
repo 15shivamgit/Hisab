@@ -10,7 +10,7 @@ Defined in `src/theme/tokens.ts`. Components use tokens only — no hard-coded c
 |---|---|---|
 | Brand sky blue | `#0EA5E9` | Icon, splash, illustrations. **Never** for text or text-bearing buttons on white (contrast only 2.8:1). |
 | Icon background | gradient `#38BDF8` → `#0284C7`; solid `#0284C7` for the adaptive icon background | |
-| App icon | White ledger book (bahi-khata) with a sky-blue ₹ on the page, light-blue spine on the left | Concept: [app-icon-concept.svg](app-icon-concept.svg). Final PNGs (`icon.png` 1024², `adaptive-icon.png` foreground inside the 66% safe zone) made in Phase 2. |
+| App icon | White ledger book (bahi-khata) with a sky-blue ₹ on the page, light-blue spine on the left | Concept: [app-icon-concept.svg](app-icon-concept.svg). PNGs in `assets/images/` (Phase 2): `icon.png` (1024²), `adaptive-icon-foreground.png` (book scaled to 72% for the safe zone), `adaptive-icon-monochrome.png` (Android 13+ themed icon), `splash-icon.png`. |
 
 ## Colour — semantic
 
@@ -24,6 +24,7 @@ Defined in `src/theme/tokens.ts`. Components use tokens only — no hard-coded c
 | `textMuted` | `#475569` | `#94A3B8` | Secondary text |
 | `primary` | `#0369A1` | `#38BDF8` | Buttons, links, selected. Sky blue; light theme uses a deeper sky so text passes contrast (white on `#0369A1` ≈ 6.0:1; `#38BDF8` on dark `bg` ≈ 8.7:1) |
 | `onPrimary` | `#FFFFFF` | `#082F49` | Text on primary (`#082F49` on `#38BDF8` ≈ 6.5:1) |
+| `primarySoft` | `#E0F2FE` | `#082F49` | Selected-tab indicator, soft highlights. `primary` on it ≥ 4.5:1 (dark `#0C4A6E` failed at 4.4:1 in the Phase 2 contrast test) |
 | `income` | `#15803D` | `#4ADE80` | Income amounts |
 | `expense` | `text` | `text` | Expense amounts use normal text + "−" sign (avoid a red screen) |
 | `willGet` | `#15803D` | `#4ADE80` | "You will get" |
@@ -31,6 +32,7 @@ Defined in `src/theme/tokens.ts`. Components use tokens only — no hard-coded c
 | `settled` | `#64748B` | `#94A3B8` | Settled |
 | `warning` | `#B45309` | `#FBBF24` | Budget ≥ 80%, due soon |
 | `danger` | `#B91C1C` | `#F87171` | Over budget, overdue, destructive |
+| `onDanger` | `#FFFFFF` | `#450A0A` | Text on danger buttons |
 | `focus` | `#2563EB` | `#60A5FA` | Focus rings |
 
 ## Colour — categories
@@ -61,7 +63,9 @@ System font (Roboto on Android). Amounts use `fontVariant: ['tabular-nums']`.
 
 ## Icons
 
-`@expo/vector-icons` (MaterialCommunityIcons) — bundled with Expo, no network. Size 24 default, 20 in chips.
+`@expo/vector-icons` is deprecated in current Expo (found in Phase 2). Tab bar icons use **Material Symbols** through `expo-symbols` (bundled font, no network; pending owner approval). The icon library for category and in-screen icons (DEFAULT_CATEGORIES.md uses MaterialCommunityIcons names) is an **open decision before Phase 3** (the category seed stores icon names): either Material Symbols via `expo-symbols` (rename the category icons) or `@react-native-vector-icons/material-design-icons` (keeps the names). Size 24 default, 20 in chips.
+
+Contrast of every text pair in both themes is enforced by `src/theme/tokens.test.ts`.
 
 ## Elevation
 

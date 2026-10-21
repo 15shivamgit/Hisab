@@ -1,6 +1,10 @@
 # Secrets — never commit (ADR-014)
 *.jks
 *.keystore
+*.p8
+*.p12
+*.key
+*.pem
 credentials.json
 
 # Personal data and build outputs
@@ -9,9 +13,36 @@ credentials.json
 *.aab
 
 # Generated native projects (CNG)
-android/
-ios/
+/android
+/ios
+.kotlin/
+*.orig.*
 
-# Node / Expo (merge with the Expo template's .gitignore in Phase 2)
+# Dependencies
 node_modules/
+
+# Expo
 .expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Metro
+.metro-health-check*
+
+# Tests
+coverage/
+
+# Debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# OS
+.DS_Store
+
+# Local env files
+.env*.local
+
+# TypeScript
+*.tsbuildinfo

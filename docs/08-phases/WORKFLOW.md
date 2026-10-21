@@ -15,7 +15,11 @@ Status: Approved · Last updated: 2026-10-21
 
 ## Git
 
-- Default branch `main`. One branch per phase: `phase-04-transactions`. Merge after the owner approves the phase report.
+- Single branch `main` — **no phase or feature branches** (owner decision 2026-10-21). Commit and push to `main`.
+- Remote: `https://github.com/15shivamgit/Hisab.git`. This machine's active GitHub login is a different account (`shivam-quark`); push as `15shivamgit` without changing the global login:
+  ```powershell
+  $env:GH_TOKEN = (gh auth token -u 15shivamgit); git -c credential.helper= -c "credential.helper=!gh auth git-credential" push
+  ```
 - Commit messages: `feat(transactions): add filter sheet`, `fix(backup): reject zip entries with ..`, `docs: update UDHAAR flip warning`, `test: …`, `chore: …`.
 - Never commit keystores, passwords, `credentials.json`, real backup files, or real personal data.
 - Optional free remote: private GitHub repo (source backup only).

@@ -60,6 +60,20 @@ export default config;
 
 `Verify:` exact plugin option names, whether `android.allowBackup` is still the right key, the exact permission strings each library adds, and whether any library requires a permission in the blocked list.
 
+### Verified in Phase 2 (SDK 58, 2026-10-21)
+
+The real file is [`app.config.ts`](../../app.config.ts). Differences from the sketch above and what was checked:
+
+- `android.allowBackup`, `android.permissions`, `android.blockedPermissions` (uses `tools:node="remove"`), `android.adaptiveIcon.monochromeImage` are current keys (Expo app config reference).
+- `permissions: []` for now — each phase adds only what its feature needs (CAMERA in Phase 5, POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9). The `expo-image-picker`, `expo-notifications`, and `expo-local-authentication` plugins are added in those phases.
+- **Scheme:** dev variant uses `hisaab-dev` so the dev and release apps don't both claim `hisaab://`.
+- Icon files: `assets/images/icon.png`, `adaptive-icon-foreground.png`, `adaptive-icon-monochrome.png`, `splash-icon.png`; splash and adaptive background `#0284C7`.
+- `npx expo prebuild --platform android` output inspected for both variants:
+  - release: `applicationId 'com.shivambgs15.hisaab'`, `versionCode 1`, `versionName "1.0.0"`, `android:allowBackup="false"`, INTERNET and all blocked permissions marked `tools:node="remove"`, scheme `hisaab`;
+  - development: `com.shivambgs15.hisaab.dev`, name "Hisaab Dev", INTERNET present (Metro), scheme `hisaab-dev`.
+  - The template manifest also declares `android.permission.VIBRATE` (harmless, no prompt).
+- **Still to verify with Android Studio installed:** the *merged* manifest after Gradle (permissions added by library AARs), via `aapt dump permissions` on a built APK.
+
 ## Versioning
 
 | Field | Rule |
