@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Hisaab app icon concept</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+
+  <!-- Ledger book (bahi-khata) -->
+  <rect x="272" y="192" width="480" height="640" rx="48" fill="#FFFFFF"/>
+  <rect x="272" y="192" width="88" height="640" rx="48" fill="#BAE6FD"/>
+  <rect x="316" y="192" width="44" height="640" fill="#BAE6FD"/>
+
+  <!-- Rupee sign -->
+  <g fill="none" stroke="#0369A1" stroke-width="44" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M456 340 H656"/>
+    <path d="M456 420 H656"/>
+    <path d="M456 340 H548 C636 340 636 500 548 500 H456"/>
+    <path d="M456 500 L652 690"/>
+  </g>
+</svg>

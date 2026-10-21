@@ -1,0 +1,17 @@
+# Secrets — never commit (ADR-014)
+*.jks
+*.keystore
+credentials.json
+
+# Personal data and build outputs
+*.hisaab
+*.apk
+*.aab
+
+# Generated native projects (CNG)
+android/
+ios/
+
+# Node / Expo (merge with the Expo template's .gitignore in Phase 2)
+node_modules/
+.expo/
