@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-21 — Owner approved `expo-symbols` and chose Material Symbols for all icons (Option A). Default category icons renamed to Material Symbols names (DEFAULT_CATEGORIES.md).
 - 2026-10-21 — Phase 2 (in progress): Expo SDK 58 app in `src/app/` with TypeScript strict, Expo Router native tabs (Home, Transactions, Udhaar, Reports, More — placeholders), sky-blue theme tokens + ThemeProvider (light/dark/system), base components (AppText, Screen, Button, Card, EmptyState), `app.config.ts` with dev/release variants (`com.shivambgs15.hisaab[.dev]`, `allowBackup=false`, INTERNET blocked in release), app icon PNGs, ESLint + Prettier, Jest 30 + RNTL 14 with token-contrast, theme, and Button tests. Dependency `expo-symbols` added for tab icons, pending owner approval.
 - 2026-10-21 — Phase 1 approved by the owner.
 - 2026-10-21 — Phase 1: initial specification set in `docs/` (overview, requirements, financial rules, architecture, ADRs, schema, internal API, feature specs, design, content, phases, config, testing).

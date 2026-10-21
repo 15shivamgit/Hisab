@@ -63,7 +63,7 @@ System font (Roboto on Android). Amounts use `fontVariant: ['tabular-nums']`.
 
 ## Icons
 
-`@expo/vector-icons` is deprecated in current Expo (found in Phase 2). Tab bar icons use **Material Symbols** through `expo-symbols` (bundled font, no network; pending owner approval). The icon library for category and in-screen icons (DEFAULT_CATEGORIES.md uses MaterialCommunityIcons names) is an **open decision before Phase 3** (the category seed stores icon names): either Material Symbols via `expo-symbols` (rename the category icons) or `@react-native-vector-icons/material-design-icons` (keeps the names). Size 24 default, 20 in chips.
+**Material Symbols** via `expo-symbols` for all icons — tab bar (`md` prop on native tabs), categories, and in-screen icons (`SymbolView`). The font is bundled with the app, so no network is used. Owner decision 2026-10-21 (Option A); `@expo/vector-icons` is deprecated in current Expo and is not used. Icon names are Material Symbols names such as `restaurant` and `shopping_cart` (DEFAULT_CATEGORIES.md). Size 24 default, 20 in chips.
 
 Contrast of every text pair in both themes is enforced by `src/theme/tokens.test.ts`.
 

@@ -13,6 +13,24 @@ Everything here is free.
 | GitHub CLI | Logged in as `shivam-quark` (active) and `15shivamgit`; see WORKFLOW.md for pushing as `15shivamgit` |
 | Android Studio / SDK / JDK | **Not installed** — needed for dev builds, emulator, and APKs |
 
+Machine: Intel i5-8250U, 12 GB RAM, C: = 240 GB SSD (≈ 85 GB free), D: = 1 TB HDD (project lives here).
+
+## Download and disk estimate (approximate)
+
+Official minimum: 8 GB disk for IDE + SDK + emulator, SSD with 16 GB+ recommended, 8 GB RAM minimum / 16 GB recommended ([Android Studio install guide](https://developer.android.com/studio/install)). Real usage for a React Native project is higher because of the NDK and Gradle caches:
+
+| Item | Download | On disk |
+|---|---|---|
+| Android Studio installer + IDE | ~1.2–1.5 GB | ~3 GB |
+| SDK platform, build-tools, platform-tools | ~0.3 GB | ~0.6 GB |
+| NDK + CMake (needed by React Native native builds) | ~1–1.5 GB | ~2.5–4 GB |
+| First Gradle build (Gradle + Maven libraries) | ~1–2 GB | ~2–4 GB |
+| **Subtotal — real phone only** | **~4–5 GB** | **~8–12 GB** |
+| Emulator + one system image (optional) | ~1.5–2 GB | ~5–8 GB (image + virtual device) |
+| **Total with emulator** | **~5.5–7 GB** | **~14–20 GB** |
+
+Recommendation for this machine: install Android Studio and the SDK on **C: (SSD)** — the default `%LOCALAPPDATA%\Android\Sdk` — and test on the **real phone over USB** first. 12 GB RAM is tight for Android Studio + emulator + Gradle together, so the emulator is optional; add it later only if needed (the low-end emulator profile is required for the Phase 6 backup spike).
+
 ## Install
 
 | Tool | Notes |

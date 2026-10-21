@@ -67,8 +67,8 @@ The first `npm test` run **failed** one case: dark `primary` on dark `primarySof
 | ID | Priority | Description | Plan |
 |---|---|---|---|
 | P2-1 | P2 | No Android toolchain → app not yet seen running on a device | Owner installs Android Studio (ENVIRONMENT_SETUP.md), then the two device checks are run before Phase 2 is closed |
-| P2-2 | — | `expo-symbols` added without prior approval (tab icons; MIT; bundled font ~1 MB; offline verified) | Owner approves, or tab icons switch to PNGs via `src` |
-| P2-3 | — | `@expo/vector-icons` is deprecated; DEFAULT_CATEGORIES.md uses MaterialCommunityIcons names | Owner picks the category icon library before Phase 3 |
+| P2-2 | — | `expo-symbols` added without prior approval (tab icons; MIT; bundled font ~1 MB; offline verified) | **Resolved 2026-10-21:** owner approved (Option A) |
+| P2-3 | — | `@expo/vector-icons` is deprecated; DEFAULT_CATEGORIES.md used MaterialCommunityIcons names | **Resolved 2026-10-21:** Option A — Material Symbols via `expo-symbols`; category icons renamed and checked against the symbol list |
 | P2-4 | P3 | `npm audit` reports advisories in transitive dev/tooling dependencies of the template | Review after the device build; don't run `npm audit fix --force` (it can break SDK pins) |
 | P2-5 | P3 | `KeyboardAvoidingView behavior="padding"` in `Screen` is untested on device (edge-to-edge Android) | Verify with the first form in Phase 4 |
 
@@ -81,8 +81,7 @@ TECH_STACK (pinned versions, findings), PROJECT_STRUCTURE (`src/app/`), DESIGN_T
 1. Owner: install **Android Studio** (includes SDK + JDK `jbr`), set `ANDROID_HOME` / `JAVA_HOME` / PATH as in ENVIRONMENT_SETUP.md, create one emulator, enable USB debugging on the phone.
 2. Run `npm run android` → dev build on emulator and phone; check tabs and light/dark.
 3. Build the release-variant APK once (BUILD_AND_RELEASE.md Option A, debug-signed is fine) and run `aapt dump permissions`.
-4. Owner decisions: approve `expo-symbols`; choose the category icon library.
-5. Close Phase 2 → start Phase 3 (database foundation).
+4. Close Phase 2 → start Phase 3 (database foundation).
 
 ## Owner approval
 

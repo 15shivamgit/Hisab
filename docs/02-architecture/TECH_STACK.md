@@ -1,6 +1,6 @@
 # Tech Stack
 
-Status: Approved (versions pinned in Phase 2; expo-symbols pending approval) · Last updated: 2026-10-21
+Status: Approved (versions pinned in Phase 2) · Last updated: 2026-10-21
 
 All items are free and open-source. **`Verify:`** before Phase 2, check the latest stable Expo SDK, install every package with `npx expo install <pkg>` (which picks SDK-compatible versions), and record the exact installed versions in the table at the bottom.
 
@@ -69,7 +69,7 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | expo-status-bar | 58.0.3 | |
 | expo-system-ui | 58.0.6 | Required for `userInterfaceStyle` on Android |
 | expo-constants, expo-linking | 58.0.12, 58.0.13 | expo-router peers |
-| expo-symbols | 58.0.4 | **Added in Phase 2 — pending owner approval** (see below) |
+| expo-symbols | 58.0.4 | All app icons (Material Symbols). Approved by owner 2026-10-21 (Option A) |
 | expo-font | 58.0.9 | Peer of expo-symbols (already part of `expo`) |
 | react-native-gesture-handler | 3.3.0 | |
 | react-native-reanimated / react-native-worklets | 4.7.1 / 0.13.0 | |
@@ -84,6 +84,6 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 ### Phase 2 findings
 
 - **`@expo/vector-icons` is deprecated** in current Expo docs (migration to `@react-native-vector-icons/*`). It is not installed. DESIGN_TOKENS.md § Icons is updated.
-- **Tab icons use `expo-symbols`** (Material Symbols via native tabs' `md` prop). Checked: the font `MaterialSymbols_400Regular.ttf` (972 KB, from `@expo-google-fonts/material-symbols`, MIT/Apache-2.0) is bundled into the app as a local asset — no network. Only the regular weight is imported. Licence of expo-symbols: MIT. Fallback if not approved: PNG tab icons via the `src` prop.
+- **Tab icons use `expo-symbols`** (Material Symbols via native tabs' `md` prop). Checked: the font `MaterialSymbols_400Regular.ttf` (972 KB, from `@expo-google-fonts/material-symbols`, MIT/Apache-2.0) is bundled into the app as a local asset — no network. Only the regular weight is imported. Licence of expo-symbols: MIT. Owner approved it on 2026-10-21 and chose it for category icons too (Option A).
 - Removed from the template (web/iOS-only or unused): `@expo/ui`, `expo-device`, `expo-glass-effect`, `expo-web-browser`, `expo-image`, `react-dom`, `react-native-web`.
 - Windows: `npx expo install <pkg> -- --dev` needs the `--` quoted in PowerShell (`"--"`), otherwise packages land in `dependencies`.
