@@ -66,7 +66,7 @@ The first `npm test` run **failed** one case: dark `primary` on dark `primarySof
 
 | ID | Priority | Description | Plan |
 |---|---|---|---|
-| P2-1 | P2 | No Android toolchain → app not yet seen running on a device | Owner installs Android Studio (ENVIRONMENT_SETUP.md), then the two device checks are run before Phase 2 is closed |
+| P2-1 | P2 | No Android toolchain → app not yet seen running on a device | **Toolchain installed 2026-10-22** (ENVIRONMENT_SETUP.md). Remaining: connect the phone and run the two device checks |
 | P2-2 | — | `expo-symbols` added without prior approval (tab icons; MIT; bundled font ~1 MB; offline verified) | **Resolved 2026-10-21:** owner approved (Option A) |
 | P2-3 | — | `@expo/vector-icons` is deprecated; DEFAULT_CATEGORIES.md used MaterialCommunityIcons names | **Resolved 2026-10-21:** Option A — Material Symbols via `expo-symbols`; category icons renamed and checked against the symbol list |
 | P2-4 | P3 | `npm audit` reports advisories in transitive dev/tooling dependencies of the template | Review after the device build; don't run `npm audit fix --force` (it can break SDK pins) |

@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-22 — Android toolchain installed on the owner's machine: Android Studio 2026.2.1.8 (bundled JDK 25), Android SDK at `C:\Android\Sdk` with platform 37.0, build-tools 37.0.0, NDK 27.1.12297006, platform-tools; `ANDROID_HOME`, `JAVA_HOME`, PATH set (ENVIRONMENT_SETUP.md).
 - 2026-10-21 — Owner approved `expo-symbols` and chose Material Symbols for all icons (Option A). Default category icons renamed to Material Symbols names (DEFAULT_CATEGORIES.md).
 - 2026-10-21 — Phase 2 (in progress): Expo SDK 58 app in `src/app/` with TypeScript strict, Expo Router native tabs (Home, Transactions, Udhaar, Reports, More — placeholders), sky-blue theme tokens + ThemeProvider (light/dark/system), base components (AppText, Screen, Button, Card, EmptyState), `app.config.ts` with dev/release variants (`com.shivambgs15.hisaab[.dev]`, `allowBackup=false`, INTERNET blocked in release), app icon PNGs, ESLint + Prettier, Jest 30 + RNTL 14 with token-contrast, theme, and Button tests. Dependency `expo-symbols` added for tab icons, pending owner approval.
 - 2026-10-21 — Phase 1 approved by the owner.
