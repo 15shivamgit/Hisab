@@ -88,6 +88,9 @@ If the SDK's CMake 3.22.1 is ever reinstalled, copy ninja 1.12.1 over it again.
 2. First time, or after adding a package with native code: `npm run android` (~8 min here). It builds, installs `Hisaab Dev`, and opens it.
 3. Daily: `npm start` (Metro), then `adb reverse tcp:8081 tcp:8081` so the phone reaches Metro over USB (no Wi-Fi/firewall issues), and open `Hisaab Dev` on the phone.
 4. `android/` is generated. Delete it after a release build (`APP_VARIANT=release` prebuild), otherwise the next dev build reuses the release IDs.
+5. If the app shows "There was a problem loading the project … Failed to connect to localhost", the USB port forward was dropped (e.g. cable hiccup): run `adb reverse tcp:8081 tcp:8081` again and tap Reload.
+6. If `npm run android` fails with "Expo stopped waiting for the ADB device property/boot query", adb is slow: unlock the phone, `adb kill-server`, reconnect the cable, accept "Allow USB debugging" again, then retry.
+7. To inspect the dev app's database: `adb shell "run-as com.shivambgs15.hisaab.dev cat files/SQLite/hisaab.db > /data/local/tmp/h.db"`, then `adb pull /data/local/tmp/h.db` and open it read-only (dev build only — release builds are not debuggable).
 
 ## Windows long paths
 

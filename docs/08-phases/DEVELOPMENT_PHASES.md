@@ -42,11 +42,13 @@ Report: [reports/PHASE_02.md](reports/PHASE_02.md)
 
 **Scope:** `DbClient` + both adapters, migration runner, migration 0001, all repositories for migration 1 tables, default category seed, `src/lib` money/dates/ids/paths/errors, `useDbQuery` + `notifyChanged`, `markDataChanged`, diagnostics error log (`diagnosticsService.record`).
 **Acceptance:**
-- [ ] Repository tests run against real SQLite (better-sqlite3) in Jest.
-- [ ] Money/date unit tests cover FIN-M* and FIN-D* cases ([../10-testing/FINANCIAL_TEST_CASES.md](../10-testing/FINANCIAL_TEST_CASES.md)).
-- [ ] Migrations idempotent; newer-DB-than-app check works.
-- [ ] Category type trigger and FK RESTRICT proven by tests.
-- [ ] Seed runs once.
+- [x] Repository tests run against real SQLite (better-sqlite3) in Jest.
+- [x] Money/date unit tests cover FIN-M* and FIN-D* cases ([../10-testing/FINANCIAL_TEST_CASES.md](../10-testing/FINANCIAL_TEST_CASES.md)).
+- [x] Migrations idempotent; newer-DB-than-app check works.
+- [x] Category type trigger and FK RESTRICT proven by tests.
+- [x] Seed runs once. (tests + phone restart, 2026-10-22)
+
+Report: [reports/PHASE_03.md](reports/PHASE_03.md)
 
 ## Phase 4 — Transactions, categories, basic dashboard
 
