@@ -388,6 +388,48 @@ export const transactionRepository = {
     }));
   },
 
+  /**
+   * Totals for the list's current filter (TRANSACTIONS.md § summary bar): count of all
+   * matching rows, and income/expense counting only dates up to today.
+   */
+  async summary(
+    db: DbClient,
+    filter: TxnFilter,
+    today: LocalDate,
+  ): Promise<{ count: number; incomePaise: Paise; expensePaise: Paise }> {
+    const { sql, params } = buildWhere(filter);
+    const row = await db.get<{ count: number; income: number; expense: number }>(
+      `SELECT COUNT(*) AS count,
+         COALESCE(SUM(CASE WHEN t.type = 'income' AND t.txn_date <= ? THEN t.amount_paise END), 0) AS income,
+         COALESCE(SUM(CASE WHEN t.type = 'expense' AND t.txn_date <= ? THEN t.amount_paise END), 0) AS expense
+       FROM transactions t ${sql}`,
+      [today, today, ...params],
+    );
+    return {
+      count: row?.count ?? 0,
+      incomePaise: row?.income ?? 0,
+      expensePaise: row?.expense ?? 0,
+    };
+  },
+
+  /** Category ids of this type, most recently used first ("last-used first" in the form). */
+  async recentCategoryIds(db: DbClient, type: TxnType, limit = 50): Promise<string[]> {
+    const rows = await db.all<{ category_id: string }>(
+      `SELECT category_id FROM transactions WHERE type = ?
+       GROUP BY category_id ORDER BY MAX(created_at) DESC LIMIT ?`,
+      [type, limit],
+    );
+    return rows.map((row) => row.category_id);
+  },
+
+  /** Payment method of the most recently created transaction (form default). */
+  async lastPaymentMethod(db: DbClient): Promise<PaymentMethod | null> {
+    const row = await db.get<{ payment_method: PaymentMethod }>(
+      'SELECT payment_method FROM transactions ORDER BY created_at DESC LIMIT 1',
+    );
+    return row?.payment_method ?? null;
+  },
+
   /** Future-dated entries inside the range ("Upcoming in this period", FR-3.2). */
   async upcomingInRange(
     db: DbClient,

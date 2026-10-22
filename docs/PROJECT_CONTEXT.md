@@ -46,8 +46,8 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 |---|---|---|
 | 1 | Specifications (this docs folder) | **Approved** (2026-10-21) |
 | 2 | Project setup | **Approved** (2026-10-22) |
-| 3 | Database foundation | **Done — awaiting owner approval** (verified on phone 2026-10-22) |
-| 4 | Transactions, categories, basic dashboard | Not started |
+| 3 | Database foundation | **Approved** (2026-10-22) |
+| 4 | Transactions, categories, basic dashboard | **Done — awaiting owner approval** (verified on phone 2026-10-22) |
 | 5 | Receipts | Not started |
 | 6 | Backup, restore, CSV export | Not started |
 | 7 | Udhaar | Not started |

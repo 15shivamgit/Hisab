@@ -30,7 +30,9 @@ interface Page { limit: number; offset: number }
 | `create(db, input, now): Category` | Throws `CONSTRAINT` (`CATEGORY_DUPLICATE`) on duplicate name per type; `sortOrder` defaults to the end of its type |
 | `update(db, id, patch, now): Category` | Type cannot change if the category has transactions or a budget (also enforced by trigger). Name cannot change if `is_system` (icon/colour can) |
 | `setArchived(db, id, archived: boolean)` | Throws if `is_system` |
-| `usage(db, id): { transactions: number; budgets: number }` | Transaction count is shown on the categories screen |
+| `usage(db, id): { transactions: number; budgets: number }` | |
+| `listWithUsage(db, type)` | Phase 4. All categories of a type with `transactionCount`, `hasBudget` (categories screen) |
+| `move(db, id, 'up' \| 'down', now)` | Phase 4. Swaps with the neighbour among active categories; renumbers 0…n-1 |
 | `delete(db, id)` | Throws `IN_USE` if `transactions > 0`, or if `is_system`. Its budget, if any, is removed by `ON DELETE CASCADE` |
 | `seedDefaultsIfEmpty(db, now)` | Idempotent |
 
@@ -47,6 +49,9 @@ interface Page { limit: number; offset: number }
 | `sumByCategory(db, range, type, today): { categoryId, categoryName, categoryIcon, categoryColor, totalPaise, count }[]` | Sorted desc; future-dated excluded |
 | `dailyTotals(db, range, today): { date, incomePaise, expensePaise }[]` | For trend charts |
 | `upcomingInRange(db, range, today): { incomePaise, expensePaise, count }` | Future-dated within range |
+| `summary(db, filter, today): { count, incomePaise, expensePaise }` | Phase 4. List summary bar: count of all matches; totals only up to today |
+| `recentCategoryIds(db, type, limit?): string[]` | Phase 4. Most recently used first (form chips) |
+| `lastPaymentMethod(db): PaymentMethod \| null` | Phase 4. Form default |
 
 ```ts
 interface TxnFilter {

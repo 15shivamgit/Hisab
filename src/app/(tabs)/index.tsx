@@ -1,6 +1,5 @@
-import { PlaceholderScreen } from '@/components/PlaceholderScreen';
-import { strings } from '@/content/strings';
+import { DashboardScreen } from '@/features/dashboard/DashboardScreen';
 
-export default function HomeScreen() {
-  return <PlaceholderScreen title={strings.tab.home} message={strings.placeholder.home} />;
+export default function HomeRoute() {
+  return <DashboardScreen />;
 }

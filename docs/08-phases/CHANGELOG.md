@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-22 — Phase 4: transaction form (add/edit/duplicate, unsaved-changes guard), list with day groups, Upcoming, search (incl. exact amount), filters, sort, infinite scroll; detail with delete confirmation; categories screen (move up/down, edit sheet with icons and colours, archive, delete rules); dashboard (this month, net, quick add, spending by category list, recent); transaction/category/dashboard services; 14 UI components; react-hook-form, @hookform/resolvers v5, datetimepicker. 260 tests. Verified on the phone. Phase 4 awaiting owner approval.
+- 2026-10-22 — Phase 3 approved by the owner.
 - 2026-10-22 — Phase 3 database foundation: `src/lib` (money, dates, ids, paths, errors, clock), `DbClient` with serialized single-connection transactions (ADR-017), migration runner + migration 0001, repositories (settings, categories, transactions, attachments, budgets), default category seed (Material Symbols icons), startup gate with retry and shareable diagnostics, `useDbQuery`/`notifyChanged`, diagnostics error log. 212 tests. Verified on the phone: schema v1, 21 categories, WAL, seed runs once across restarts. Phase 3 awaiting owner approval.
 - 2026-10-22 — Phase 2 approved by the owner.
 - 2026-10-22 — Phase 2 device checks passed: dev build (`Hisaab Dev`) runs on the owner's vivo V2205 (Android 14), tabs navigate, light/dark follows the system; release-variant APK built (42.8 MB, arm64-v8a + armeabi-v7a, no INTERNET permission, `allowBackup=false`). Machine fixes for ISP download failures and Windows long paths documented in ENVIRONMENT_SETUP.md. Phase 2 awaiting owner approval.

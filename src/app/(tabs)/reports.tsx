@@ -1,6 +1,12 @@
-import { PlaceholderScreen } from '@/components/PlaceholderScreen';
+import { EmptyState } from '@/components/EmptyState';
+import { Screen } from '@/components/Screen';
 import { strings } from '@/content/strings';
 
-export default function ReportsScreen() {
-  return <PlaceholderScreen title={strings.tab.reports} message={strings.placeholder.reports} />;
+// Built in Phase 8.
+export default function ReportsRoute() {
+  return (
+    <Screen title={strings.tab.reports}>
+      <EmptyState title={strings.placeholder.title} message={strings.placeholder.reports} />
+    </Screen>
+  );
 }

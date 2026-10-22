@@ -4,6 +4,8 @@ Status: Approved · Last updated: 2026-10-21
 
 ## Services (`src/services`)
 
+**Implemented signature style (Phase 4):** service functions take `(db, clock, …)` — e.g. `transactionService.create(db, clock, input)` — so tests pass a test DB and a fixed clock; screens pass `useDb()` and `systemClock`. Implemented so far: `transactionService.create/update/delete/duplicate` (receipts join in Phase 5), `categoryService.create/update/setArchived/delete/move`, `dashboardService.getSummary(db, today)` (month totals, net, top 5 expense categories with whole-percent shares, last 5 non-future transactions, `hasAnyTransactions`).
+
 Services implement use cases. They own transactions (`db.transaction`), call repositories, touch files/notifications through `src/platform` wrappers, and call `notifyChanged(tables)` after commit. Every write that changes user data also calls `markDataChanged(tx)` inside its DB transaction ([ARCHITECTURE.md](../02-architecture/ARCHITECTURE.md#tracking-changes-since-the-last-backup)). Caught errors are passed to `diagnosticsService.record`.
 
 | Service | Function | Behaviour |

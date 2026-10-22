@@ -54,10 +54,12 @@ Report: [reports/PHASE_03.md](reports/PHASE_03.md)
 
 **Scope:** Transaction form/list/detail/edit/delete, search/filter/sort, categories screen, dashboard "This month" card, recent transactions, category spend list (chart may be a simple list until Phase 8).
 **Acceptance:**
-- [ ] TXN-01…10, CAT-01…05, DASH-01, DASH-02, DASH-07 (income/expense buttons), DASH-09.
-- [ ] Data persists after force-stop and restart (manual on phone).
-- [ ] Future-dated rule (FIN-T* cases).
-- [ ] Owner can use the app daily (dev build).
+- [x] TXN-01…10, CAT-01…05, DASH-01, DASH-02, DASH-07 (income/expense buttons), DASH-09.
+- [x] Data persists after force-stop and restart (manual on phone).
+- [x] Future-dated rule (FIN-T* cases).
+- [x] Owner can use the app daily (dev build).
+
+Report: [reports/PHASE_04.md](reports/PHASE_04.md)
 
 ## Phase 5 — Receipts
 

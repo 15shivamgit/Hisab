@@ -81,4 +81,4 @@ ADR-017 (DECISIONS, PROJECT_CONTEXT); ARCHITECTURE (DbClient/transactions, `DB_N
 
 ## Owner approval
 
-- [ ] Approved to start Phase 4 — (owner, date)
+- [x] Approved to start Phase 4 — owner, 2026-10-22

@@ -6,6 +6,7 @@ import {
 } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
+import { ToastProvider } from '@/components/Toast';
 import { StartupGate } from '@/features/startup/StartupGate';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
@@ -34,11 +35,20 @@ function RootNavigator() {
 
   return (
     <NavigationThemeProvider value={navigationTheme}>
-      <StartupGate>
-        <Stack screenOptions={{ contentStyle: { backgroundColor: colors.bg } }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      </StartupGate>
+      <ToastProvider>
+        <StartupGate>
+          <Stack
+            screenOptions={{
+              contentStyle: { backgroundColor: colors.bg },
+              headerStyle: { backgroundColor: colors.surface },
+              headerTintColor: colors.text,
+              headerShadowVisible: false,
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+        </StartupGate>
+      </ToastProvider>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </NavigationThemeProvider>
   );

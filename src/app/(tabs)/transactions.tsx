@@ -1,11 +1,5 @@
-import { PlaceholderScreen } from '@/components/PlaceholderScreen';
-import { strings } from '@/content/strings';
+import { TransactionsScreen } from '@/features/transactions/TransactionsScreen';
 
-export default function TransactionsScreen() {
-  return (
-    <PlaceholderScreen
-      title={strings.tab.transactions}
-      message={strings.placeholder.transactions}
-    />
-  );
+export default function TransactionsRoute() {
+  return <TransactionsScreen />;
 }

@@ -50,9 +50,8 @@ export function parseRupeesToPaise(text: string): ParseAmountResult {
 
 const MINUS = '−';
 
-/** Indian digit grouping: 1234567 → "12,34,567". */
-function groupIndian(rupees: number): string {
-  const digits = String(rupees);
+/** Indian digit grouping of a digit string: "1234567" → "12,34,567". */
+export function groupIndianDigits(digits: string): string {
   if (digits.length <= 3) return digits;
   const last3 = digits.slice(-3);
   const rest = digits.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ',');
@@ -78,7 +77,29 @@ export function formatPaise(paise: Paise, options: FormatPaiseOptions = {}): str
   const fraction = abs % 100;
   const prefix = paise < 0 ? MINUS : options.sign && paise > 0 ? '+' : '';
   const decimals = options.compact && fraction === 0 ? '' : `.${String(fraction).padStart(2, '0')}`;
-  return `${prefix}₹${groupIndian(rupees)}${decimals}`;
+  return `${prefix}₹${groupIndianDigits(String(rupees))}${decimals}`;
+}
+
+/**
+ * Live formatting for the amount field: keeps digits and one dot, groups the rupee
+ * part Indian-style ("100000.5" → "1,00,000.5"). Extra dots are dropped from the
+ * new text, so a second "." cannot be typed. Validation still happens in
+ * parseRupeesToPaise.
+ */
+export function formatAmountInput(text: string): string {
+  const cleaned = text.replace(/[^\d.]/g, '');
+  const dot = cleaned.indexOf('.');
+  const intPart = dot === -1 ? cleaned : cleaned.slice(0, dot);
+  const fraction = dot === -1 ? '' : `.${cleaned.slice(dot + 1).replace(/\./g, '')}`;
+  const digits = intPart.replace(/^0+(?=\d)/, '');
+  return `${digits ? groupIndianDigits(digits) : ''}${fraction}`;
+}
+
+/** Text for editing an existing amount: 4550 → "45.50", 45000 → "450". */
+export function paiseToInputText(paise: Paise): string {
+  const rupees = groupIndianDigits(String(Math.floor(paise / 100)));
+  const fraction = paise % 100;
+  return fraction === 0 ? rupees : `${rupees}.${String(fraction).padStart(2, '0')}`;
 }
 
 /** Plain decimal rupees for CSV: 123450 → "1234.50" (no ₹, no grouping, ASCII minus). */

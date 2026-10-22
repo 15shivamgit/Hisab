@@ -78,7 +78,10 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | expo-sqlite | 58.0.13 | Phase 3. One connection, serialized by `createDbClient` (ADR-017) |
 | expo-crypto | 58.0.7 | Phase 3. `randomUUID()` (sync) for IDs |
 | expo-file-system | 58.0.10 | Phase 3. New `File`/`Directory`/`Paths` API (the legacy API lives at `expo-file-system/legacy`; not used) |
-| zod | 4.6.7 | Phase 3. Settings validation |
+| zod | 4.6.7 | Phase 3. Settings validation; Phase 4 form schema |
+| react-hook-form | 7.90.0 | Phase 4. Transaction form |
+| @hookform/resolvers | 5.9.2 | Phase 4. `zodResolver` (supports zod 4). **Pinned to v5:** v6.0.0 failed to install (npm ERESOLVE on its optional `effect` peer) |
+| @react-native-community/datetimepicker | 9.2.1 | Phase 4. `DateTimePickerAndroid.open` (imperative Android dialog) |
 | better-sqlite3 / @types/better-sqlite3 (dev) | 13.0.3 / 9.6.0 | Phase 3. Prebuilt binary loads on Windows with Node 24 (SQLite 3.53.4) — `Verify:` done 2026-10-22 |
 | typescript | 6.0.3 | `strict` + `noUncheckedIndexedAccess` |
 | jest / jest-expo / @types/jest | 30.5.2 / 58.0.11 / 30.0.0 | SDK 58 requires Jest 30 |

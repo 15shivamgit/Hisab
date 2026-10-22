@@ -7,7 +7,8 @@ Default list: [../07-content/DEFAULT_CATEGORIES.md](../07-content/DEFAULT_CATEGO
 ## Screen (More → Categories)
 
 - Two tabs: Expense / Income.
-- Each row: icon, name, usage count, drag handle (reorder → `sort_order`).
+- Each row: icon, name, usage count, **Move up / Move down** buttons (reorder → `sort_order`). Phase 4 change from the original drag handle: buttons need no gesture code and work with TalkBack; drag can be added later if wanted.
+- Tap a row → edit sheet (name, icon, colour; Archive and Delete for non-system categories).
 - "Archived" section collapsed at the bottom.
 - "+ Add category" → sheet with name, icon picker (fixed icon set), colour picker (category colour tokens).
 

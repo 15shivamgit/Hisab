@@ -86,6 +86,12 @@ export function todayLocal(now: Date): LocalDate {
   return fromParts(now.getFullYear(), now.getMonth() + 1, now.getDate());
 }
 
+/** For the date picker: a local Date at noon (safe from DST edges). */
+export function localDateToDate(date: LocalDate): Date {
+  const { year, month, day } = parts(date);
+  return new Date(year, month - 1, day, 12);
+}
+
 export function toIsoDateTime(now: Date): IsoDateTime {
   return now.toISOString();
 }
@@ -175,6 +181,19 @@ export function formatLocalDate(
     if (date === addDays(today, -1)) return 'Yesterday';
   }
   return `${WEEKDAYS[dayOfWeek(date)]}, ${day} ${monthName}`;
+}
+
+/** Local time with AM/PM (UI_UX_GUIDE.md § Formatting): "9:40 PM". */
+export function formatTime12(date: Date): string {
+  const hours = date.getHours();
+  const h12 = hours % 12 === 0 ? 12 : hours % 12;
+  return `${h12}:${pad2(date.getMinutes())} ${hours < 12 ? 'AM' : 'PM'}`;
+}
+
+/** An audit timestamp shown in local time: "21 Oct 2026, 9:40 PM". */
+export function formatDateTime(iso: IsoDateTime): string {
+  const date = new Date(iso);
+  return `${formatLocalDate(todayLocal(date), 'long')}, ${formatTime12(date)}`;
 }
 
 /** "October 2026" — dashboard header. */

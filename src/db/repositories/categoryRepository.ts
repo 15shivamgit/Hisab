@@ -179,6 +179,50 @@ export const categoryRepository = {
     return { transactions: row?.transactions ?? 0, budgets: row?.budgets ?? 0 };
   },
 
+  /** All categories of a type with their transaction counts (categories screen). */
+  async listWithUsage(
+    db: DbClient,
+    type: TxnType,
+  ): Promise<(Category & { transactionCount: number; hasBudget: boolean })[]> {
+    const rows = await db.all<CategoryRow & { transaction_count: number; budget_count: number }>(
+      `SELECT c.*,
+         (SELECT COUNT(*) FROM transactions t WHERE t.category_id = c.id) AS transaction_count,
+         (SELECT COUNT(*) FROM budgets b WHERE b.category_id = c.id) AS budget_count
+       FROM categories c WHERE c.type = ?
+       ORDER BY c.sort_order, c.name COLLATE NOCASE`,
+      [type],
+    );
+    return rows.map((row) => ({
+      ...toCategory(row),
+      transactionCount: row.transaction_count,
+      hasBudget: row.budget_count > 0,
+    }));
+  },
+
+  /** Swaps a category with its neighbour among the active categories of its type. */
+  async move(db: DbClient, id: string, direction: 'up' | 'down', now: Date): Promise<void> {
+    const current = await requireCategory(db, id);
+    const siblings = await categoryRepository.list(db, { type: current.type });
+    // Normalise to 0…n-1 first so equal sort orders can't stop a move.
+    const ordered = siblings.map((c, index) => ({ ...c, sortOrder: index }));
+    const index = ordered.findIndex((c) => c.id === id);
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (index < 0 || target < 0 || target >= ordered.length) return;
+    const a = ordered[index];
+    const b = ordered[target];
+    if (!a || !b) return;
+    ordered[index] = { ...b, sortOrder: index };
+    ordered[target] = { ...a, sortOrder: target };
+    const ts = toIsoDateTime(now);
+    for (const category of ordered) {
+      await db.run('UPDATE categories SET sort_order = ?, updated_at = ? WHERE id = ?', [
+        category.sortOrder,
+        ts,
+        category.id,
+      ]);
+    }
+  },
+
   /** Only categories without transactions can be deleted; their budget goes with them. */
   async delete(db: DbClient, id: string): Promise<void> {
     const current = await requireCategory(db, id);
