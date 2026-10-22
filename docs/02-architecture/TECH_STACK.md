@@ -75,6 +75,11 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | react-native-reanimated / react-native-worklets | 4.7.1 / 0.13.0 | |
 | react-native-safe-area-context | 5.10.1 | |
 | react-native-screens | 4.30.0 | |
+| expo-sqlite | 58.0.13 | Phase 3. One connection, serialized by `createDbClient` (ADR-017) |
+| expo-crypto | 58.0.7 | Phase 3. `randomUUID()` (sync) for IDs |
+| expo-file-system | 58.0.10 | Phase 3. New `File`/`Directory`/`Paths` API (the legacy API lives at `expo-file-system/legacy`; not used) |
+| zod | 4.6.7 | Phase 3. Settings validation |
+| better-sqlite3 / @types/better-sqlite3 (dev) | 13.0.3 / 9.6.0 | Phase 3. Prebuilt binary loads on Windows with Node 24 (SQLite 3.53.4) — `Verify:` done 2026-10-22 |
 | typescript | 6.0.3 | `strict` + `noUncheckedIndexedAccess` |
 | jest / jest-expo / @types/jest | 30.5.2 / 58.0.11 / 30.0.0 | SDK 58 requires Jest 30 |
 | @testing-library/react-native | 14.1.0 | v14: `render` and `fireEvent.*` are async (`await`) |

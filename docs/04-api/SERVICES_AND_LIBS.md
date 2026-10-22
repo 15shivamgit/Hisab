@@ -36,26 +36,29 @@ Services implement use cases. They own transactions (`db.transaction`), call rep
 | `appLockService` | `isAvailable()` / `authenticate()` / `shouldLock(lastBackgroundAt, now)` | |
 | | `runWithoutLock(fn)` | Wraps calls that open a system screen (camera, gallery, document picker, share sheet, WhatsApp/SMS link). Returning within 5 minutes does not lock (ADR-016) |
 | | `applySecureFlag(enabled)` | Sets/clears the secure flag with `expo-screen-capture` when app lock is turned on/off |
-| `diagnosticsService` | `record(error)` / `buildReport(): string` | Local error log and copyable report without personal data (ARCHITECTURE.md § Diagnostics) |
+| `diagnosticsService` | `record(error, where)` / `entries()` / `buildReport(info): Promise<string>` | Local error log (last 50, `code` + `detail` + `where` only) and a shareable report without personal data (ARCHITECTURE.md § Diagnostics). Built by `createDiagnosticsService({ files, clock, appVersion })`; the app instance is `src/services/diagnostics.ts`. Implemented in Phase 3 |
+| `startupService` | `startDatabase(clock): Promise<{ db, schemaVersion }>` | Startup steps 1–4; records failures in diagnostics. Phase 3 |
 
 ## Pure libraries (`src/lib`) — must have unit tests
 
 | Module | Functions |
 |---|---|
-| `money.ts` | `parseRupeesToPaise(text): Result<Paise>`, `formatPaise(p, { compact?, sign? })`, `paiseToRupeeString(p)` (CSV: `1234.50`), `assertPaise(n)` |
-| `dates.ts` | `todayLocal(now?)`, `isValidLocalDate(s)`, `monthRange(date)`, `weekRange(date, weekStart)`, `addDays`, `shiftPeriod(range, kind, ±1)`, `clampEndToToday(range, today)`, `formatLocalDate(s, style)`, `isFuture(date, today)` |
+| `money.ts` | `parseRupeesToPaise(text): { ok: true, value } \| { ok: false, error: 'amount.required' \| 'amount.zero' \| 'amount.decimals' \| 'amount.max' \| 'amount.invalid' }`, `formatPaise(p, { compact?, sign? })` (negatives get "−"), `paiseToRupeeString(p)` (CSV: `1234.50`), `assertPaise(n)` |
+| `dates.ts` | `todayLocal(now)`, `isValidLocalDate(s)`, `monthRange(date)`, `weekRange(date, weekStart)`, `addDays`, `dayOfWeek`, `daysInRange`, `shiftPeriod(range, kind, ±n)`, `makeRange(start, end)` (validated custom range), `clampEndToToday(range, today)` (null if fully future), `formatLocalDate(s, 'long' \| 'short' \| 'list', today?)`, `formatMonthYear`, `isFuture(date, today)`, `toIsoDateTime(now)`. Calendar maths uses UTC day numbers, so only `todayLocal` depends on the timezone |
+| `clock.ts` | `Clock { now(): Date }`, `systemClock`. Business code never calls `Date.now()` |
 | `balance.ts` | `signedAmount(entry)`, `balanceOf(entries)`, `runningBalances(entriesAsc)`, `balanceLabel(balance): 'will_get' \| 'owe' \| 'settled'`, `wouldFlip(before, entry)` |
 | `budget.ts` | `budgetProgress(spent, budget): { percent, remaining, state: 'normal' \| 'warning' \| 'over' }` |
 | `csv.ts` | `toCsv(headers, rows)` with RFC 4180 escaping and UTF-8 BOM; formula-injection guard (prefix `'` to cells starting with `= + - @`) |
 | `ids.ts` | `newId()`, `isUuid(s)` |
 | `paths.ts` | `receiptRelativePath(id)`, `isSafeReceiptPath(s)` (regex `^receipts/[0-9a-f-]{36}\.jpg$`), `toAbsolute(rel)` |
-| `errors.ts` | `AppError`, `isAppError`, code enum |
+| `errors.ts` | `AppError(code, message, { detail?, cause? })`, `isAppError`, `toAppError` |
 
 ## Hooks (`src/hooks`, `src/features/*/hooks`)
 
 | Hook | Purpose |
 |---|---|
-| `useDbQuery(fn, deps, { tables })` | Read + auto-refresh on `notifyChanged` |
+| `useDbQuery(fn, deps, { tables })` | Read + auto-refresh on `notifyChanged`; returns `{ status: 'loading' \| 'success' \| 'error', data?, error?, reload }`. Phase 3 |
+| `useDb()` / `DatabaseProvider` | The started `DbClient` (provided by `StartupGate`). Phase 3 |
 | `useToday()` | Local date; updates when the app returns to foreground or the date changes |
 | `useAppLock()` | Lock gate state |
 | Feature hooks, e.g. `useTransactions(filter)`, `usePersonLedger(id)`, `useDashboard()` | Thin wrappers over services/repos |

@@ -6,6 +6,7 @@ import {
 } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
+import { StartupGate } from '@/features/startup/StartupGate';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 export default function RootLayout() {
@@ -33,9 +34,11 @@ function RootNavigator() {
 
   return (
     <NavigationThemeProvider value={navigationTheme}>
-      <Stack screenOptions={{ contentStyle: { backgroundColor: colors.bg } }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
+      <StartupGate>
+        <Stack screenOptions={{ contentStyle: { backgroundColor: colors.bg } }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </StartupGate>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </NavigationThemeProvider>
   );

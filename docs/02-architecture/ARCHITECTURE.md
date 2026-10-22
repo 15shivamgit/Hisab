@@ -44,12 +44,17 @@ interface DbClient {
   get<T>(sql: string, params?: SqlParam[]): Promise<T | null>;
   all<T>(sql: string, params?: SqlParam[]): Promise<T[]>;
   transaction<T>(fn: (tx: DbClient) => Promise<T>): Promise<T>;
+  exec(sql: string): Promise<void>; // several statements, no params — schema and PRAGMAs only
 }
 ```
 
-Two adapters:
-- `src/db/adapters/expoSqlite.ts` — app runtime. `transaction` uses `withExclusiveTransactionAsync` so no other query interleaves.
+Two drivers, both wrapped by `createDbClient` in `src/db/client.ts` (ADR-017):
+- `src/db/adapters/expoSqlite.ts` — app runtime, one connection to `hisaab.db`.
 - `src/db/adapters/betterSqlite.ts` — tests only (Node). Excluded from the app bundle.
+
+`createDbClient` runs every operation through one promise queue. `transaction` takes the queue, runs `BEGIN IMMEDIATE` … `COMMIT` (or `ROLLBACK` on any error) on the same connection, and passes a `tx` client that bypasses the queue. Nested `tx.transaction` calls join the outer transaction. Inside a transaction, code must use only `tx` — the outer client would wait forever.
+
+Repositories check for a missing or wrong-type category themselves before writing, because SQLite runs the type triggers before the foreign-key check (a missing category would otherwise be reported as a type mismatch). The triggers stay as the safety net.
 
 ### Startup sequence
 
@@ -61,7 +66,7 @@ Two adapters:
 6. Schedule background housekeeping (after first render): receipt orphan sweep (at most once per 7 days), reminder reconcile.
 7. If app lock is enabled → show lock screen before any data screen.
 
-Any failure in steps 1–5 shows a full-screen error with "Try again" and "Copy diagnostic info" (`diagnosticsService`; no data deleted automatically).
+Any failure in steps 1–5 shows a full-screen error with "Try again" and "Share diagnostic info" (`diagnosticsService`, React Native's built-in `Share`; no data deleted automatically). A `DB_NEWER` error shows "Please update Hisaab" and no retry. Implemented in Phase 3: `src/services/startupService.ts` (steps 1–4) and `src/features/startup/StartupGate.tsx`, which wraps the root `Stack`; data screens get the client from `useDb()`.
 
 ## Reading and refreshing data (no global store)
 
@@ -93,9 +98,10 @@ Every service write that changes user data (transactions, attachments, categorie
 | `PERMISSION_DENIED` | Camera denied | Explanation + "Open settings" |
 | `UNSUPPORTED_FILE` | Picked a non-image | Toast |
 | `BACKUP_INVALID` | Bad/corrupt backup file | Validation report, nothing changed |
+| `DB_NEWER` | Database created by a newer app version (older APK installed over newer) | "Please update Hisaab"; data untouched |
 | `UNKNOWN` | Anything else | Generic message; details copyable |
 
-Errors are never swallowed silently. No error text includes amounts or notes when copied for diagnostics.
+Errors are never swallowed silently. No error text includes amounts or notes when copied for diagnostics. `AppError` (`src/lib/errors.ts`) also carries a stable `detail` string (e.g. `CATEGORY_TYPE_MISMATCH`, `SYSTEM_CATEGORY`, `AMOUNT_RANGE`); the diagnostics log stores `code` + `detail` only, never `message`.
 
 ## Files on disk (app-private)
 

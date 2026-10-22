@@ -6,6 +6,8 @@ Status: Approved (signatures may be refined in Phase 3; update this doc when the
 
 Repositories are the only code that contains SQL. Each takes a `DbClient` (so it works inside a transaction) and returns domain models (camelCase), never raw rows.
 
+**Phase 3 refinements (implemented):** write functions take `now: Date` as the last argument (timestamps come from the caller's `Clock`, never `Date.now()`); IDs are generated inside `create` with `newId()`, except attachments, whose id also names the file. Known SQLite failures are turned into `AppError` with a `detail` (`src/db/sqlErrors.ts`). Tests: `src/db/**/*.repo.test.ts` against real SQLite (better-sqlite3).
+
 ## Shared types (`src/db/types.ts`)
 
 ```ts
@@ -25,8 +27,8 @@ interface Page { limit: number; offset: number }
 |---|---|
 | `list(db, { type?, includeArchived? }): Category[]` | Ordered by `sort_order`, then name |
 | `getById(db, id): Category \| null` | |
-| `create(db, input): Category` | Throws `CONSTRAINT` on duplicate name per type |
-| `update(db, id, patch): Category` | Type cannot change if the category has transactions or a budget (also enforced by trigger). Name cannot change if `is_system` (icon/colour can) |
+| `create(db, input, now): Category` | Throws `CONSTRAINT` (`CATEGORY_DUPLICATE`) on duplicate name per type; `sortOrder` defaults to the end of its type |
+| `update(db, id, patch, now): Category` | Type cannot change if the category has transactions or a budget (also enforced by trigger). Name cannot change if `is_system` (icon/colour can) |
 | `setArchived(db, id, archived: boolean)` | Throws if `is_system` |
 | `usage(db, id): { transactions: number; budgets: number }` | Transaction count is shown on the categories screen |
 | `delete(db, id)` | Throws `IN_USE` if `transactions > 0`, or if `is_system`. Its budget, if any, is removed by `ON DELETE CASCADE` |
@@ -38,11 +40,11 @@ interface Page { limit: number; offset: number }
 |---|---|
 | `list(db, filter: TxnFilter, page: Page): TransactionListItem[]` | Includes category name/icon/colour and `attachmentCount` |
 | `getById(db, id): TransactionDetail \| null` | Includes attachments |
-| `create(db, input): Transaction` | |
-| `update(db, id, patch): Transaction` | Sets `updated_at` |
+| `create(db, input, now): Transaction` | Validates amount (`assertPaise`), date, payment method, text lengths (trimmed, empty → null), and that the category exists and matches the type |
+| `update(db, id, patch, now): Transaction` | Same validation; sets `updated_at` |
 | `delete(db, id): { attachmentPaths: string[] }` | Returns paths so the service can delete files after commit |
 | `sumByType(db, range, today): { incomePaise, expensePaise }` | Applies `min(end, today)` (FR-3.1) |
-| `sumByCategory(db, range, type, today): { categoryId, totalPaise, count }[]` | Sorted desc |
+| `sumByCategory(db, range, type, today): { categoryId, categoryName, categoryIcon, categoryColor, totalPaise, count }[]` | Sorted desc; future-dated excluded |
 | `dailyTotals(db, range, today): { date, incomePaise, expensePaise }[]` | For trend charts |
 | `upcomingInRange(db, range, today): { incomePaise, expensePaise, count }` | Future-dated within range |
 
@@ -106,7 +108,8 @@ interface TxnFilter {
 | Function | Notes |
 |---|---|
 | `get<K extends SettingKey>(db, key): SettingValue<K>` | Returns default if missing; validates with Zod |
-| `set<K>(db, key, value)` | |
+| `set<K>(db, key, value, now)` | Zod-validated; throws `VALIDATION` |
+| `markDataChanged(tx, now)` (exported function) | Sets `data_changed_since_backup = true`; called by every user-data write |
 | `getAll(db): Settings` | |
 | `portableEntries(db)` / `replacePortable(db, entries)` | For backup/restore (device-only keys untouched) |
 

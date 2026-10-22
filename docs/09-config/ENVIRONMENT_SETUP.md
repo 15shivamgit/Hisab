@@ -111,7 +111,7 @@ New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name
 | Start Metro for the installed dev build | `npm start` (`expo start --dev-client`) |
 | Format code | `npm run format` |
 | Check SDK compatibility | `npx expo-doctor` · `npx expo install --check` |
-| Add a package | `npx expo install <pkg>`; dev tools: `npx expo install <pkg> "--" --dev` (quote the `--` in PowerShell) |
+| Add a package | `npx expo install <pkg>`. Dev-only tools: `npm install -D <pkg>` — in PowerShell, `npx expo install <pkg> -- --dev` (even with `"--"` quoted) still puts the package in `dependencies` (seen twice in Phases 2–3) |
 | Typecheck / lint / test | `npm run typecheck` · `npm run lint` · `npm test` |
 | Install an APK | `adb install -r path\to\app.apk` |
 | See device logs | `adb logcat *:E ReactNativeJS:V` |

@@ -85,6 +85,18 @@ All strings live in `src/content/strings.ts`, keyed by screen. This doc is the r
 | restore.failed | Restore failed. Your data was not changed. |
 | generic | Something went wrong. Please try again. |
 
+## Startup (Phase 3)
+
+| Key | Text |
+|---|---|
+| startup.loading | Opening your data… |
+| startup.errorTitle | Hisaab couldn't start |
+| startup.errorMessage | Something went wrong while opening your data. Nothing was deleted. |
+| startup.dbNewerTitle | Please update Hisaab |
+| startup.dbNewerMessage | This data was created by a newer version of Hisaab. Please install the latest version. |
+| startup.shareDiagnostics | Share diagnostic info |
+| common.tryAgain | Try again |
+
 ## Toasts
 
 `Expense saved` · `Income saved` · `Entry updated` · `Entry deleted` · `Receipt added` · `Backup created` · `Backup restored` · `CSV exported` · `Copied`

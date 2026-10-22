@@ -191,7 +191,7 @@ WHEN NEW.type IS NOT OLD.type
 BEGIN SELECT RAISE(ABORT, 'CATEGORY_IN_USE'); END;
 ```
 
-`Verify:` the `ON budgets ((1)) WHERE …` expression index works in the SQLite version bundled with expo-sqlite and with better-sqlite3; otherwise enforce "single overall budget" in the repository inside a transaction.
+Verified 2026-10-22: the `ON budgets ((1)) WHERE …` index rejects a second overall budget in better-sqlite3 (SQLite 3.53.4) — test "the DB itself allows only one overall budget". On the device it is created by migration 1 at startup (Phase 3 device check). `budgetRepository.upsertOverall` also updates instead of inserting.
 
 ## Deletion rules summary
 

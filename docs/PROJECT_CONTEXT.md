@@ -38,14 +38,15 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 | ADR-014 | Distribution: signed release APK shared directly. One release keystore, backed up in two places, never committed. |
 | ADR-015 | Backup moved before udhaar in the phase plan. Owner gets a release APK at Phase 6; friends only after Phase 11 (amended 2026-10-21). |
 | ADR-016 | App lock: no lock when returning from camera/gallery/share within 5 min; while lock is on, screenshots of the app are blocked (secure flag). |
+| ADR-017 | One SQLite connection; all operations and transactions serialized by `createDbClient` so foreign keys always apply (expo-sqlite's exclusive transactions use a separate connection). |
 
 ## Phase status
 
 | Phase | Name | Status |
 |---|---|---|
 | 1 | Specifications (this docs folder) | **Approved** (2026-10-21) |
-| 2 | Project setup | **Done — awaiting owner approval** (verified on phone 2026-10-22) |
-| 3 | Database foundation | Not started |
+| 2 | Project setup | **Approved** (2026-10-22) |
+| 3 | Database foundation | **In progress** |
 | 4 | Transactions, categories, basic dashboard | Not started |
 | 5 | Receipts | Not started |
 | 6 | Backup, restore, CSV export | Not started |

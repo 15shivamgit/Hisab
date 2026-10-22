@@ -18,5 +18,15 @@ export const strings = {
   },
   common: {
     loading: 'Loading',
+    tryAgain: 'Try again',
+  },
+  startup: {
+    loading: 'Opening your data…',
+    errorTitle: "Hisaab couldn't start",
+    errorMessage: 'Something went wrong while opening your data. Nothing was deleted.',
+    dbNewerTitle: 'Please update Hisaab',
+    dbNewerMessage:
+      'This data was created by a newer version of Hisaab. Please install the latest version.',
+    shareDiagnostics: 'Share diagnostic info',
   },
 } as const;

@@ -17,8 +17,8 @@ export const migration0001: Migration = {
 
 ## Runner rules
 
-1. Read `MAX(version)` from `schema_migrations` (create the table first if missing).
-2. If the DB version is **higher** than the app knows (user installed an older APK over a newer one), stop and show: "This data was created by a newer version of Hisaab. Please install the latest version." Do not touch data.
+1. Read `MAX(version)` from `schema_migrations` (create the table first if missing — the runner owns this table, so migration statements never create it).
+2. If the DB version is **higher** than the app knows (user installed an older APK over a newer one), stop with `AppError('DB_NEWER')` and show: "This data was created by a newer version of Hisaab. Please install the latest version." Do not touch data.
 3. For each pending migration, in order: run all statements **and** insert into `schema_migrations` inside **one exclusive transaction**. On failure, roll back and show the startup error screen.
 4. After migrations, run `PRAGMA foreign_key_check;` — any rows returned is a bug; log the error code and show the startup error screen.
 
@@ -28,6 +28,8 @@ export const migration0001: Migration = {
 - SQLite cannot drop/alter many constraints in place: use the "create new table → copy → drop old → rename" pattern with `PRAGMA foreign_keys = OFF` around it (outside the transaction, per SQLite docs), then `foreign_key_check`.
 - Every migration gets a repository test: migrate an empty DB to latest, and migrate a DB seeded at the previous version with sample data to latest.
 - Backup `schemaVersion` = latest migration version. Restore of an older backup maps the data forward via `src/services/backup/upgrade.ts` (one function per version step). Restore of a newer backup is rejected.
+
+Implemented in Phase 3: `src/db/migrations/runner.ts` (`migrate`), `src/db/init.ts` (`initDatabase`: PRAGMAs → migrate → seed). Tests: `src/db/migrations/migrations.repo.test.ts` (fresh, idempotent, newer-DB refusal, rollback of a failing migration, numbering, data kept across a later migration).
 
 ## Planned migrations
 

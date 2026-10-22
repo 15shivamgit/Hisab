@@ -17,8 +17,9 @@ Status: Approved · Last updated: 2026-10-21
 
 - **Fresh DB per test:** `createTestDb()` opens an in-memory better-sqlite3 DB, applies all migrations, seeds default categories.
 - **Clock injection:** services and hooks get `now()` from a `Clock`; tests use `fixedClock('2026-10-21T10:00:00+05:30')`. No `Date.now()` in business code.
-- **Timezone:** Jest runs with `TZ=Asia/Kolkata` (set in Jest global setup) plus specific tests for UTC-midnight edges. `Verify:` `process.env.TZ` takes effect on Windows Node; otherwise inject the offset through the clock.
-- **Fake platform:** `src/platform` interfaces have in-memory fakes in `src/test/fakes/`.
+- **Timezone:** Jest runs with `TZ=Asia/Kolkata` (set in `src/test/globalSetup.js`) plus specific tests for UTC-midnight edges. Verified 2026-10-22 on Windows + Node 24: `process.env.TZ` set in globalSetup takes effect in workers (test "Jest runs in Asia/Kolkata").
+- **Test helpers (Phase 3):** `src/test/testDb.ts` — `createTestDb()`, `fixedClock()`, `TEST_NOW` (2026-10-21 10:00 IST), `TEST_TODAY`; `src/test/setup.ts` mocks `expo-crypto` with Node's crypto; `src/test/memoryFiles.ts` is the in-memory `TextFileStore`.
+- **Fake platform:** `src/platform` interfaces have in-memory fakes in `src/test/`.
 - **Fixtures:** `src/test/fixtures/backups/` — valid v1, valid v2, tampered checksum, zip-slip, extra file, newer version, truncated, not-a-zip.
 - **Builders:** `aTransaction({...})`, `aPerson()`, `anEntry()` for readable tests.
 - **Dev data generator** (dev variant only): Developer screen generates N transactions, M receipts, P people for performance and backup spikes.
