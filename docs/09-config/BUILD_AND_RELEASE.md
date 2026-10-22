@@ -42,10 +42,13 @@ keytool -genkeypair -v -storetype PKCS12 -keystore hisaab-release.jks -alias his
 **Smaller APK for phones (friends and owner):** build only the ARM CPU types real phones use. This roughly halves the size, which makes sharing on WhatsApp/Drive easier. It needs no new dependency:
 
 ```powershell
-.\gradlew.bat assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+# Quote the argument: in PowerShell an unquoted comma turns it into an array and the command fails to parse.
+.\gradlew.bat assembleRelease '-PreactNativeArchitectures=arm64-v8a,armeabi-v7a'
 ```
 
-That APK does **not** run on an x86_64 emulator. For the clean-emulator check in §3, build a separate universal APK (without the flag) and never distribute it. `Verify:` the flag name on the current React Native version, and record both APK sizes here after the first build.
+That APK does **not** run on an x86_64 emulator. For the clean-emulator check in §3, build a separate universal APK (without the flag) and never distribute it.
+
+Verified 2026-10-22 (RN 0.88, debug-signed Phase 2 build): the flag works; `app-release.apk` = **42.8 MB** with `arm64-v8a` + `armeabi-v7a`; build time 27 min on the owner's machine (project on HDD). Universal APK size not measured yet.
 
 ### Option B — EAS Build Free plan (cloud)
 

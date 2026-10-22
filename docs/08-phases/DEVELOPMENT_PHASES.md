@@ -33,8 +33,8 @@ Rules:
 - Record pinned versions in TECH_STACK.md.
 **Acceptance:**
 - [x] `npm run typecheck`, `lint`, `test` pass (one sample test). (2026-10-21: 3 suites, 40 tests)
-- [ ] Dev build runs on a real phone; tabs navigate; light/dark follows system. — **blocked: Android Studio not installed**
-- [ ] Release-variant APK builds once (unsigned/debug-signed is fine here) to prove the pipeline. — **blocked: Android Studio not installed** (JS bundle export and prebuild manifest already verified)
+- [x] Dev build runs on a real phone; tabs navigate; light/dark follows system. (2026-10-22, vivo V2205 / Android 14)
+- [x] Release-variant APK builds once (unsigned/debug-signed is fine here) to prove the pipeline. (2026-10-22, 42.8 MB, no INTERNET permission)
 
 Report: [reports/PHASE_02.md](reports/PHASE_02.md)
 

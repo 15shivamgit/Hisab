@@ -70,9 +70,28 @@ android --sdk=C:\Android\Sdk sdk install ndk/27.1.12297006
 
 (The old `sdkmanager` call with several `;`-style packages silently installed only `platform-tools`.)
 
+## Fixes applied on the owner's machine (2026-10-22)
+
+The first native builds failed four times for machine/network reasons. These fixes are outside the repo; redo them on a new PC.
+
+| Problem | Fix |
+|---|---|
+| Gradle wrapper download timed out — one `release-assets.githubusercontent.com` IPv4 address is unreachable from this ISP, and Java tried it first | Downloaded `gradle-9.4.1-bin.zip` with PowerShell into `%USERPROFILE%\.gradle\wrapper\dists\gradle-9.4.1-bin\<hash>\` (the folder the failed run created), and checked its SHA-256 against `…/gradle-9.4.1-bin.zip.sha256` (matched) |
+| Maven Central "Connection reset" on large downloads | `%USERPROFILE%\.gradle\gradle.properties`: `systemProp.org.gradle.internal.http.connectionTimeout=120000`, `…socketTimeout=120000`, `systemProp.org.gradle.internal.repository.max.retries=10`, `…initial.backoff=2000`, `systemProp.java.net.preferIPv4Stack=true` |
+| C++ build: ninja "Filename longer than 260 characters" (React Native codegen paths are ~300 chars, so a shorter project path is not enough) | Windows `LongPathsEnabled = 1` (admin, see below) **and** ninja 1.12.1: installed SDK `cmake/3.31.6`, copied its `ninja.exe` over `C:\Android\Sdk\cmake\3.22.1\bin\ninja.exe` (old one kept as `ninja-1.10.2.exe.bak`). AGP still uses CMake 3.22.1 by default |
+
+If the SDK's CMake 3.22.1 is ever reinstalled, copy ninja 1.12.1 over it again.
+
+## Running the dev build on the phone
+
+1. Phone connected by USB, USB debugging on (vivo: also allow "Install via USB").
+2. First time, or after adding a package with native code: `npm run android` (~8 min here). It builds, installs `Hisaab Dev`, and opens it.
+3. Daily: `npm start` (Metro), then `adb reverse tcp:8081 tcp:8081` so the phone reaches Metro over USB (no Wi-Fi/firewall issues), and open `Hisaab Dev` on the phone.
+4. `android/` is generated. Delete it after a release build (`APP_VARIANT=release` prebuild), otherwise the next dev build reuses the release IDs.
+
 ## Windows long paths
 
-Gradle builds can fail with long paths. Keep the project at `d:\Code\hisaab`. If errors mention path length, enable Windows long paths (admin PowerShell):
+Gradle builds can fail with long paths. Keep the project at `d:\Code\hisaab`. **Required for React Native native builds** (enabled on the owner's machine 2026-10-22) — admin PowerShell:
 
 ```powershell
 New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name LongPathsEnabled -Value 1 -PropertyType DWORD -Force

@@ -44,7 +44,7 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 | Phase | Name | Status |
 |---|---|---|
 | 1 | Specifications (this docs folder) | **Approved** (2026-10-21) |
-| 2 | Project setup | **In progress** — code done; device build waits for Android Studio |
+| 2 | Project setup | **Done — awaiting owner approval** (verified on phone 2026-10-22) |
 | 3 | Database foundation | Not started |
 | 4 | Transactions, categories, basic dashboard | Not started |
 | 5 | Receipts | Not started |

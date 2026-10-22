@@ -44,7 +44,9 @@ No data is collected by the developer. (Play Store data-safety answer, if ever n
 | Biometric / device credential | When enabling app lock | Lock not enabled |
 | Storage / media | **Not requested** (photo picker and document picker don't need it) | — |
 | Contacts, SMS, location | **Never** | — |
-| INTERNET | Dev builds only; blocked in release | — |
+| INTERNET | Dev builds only; blocked in release (verified in the Phase 2 release APK) | — |
+| VIBRATE | Install time, no prompt (Expo template) | — |
+| `<applicationId>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | Added by AndroidX; app-private signature permission, no prompt | — |
 | Added by `expo-notifications` (e.g. RECEIVE_BOOT_COMPLETED, VIBRATE) | Install time, no prompt | — . Keeps scheduled reminders after reboot. `Verify:` exact list in Phase 11 |
 | SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM | **Not used** — reminders use inexact date triggers; a few minutes' delay is acceptable | — |
 
