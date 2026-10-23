@@ -65,9 +65,11 @@ Report: [reports/PHASE_04.md](reports/PHASE_04.md)
 
 **Scope:** Picker (camera/gallery), compression pipeline, persistence, thumbnails, viewer with zoom, replace/delete, missing-file handling, orphan sweep.
 **Acceptance:**
-- [ ] RCP-01…07 and RECEIPTS.md acceptance list.
-- [ ] Permission-denied paths tested manually.
-- [ ] No orphan files after add/replace/delete/transaction delete (test + manual file listing).
+- [x] RCP-01…07 and RECEIPTS.md acceptance list (exceptions listed in the report: real camera photos, a second phone, HEIC, low-memory camera recovery on a device).
+- [x] Permission-denied paths tested manually (camera "Don't allow" → dialog → gallery).
+- [x] No orphan files after add/replace/delete/transaction delete (tests + `receipts/` and `cache/staging/` listed on the phone).
+
+Report: [reports/PHASE_05.md](reports/PHASE_05.md)
 
 ## Phase 6 — Backup, restore, CSV export, delete all data
 

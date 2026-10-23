@@ -18,6 +18,8 @@ import { useToday } from '@/hooks/useToday';
 import { systemClock } from '@/lib/clock';
 import { formatDateTime, formatLocalDate } from '@/lib/dates';
 import { formatPaise } from '@/lib/money';
+import { ReceiptThumb } from '@/features/receipts/components/ReceiptThumb';
+import { receipts } from '@/services/receipts';
 import { transactionService } from '@/services/transactionService';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -82,7 +84,7 @@ export function TransactionDetailScreen({ id }: { id: string }) {
   const onDelete = async () => {
     setDeleting(true);
     try {
-      await transactionService.delete(db, systemClock, t.id);
+      await transactionService.delete(db, systemClock, t.id, receipts);
       setConfirmDelete(false);
       toast(strings.txn.deleted);
       router.back();
@@ -118,7 +120,26 @@ export function TransactionDetailScreen({ id }: { id: string }) {
           {t.description ? <Field label={strings.txn.description} value={t.description} /> : null}
           {t.notes ? <Field label={strings.txn.notes} value={t.notes} /> : null}
           {t.attachments.length > 0 ? (
-            <Field label={strings.txn.receipts} value={String(t.attachments.length)} />
+            <View style={{ gap: spacing.sm }}>
+              <AppText variant="caption" color="textMuted">
+                {strings.txn.receipts}
+              </AppText>
+              <View style={[styles.wrap, { gap: spacing.md }]}>
+                {t.attachments.map((a, index) => (
+                  <ReceiptThumb
+                    key={a.id}
+                    uri={receipts.resolveUri(a.relativePath)}
+                    accessibilityLabel={`${strings.receipts.title} ${index + 1}`}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/receipt/[transactionId]',
+                        params: { transactionId: t.id, index: String(index) },
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            </View>
           ) : null}
           <Field label={strings.txn.created} value={formatDateTime(t.createdAt)} />
           {t.updatedAt !== t.createdAt ? (
@@ -171,4 +192,5 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center' },
+  wrap: { flexDirection: 'row', flexWrap: 'wrap' },
 });

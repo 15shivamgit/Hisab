@@ -27,8 +27,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     predictiveBackGestureEnabled: false,
     // Each phase adds the permissions its feature needs (CAMERA in Phase 5,
-    // POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9).
-    permissions: [],
+    // POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9). The photo picker needs
+    // no storage permission; expo-image-picker's storage permissions are blocked below.
+    permissions: ['android.permission.CAMERA'],
     blockedPermissions: [
       'android.permission.RECORD_AUDIO',
       'android.permission.READ_EXTERNAL_STORAGE',
@@ -48,6 +49,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         backgroundColor: BRAND_ICON_BACKGROUND,
         image: './assets/images/splash-icon.png',
         imageWidth: 120,
+      },
+    ],
+    [
+      'expo-image-picker',
+      {
+        cameraPermission: 'Hisaab uses the camera to take photos of receipts.',
+        microphonePermission: false,
       },
     ],
   ],

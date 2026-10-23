@@ -1,5 +1,5 @@
 import { Stack, usePreventRemove, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, View } from 'react-native';
 
 import { ConfirmDialog } from '@/components/ConfirmDialog';
@@ -8,7 +8,9 @@ import { useToast } from '@/components/Toast';
 import { strings } from '@/content/strings';
 import { categoryRepository } from '@/db/repositories/categoryRepository';
 import { transactionRepository } from '@/db/repositories/transactionRepository';
-import type { TxnType } from '@/db/types';
+import type { Attachment, TxnType } from '@/db/types';
+import { ReceiptsField } from '@/features/receipts/components/ReceiptsField';
+import { useReceiptPicker } from '@/features/receipts/useReceiptPicker';
 import { TransactionForm } from '@/features/transactions/components/TransactionForm';
 import {
   emptyFormValues,
@@ -21,6 +23,8 @@ import { useDbQuery } from '@/hooks/useDbQuery';
 import { useToday } from '@/hooks/useToday';
 import { systemClock } from '@/lib/clock';
 import { categoryService } from '@/services/categoryService';
+import type { ReceiptDraft } from '@/services/receiptService';
+import { receipts } from '@/services/receipts';
 import { transactionService } from '@/services/transactionService';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -43,6 +47,32 @@ export function TransactionEditorScreen(props: EditorProps) {
   const duplicateOf = props.mode === 'new' ? props.duplicateOf : undefined;
   const newType = props.mode === 'new' ? props.type : undefined;
 
+  // Receipt changes apply only when the form is saved (RECEIPTS.md § Replace / delete).
+  const [drafts, setDrafts] = useState<ReceiptDraft[]>([]);
+  const [removedIds, setRemovedIds] = useState<string[]>([]);
+  const picker = useReceiptPicker((added) => setDrafts((list) => [...list, ...added]));
+
+  // Staged photos of a form that is left without saving are deleted.
+  const draftsRef = useRef<ReceiptDraft[]>([]);
+  const savedRef = useRef(false);
+  useEffect(() => {
+    draftsRef.current = drafts;
+  }, [drafts]);
+  useEffect(
+    () => () => {
+      if (!savedRef.current) receipts.discard(draftsRef.current);
+    },
+    [],
+  );
+
+  // A photo taken just before Android killed the app comes back here (new entries only).
+  const isNew = props.mode === 'new';
+  useEffect(() => {
+    if (isNew) void picker.recoverPending(5);
+    // Run once when the screen opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Loaded once; the form keeps its own state after that.
   const data = useDbQuery(
     async (client) => {
@@ -53,10 +83,12 @@ export function TransactionEditorScreen(props: EditorProps) {
         transactionRepository.lastPaymentMethod(client),
       ]);
       let initialValues: TransactionFormValues;
+      let attachments: Attachment[] = [];
       if (editId) {
         const existing = await transactionRepository.getById(client, editId);
         if (!existing) return { notFound: true as const };
         initialValues = toFormValues(existing);
+        attachments = existing.attachments;
       } else if (duplicateOf) {
         initialValues = toFormValues(
           await transactionService.duplicate(client, systemClock, duplicateOf),
@@ -69,13 +101,15 @@ export function TransactionEditorScreen(props: EditorProps) {
         categories,
         recent: { expense: recentExpense, income: recentIncome },
         initialValues,
+        attachments,
       };
     },
     [editId, duplicateOf, newType],
     { tables: [] },
   );
 
-  usePreventRemove(dirty && !leaving, ({ repeat }) => setPendingLeave({ repeat }));
+  const hasChanges = dirty || drafts.length > 0 || removedIds.length > 0;
+  usePreventRemove(hasChanges && !leaving, ({ repeat }) => setPendingLeave({ repeat }));
 
   useEffect(() => {
     if (leaving) router.back();
@@ -86,12 +120,17 @@ export function TransactionEditorScreen(props: EditorProps) {
   const onSubmit = async (values: TransactionFormValues) => {
     const input = toNewTransaction(values);
     if (editId) {
-      await transactionService.update(db, systemClock, editId, input);
+      await transactionService.update(db, systemClock, editId, input, {
+        receipts,
+        add: drafts,
+        remove: removedIds,
+      });
       toast(strings.txn.updated);
     } else {
-      await transactionService.create(db, systemClock, input);
+      await transactionService.create(db, systemClock, input, { receipts, add: drafts });
       toast(strings.txn.saved[input.type]);
     }
+    savedRef.current = true;
     setLeaving(true);
   };
 
@@ -130,6 +169,20 @@ export function TransactionEditorScreen(props: EditorProps) {
         onCreateCategory={(type, values) =>
           categoryService.create(db, systemClock, { ...values, type })
         }
+        receipts={
+          <ReceiptsField
+            existing={loaded.attachments.filter((a) => !removedIds.includes(a.id))}
+            drafts={drafts}
+            processing={picker.processing}
+            resolveUri={(path) => receipts.resolveUri(path)}
+            onAdd={picker.open}
+            onRemoveExisting={(id) => setRemovedIds((ids) => [...ids, id])}
+            onRemoveDraft={(draft) => {
+              receipts.discard([draft]);
+              setDrafts((list) => list.filter((d) => d !== draft));
+            }}
+          />
+        }
       />
     );
   }
@@ -149,10 +202,14 @@ export function TransactionEditorScreen(props: EditorProps) {
         onConfirm={() => {
           const leave = pendingLeave;
           setPendingLeave(null);
+          receipts.discard(drafts);
+          setDrafts([]);
+          setRemovedIds([]);
           setDirty(false);
           leave?.repeat();
         }}
       />
+      {picker.element}
     </KeyboardAvoidingView>
   );
 }

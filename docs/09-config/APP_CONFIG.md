@@ -65,7 +65,8 @@ export default config;
 The real file is [`app.config.ts`](../../app.config.ts). Differences from the sketch above and what was checked:
 
 - `android.allowBackup`, `android.permissions`, `android.blockedPermissions` (uses `tools:node="remove"`), `android.adaptiveIcon.monochromeImage` are current keys (Expo app config reference).
-- `permissions: []` for now — each phase adds only what its feature needs (CAMERA in Phase 5, POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9). The `expo-image-picker`, `expo-notifications`, and `expo-local-authentication` plugins are added in those phases.
+- `permissions: []` at first — each phase adds only what its feature needs (CAMERA in Phase 5, POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9). The `expo-image-picker`, `expo-notifications`, and `expo-local-authentication` plugins are added in those phases.
+- **Phase 5 (2026-10-23):** `permissions: ['android.permission.CAMERA']` and the plugin `['expo-image-picker', { cameraPermission: 'Hisaab uses the camera to take photos of receipts.', microphonePermission: false }]`. The storage/media permissions that expo-image-picker can add stay in `blockedPermissions`; the gallery uses the Android photo picker, which needs none. Checked on the phone: picking from the gallery works with no storage permission, and the only runtime permission the dev app has is CAMERA (asked on first "Take photo").
 - **Scheme:** dev variant uses `hisaab-dev` so the dev and release apps don't both claim `hisaab://`.
 - Icon files: `assets/images/icon.png`, `adaptive-icon-foreground.png`, `adaptive-icon-monochrome.png`, `splash-icon.png`; splash and adaptive background `#0284C7`.
 - `npx expo prebuild --platform android` output inspected for both variants:

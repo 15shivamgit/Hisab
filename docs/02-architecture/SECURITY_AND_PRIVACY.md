@@ -39,10 +39,10 @@ No data is collected by the developer. (Play Store data-safety answer, if ever n
 
 | Permission | When requested | If denied |
 |---|---|---|
-| CAMERA | First time the user taps "Take photo" | Explain, offer gallery, "Open settings" |
+| CAMERA | First time the user taps "Take photo" | Explain, offer gallery, "Open settings" (checked on the phone in Phase 5: "Don't allow" → "Camera access is off" dialog → "Use gallery" opens the photo picker) |
 | POST_NOTIFICATIONS (Android 13+) | First time a return-by date is set with reminders on | Date still saved; reminders shown in-app only |
 | Biometric / device credential | When enabling app lock | Lock not enabled |
-| Storage / media | **Not requested** (photo picker and document picker don't need it) | — |
+| Storage / media | **Not requested** (photo picker and document picker don't need it; gallery pick verified without it in Phase 5) | — |
 | Contacts, SMS, location | **Never** | — |
 | INTERNET | Dev builds only; blocked in release (verified in the Phase 2 release APK) | — |
 | VIBRATE | Install time, no prompt (Expo template) | — |

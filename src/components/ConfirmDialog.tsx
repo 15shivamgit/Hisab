@@ -16,6 +16,8 @@ interface ConfirmDialogProps {
   busy?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  /** Back button / tap outside. Defaults to onCancel; set it when Cancel does something else. */
+  onDismiss?: () => void;
 }
 
 /** Says exactly what will happen; Android back = cancel (UI_UX_GUIDE.md § Safe). */
@@ -29,11 +31,16 @@ export function ConfirmDialog({
   busy = false,
   onConfirm,
   onCancel,
+  onDismiss = onCancel,
 }: ConfirmDialogProps) {
   const { colors, radius, spacing } = useTheme();
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
-      <Pressable style={styles.backdrop} onPress={onCancel} accessibilityLabel={cancelLabel}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
+      <Pressable
+        style={styles.backdrop}
+        onPress={onDismiss}
+        accessibilityLabel={strings.common.close}
+      >
         <Pressable
           accessibilityRole="alert"
           style={[

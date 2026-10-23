@@ -18,6 +18,8 @@ export interface NewAttachment {
   sizeBytes: number;
   width: number;
   height: number;
+  /** Position among the transaction's receipts; defaults to the end. Replace keeps the old one. */
+  sortOrder?: number;
 }
 
 export const attachmentRepository = {
@@ -52,7 +54,7 @@ export const attachmentRepository = {
           input.sizeBytes,
           input.width,
           input.height,
-          row?.next ?? 0,
+          input.sortOrder ?? row?.next ?? 0,
           toIsoDateTime(now),
         ],
       );
@@ -64,6 +66,29 @@ export const attachmentRepository = {
     ).filter((a) => a.id === input.id);
     if (!created) throw new AppError('UNKNOWN', 'Attachment insert not visible');
     return created;
+  },
+
+  async getById(db: DbClient, id: string): Promise<Attachment | null> {
+    const row = await db.get<Parameters<typeof toAttachment>[0]>(
+      'SELECT * FROM transaction_attachments WHERE id = ?',
+      [id],
+    );
+    return row ? toAttachment(row) : null;
+  },
+
+  /** Deletes a receipt only if it belongs to this transaction (edit form). */
+  async deleteForTransaction(
+    db: DbClient,
+    transactionId: string,
+    id: string,
+  ): Promise<{ relativePath: string }> {
+    const row = await db.get<{ relative_path: string }>(
+      'SELECT relative_path FROM transaction_attachments WHERE id = ? AND transaction_id = ?',
+      [id, transactionId],
+    );
+    if (!row) throw new AppError('NOT_FOUND', 'Attachment not found', { detail: 'ATTACHMENT' });
+    await db.run('DELETE FROM transaction_attachments WHERE id = ?', [id]);
+    return { relativePath: row.relative_path };
   },
 
   async delete(db: DbClient, id: string): Promise<{ relativePath: string }> {

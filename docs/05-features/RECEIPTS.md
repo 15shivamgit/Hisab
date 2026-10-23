@@ -6,16 +6,16 @@ Status: Approved · Phase: 5 · Requirements: RCP-01…07 · Decision: ADR-008
 
 - **Take photo** — `expo-image-picker` camera (CAMERA permission, asked on first use).
 - **Choose from gallery** — Android photo picker (no storage permission). Multiple selection up to the remaining slots.
-- Both are opened through `appLockService.runWithoutLock` (ADR-016).
-- If Android kills Hisaab while the camera is open (low memory), the photo result is recovered on restart with `ImagePicker.getPendingResultAsync()` and the user is returned to a new form with that receipt attached. `Verify:` API on the current SDK.
+- Both are opened through `appLockService.runWithoutLock` (ADR-016). App lock arrives in Phase 9; the picker calls get wrapped then.
+- If Android kills Hisaab while the camera is open (low memory), the photo result is recovered on restart with `ImagePicker.getPendingResultAsync()` and the user is returned to a new form with that receipt attached. Implemented: the tabs layout checks once per start (`pendingPhoto.recover`) and opens `/transaction/new`, whose form attaches the photo. Verified 2026-10-23: the API exists in expo-image-picker 58.0.10; the actual low-memory kill was not reproduced on a phone.
 
 ## Import pipeline (`receiptService.prepareFromPicker`)
 
 1. Reject if the transaction already has 5 receipts.
-2. Check MIME/extension: accept `image/jpeg`, `image/png`, `image/webp`, `image/heic`/`heif` (`Verify:` HEIC decode support via image-manipulator on Android). Else `UNSUPPORTED_FILE`.
+2. Check MIME/extension: accept `image/jpeg`, `image/png`, `image/webp`, `image/heic`/`heif` (`Verify:` HEIC decode support via image-manipulator on Android — still open: no HEIC photo was available on the test phone; if decoding fails the user sees "Couldn't process this image"). Else `UNSUPPORTED_FILE`.
 3. Reject input > 25 MB ("This image is too large (32 MB). Max 25 MB.").
 4. Check free space ≥ 50 MB, else `STORAGE_FULL`.
-5. **Apply the EXIF orientation first** (so the saved image is upright), then resize so the longest edge ≤ 1600 px (never upscale), encode JPEG quality 0.7 → write to `cache/staging/<uuid>.jpg`. Strip EXIF (location) — re-encoding does this. `Verify:` output is upright and EXIF-free for portrait and landscape photos on at least two phones.
+5. **Apply the EXIF orientation first** (so the saved image is upright), then resize so the longest edge ≤ 1600 px (never upscale), encode JPEG quality 0.7 → write to `cache/staging/<uuid>.jpg`. Strip EXIF (location) — re-encoding does this. `Verify:` output is upright and EXIF-free for portrait and landscape photos on at least two phones. **Partly verified 2026-10-23** on one phone (vivo V2205, Android 14): a 4000×3000 JPEG stored sideways with EXIF Orientation 6 and a GPS tag was saved upright at 1200×1600 with no EXIF. Still to do: real camera photos (portrait and landscape) and a second phone — Phase 10.
 6. Return a draft `{ stagedUri, width, height, sizeBytes }`. The original picker URI is never stored.
 
 ## Persisting
@@ -29,6 +29,7 @@ Status: Approved · Phase: 5 · Requirements: RCP-01…07 · Decision: ADR-008
 
 - Form and detail show thumbnails (tap to open viewer).
 - Full-screen viewer: swipe between receipts, pinch-zoom, double-tap zoom, close button, "Replace", "Delete", page indicator "2 / 3".
+  - Zoom (own `ZoomableImage`): pinch 1×–5× and the zoom stays after the fingers lift; double-tap toggles 2.5× / 1×; one-finger drag pans only while zoomed and stops at the image edges. While zoomed, swiping to the next receipt is off; it comes back at 1×.
 - Missing file (`resolveUri` → null): grey tile "Image missing" with "Remove" action. Never crash.
 
 ## Replace / delete

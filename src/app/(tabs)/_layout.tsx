@@ -1,12 +1,26 @@
+import { useRouter } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
+import { useEffect } from 'react';
 
 import { strings } from '@/content/strings';
+import { pendingPhoto } from '@/features/receipts/pendingPhoto';
+import { devicePicker } from '@/platform/picker';
+import { diagnostics } from '@/services/diagnostics';
 import { useTheme } from '@/theme/ThemeProvider';
 
 // Bottom tabs: Home · Transactions · Udhaar · Reports · More (docs/06-design/SCREENS_AND_NAVIGATION.md).
 // Icons are Material Symbols bundled with expo-symbols — no network.
 export default function TabsLayout() {
   const { colors } = useTheme();
+  const router = useRouter();
+
+  // Android killed the app while the camera was open: reopen a new expense with that photo.
+  useEffect(() => {
+    pendingPhoto.recover(devicePicker).then(
+      (found) => found && router.push('/transaction/new'),
+      (error: unknown) => diagnostics.record(error, 'pendingPhoto'),
+    );
+  }, [router]);
 
   return (
     <NativeTabs

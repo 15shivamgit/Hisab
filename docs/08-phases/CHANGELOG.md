@@ -5,6 +5,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-23 — Phase 5: receipts. Camera and gallery picker (photo picker, no storage permission), camera-denied dialog, compression pipeline (≤ 1600 px, JPEG 0.7, EXIF orientation applied and EXIF/GPS stripped), receipts in the add/edit form (changes apply on save), thumbnails on the detail screen, full-screen viewer (swipe, pinch/double-tap zoom, Replace, Delete, missing-file tile), file moves rolled back if the DB write fails, orphan sweep every 7 days, recovery of a camera photo after Android kills the app. expo-image-picker, expo-image-manipulator, CAMERA permission. 290 tests. Verified on the phone. Phase 5 awaiting owner approval.
+- 2026-10-23 — Phase 4 approved by the owner.
 - 2026-10-22 — Phase 4: transaction form (add/edit/duplicate, unsaved-changes guard), list with day groups, Upcoming, search (incl. exact amount), filters, sort, infinite scroll; detail with delete confirmation; categories screen (move up/down, edit sheet with icons and colours, archive, delete rules); dashboard (this month, net, quick add, spending by category list, recent); transaction/category/dashboard services; 14 UI components; react-hook-form, @hookform/resolvers v5, datetimepicker. 260 tests. Verified on the phone. Phase 4 awaiting owner approval.
 - 2026-10-22 — Phase 3 approved by the owner.
 - 2026-10-22 — Phase 3 database foundation: `src/lib` (money, dates, ids, paths, errors, clock), `DbClient` with serialized single-connection transactions (ADR-017), migration runner + migration 0001, repositories (settings, categories, transactions, attachments, budgets), default category seed (Material Symbols icons), startup gate with retry and shareable diagnostics, `useDbQuery`/`notifyChanged`, diagnostics error log. 212 tests. Verified on the phone: schema v1, 21 categories, WAL, seed runs once across restarts. Phase 3 awaiting owner approval.
@@ -15,6 +17,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 - 2026-10-21 — Phase 2 (in progress): Expo SDK 58 app in `src/app/` with TypeScript strict, Expo Router native tabs (Home, Transactions, Udhaar, Reports, More — placeholders), sky-blue theme tokens + ThemeProvider (light/dark/system), base components (AppText, Screen, Button, Card, EmptyState), `app.config.ts` with dev/release variants (`com.shivambgs15.hisaab[.dev]`, `allowBackup=false`, INTERNET blocked in release), app icon PNGs, ESLint + Prettier, Jest 30 + RNTL 14 with token-contrast, theme, and Button tests. Dependency `expo-symbols` added for tab icons, pending owner approval.
 - 2026-10-21 — Phase 1 approved by the owner.
 - 2026-10-21 — Phase 1: initial specification set in `docs/` (overview, requirements, financial rules, architecture, ADRs, schema, internal API, feature specs, design, content, phases, config, testing).
+
+### Removed
+- 2026-10-23 — `react-native-zoom-toolkit` (approved for the receipt viewer) removed after it failed on the phone with gesture-handler 3 / Reanimated 4 (zoom snapped back). Replaced by our own `ZoomableImage`; no new dependency.
 
 ### Changed (from the original brief)
 - Loan management replaced by a simple per-person **udhaar ledger** (gave/got) with no interest or statuses (ADR-004). Tables `loans`/`loan_payments` replaced by `people`/`udhaar_entries`.

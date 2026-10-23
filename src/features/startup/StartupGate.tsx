@@ -10,6 +10,8 @@ import { systemClock } from '@/lib/clock';
 import type { AppError } from '@/lib/errors';
 import { getAppAndDeviceInfo } from '@/platform/deviceInfo';
 import { diagnostics } from '@/services/diagnostics';
+import { runHousekeepingIfDue } from '@/services/housekeeping';
+import { receipts } from '@/services/receipts';
 import { startDatabase, type StartedDatabase } from '@/services/startupService';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -34,6 +36,18 @@ export function StartupGate({ children }: { children: ReactNode }) {
       current = false;
     };
   }, [attempt]);
+
+  // Step 6: housekeeping after the first render, never blocking the UI.
+  const db = state.status === 'ready' ? state.started.db : null;
+  useEffect(() => {
+    if (!db) return;
+    const timer = setTimeout(() => {
+      runHousekeepingIfDue(db, systemClock, receipts).catch((error: unknown) =>
+        diagnostics.record(error, 'housekeeping'),
+      );
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [db]);
 
   if (state.status === 'ready') {
     return <DatabaseProvider db={state.started.db}>{children}</DatabaseProvider>;

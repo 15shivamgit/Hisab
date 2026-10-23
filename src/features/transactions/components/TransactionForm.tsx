@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -36,6 +36,8 @@ export interface TransactionFormProps {
   onDirtyChange?: (dirty: boolean) => void;
   /** Quick-create from the category chips ("+ New"). Returns the new category. */
   onCreateCategory: (type: TxnType, values: CategoryFormValues) => Promise<Category>;
+  /** Receipts section (state lives in the editor screen; RECEIPTS.md). */
+  receipts?: ReactNode;
 }
 
 const TYPE_OPTIONS = [
@@ -52,6 +54,7 @@ export function TransactionForm({
   onSubmit,
   onDirtyChange,
   onCreateCategory,
+  receipts,
 }: TransactionFormProps) {
   const { colors, spacing } = useTheme();
   const [submitError, setSubmitError] = useState<string>();
@@ -242,6 +245,8 @@ export function TransactionForm({
             />
           )}
         />
+
+        {receipts}
       </ScrollView>
 
       <View

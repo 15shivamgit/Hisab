@@ -5,6 +5,8 @@ import {
   ThemeProvider as NavigationThemeProvider,
 } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ToastProvider } from '@/components/Toast';
 import { StartupGate } from '@/features/startup/StartupGate';
@@ -12,11 +14,16 @@ import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <RootNavigator />
-    </ThemeProvider>
+    // Needed for gestures (receipt viewer pinch/zoom).
+    <GestureHandlerRootView style={styles.fill}>
+      <ThemeProvider>
+        <RootNavigator />
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({ fill: { flex: 1 } });
 
 function RootNavigator() {
   const { scheme, colors } = useTheme();

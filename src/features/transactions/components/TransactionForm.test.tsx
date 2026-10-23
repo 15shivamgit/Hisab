@@ -60,8 +60,9 @@ async function renderForm(props: Partial<TransactionFormProps> = {}) {
 test('saving an empty form shows inline errors and does not submit (TXN-09)', async () => {
   const { getByTestId, findByText, onSubmit } = await renderForm();
   await fireEvent.press(getByTestId('save-button'));
-  expect(await findByText('Enter an amount')).toBeTruthy();
-  expect(await findByText('Choose a category')).toBeTruthy();
+  // Generous timeout: validation is async and the machine may be busy (seen flaky at 1 s).
+  expect(await findByText('Enter an amount', {}, { timeout: 5000 })).toBeTruthy();
+  expect(await findByText('Choose a category', {}, { timeout: 5000 })).toBeTruthy();
   expect(onSubmit).not.toHaveBeenCalled();
 });
 

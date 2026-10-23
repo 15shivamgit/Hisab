@@ -76,4 +76,4 @@ TECH_STACK (3 packages, resolvers v5 pin), CATEGORIES (move buttons, edit sheet)
 
 ## Owner approval
 
-- [ ] Approved to start Phase 5 — (owner, date)
+- [x] Approved to start Phase 5 — owner, 2026-10-23

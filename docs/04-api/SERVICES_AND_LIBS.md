@@ -4,7 +4,7 @@ Status: Approved · Last updated: 2026-10-21
 
 ## Services (`src/services`)
 
-**Implemented signature style (Phase 4):** service functions take `(db, clock, …)` — e.g. `transactionService.create(db, clock, input)` — so tests pass a test DB and a fixed clock; screens pass `useDb()` and `systemClock`. Implemented so far: `transactionService.create/update/delete/duplicate` (receipts join in Phase 5), `categoryService.create/update/setArchived/delete/move`, `dashboardService.getSummary(db, today)` (month totals, net, top 5 expense categories with whole-percent shares, last 5 non-future transactions, `hasAnyTransactions`).
+**Implemented signature style (Phase 4):** service functions take `(db, clock, …)` — e.g. `transactionService.create(db, clock, input)` — so tests pass a test DB and a fixed clock; screens pass `useDb()` and `systemClock`. Implemented so far: `transactionService.create/update/delete/duplicate` (with receipts since Phase 5: `create(db, clock, input, { receipts, add })`, `update(db, clock, id, patch, { receipts, add, remove })`, `delete(db, clock, id, receipts)`), `receiptService` (see below), `runHousekeepingIfDue` (orphan sweep at most every 7 days, `last_orphan_sweep_at`), `categoryService.create/update/setArchived/delete/move`, `dashboardService.getSummary(db, today)` (month totals, net, top 5 expense categories with whole-percent shares, last 5 non-future transactions, `hasAnyTransactions`).
 
 Services implement use cases. They own transactions (`db.transaction`), call repositories, touch files/notifications through `src/platform` wrappers, and call `notifyChanged(tables)` after commit. Every write that changes user data also calls `markDataChanged(tx)` inside its DB transaction ([ARCHITECTURE.md](../02-architecture/ARCHITECTURE.md#tracking-changes-since-the-last-backup)). Caught errors are passed to `diagnosticsService.record`.
 
@@ -20,6 +20,7 @@ Services implement use cases. They own transactions (`db.transaction`), call rep
 | | `remove(attachmentId)` | Delete row → delete file |
 | | `resolveUri(relativePath): string \| null` | Validates path pattern; returns `null` if file missing |
 | | `sweepOrphans()` | Delete files in `receipts/` not referenced in DB and older than 1 hour; clear `cache/staging` older than 1 day |
+| | *As implemented (Phase 5)* | `createReceiptService({ files, images })` — file system and image processing are injected (`src/platform/receiptFiles.ts`, `images.ts`), so tests use fakes. Functions: `prepare(asset)`, `discard(drafts)`, `store(drafts)` (staging → `receipts/`), `unstore(stored, drafts)` (moves files back to staging if the DB write fails, so the form can retry), `deleteFiles(paths)`, `resolveUri(path)`, `replace(db, clock, attachmentId, draft)`, `remove(db, clock, attachmentId)`, `sweepOrphans(db, now)`. `attach` is not a separate function: the transaction service stores drafts on save |
 | `udhaarService` | `previewBalanceAfter(personId, entryDraft, editingId?)` | Returns `{ before, after, flips: boolean }` for FR-4.6 |
 | | `addEntry(input)` / `updateEntry` / `deleteEntry` | Validate (FR-4.12 no future dates) → write → `reminderService.reconcile()` |
 | | `buildReminderMessage(personId): string` | Uses templates in `src/content/templates.ts` |
