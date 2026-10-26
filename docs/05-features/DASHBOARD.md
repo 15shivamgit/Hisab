@@ -20,6 +20,8 @@ Status: Approved · Phase: 4 (basic), 7 (udhaar cards), 8 (budgets, charts) · R
 7. **Spending by category** (DASH-03) — donut chart + top 5 list with amount and %. Tap → Reports filtered to that category.
 8. **Recent transactions** (DASH-02) — last 5 (not future-dated). "See all" → Transactions tab.
 
+**Phase 6:** backup nudge added under the header (`BackupNudge`, rule in `src/services/backupNudge.ts`).
+
 **Phase 4 implementation:** header (month name), This month card, quick actions `+ Expense` / `+ Income`, spending by category as a top-5 list with % (the donut comes in Phase 8; rows are not tappable until Reports exists), recent transactions with "See all", welcome card on first run, skeleton loading, error with retry. Not yet: settings shortcut in the header (More tab is one tap away), backup nudge (Phase 6), udhaar card and buttons (Phase 7), budget card (Phase 8).
 
 ## Data

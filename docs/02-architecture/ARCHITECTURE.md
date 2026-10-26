@@ -66,7 +66,7 @@ Repositories check for a missing or wrong-type category themselves before writin
 6. Schedule background housekeeping (after first render): receipt orphan sweep (at most once per 7 days), reminder reconcile.
 7. If app lock is enabled → show lock screen before any data screen.
 
-Any failure in steps 1–5 shows a full-screen error with "Try again" and "Share diagnostic info" (`diagnosticsService`, React Native's built-in `Share`; no data deleted automatically). A `DB_NEWER` error shows "Please update Hisaab" and no retry. Implemented in Phase 3: `src/services/startupService.ts` (steps 1–4) and `src/features/startup/StartupGate.tsx`, which wraps the root `Stack`; data screens get the client from `useDb()`.
+Any failure in steps 1–5 shows a full-screen error with "Try again" and "Share diagnostic info" (`diagnosticsService`, React Native's built-in `Share`; no data deleted automatically). A `DB_NEWER` error shows "Please update Hisaab" and no retry. Implemented in Phase 3: `src/services/startupService.ts` (steps 1–4) and `src/features/startup/StartupGate.tsx`, which wraps the root `Stack`; data screens get the client from `useDb()`. Step 5 (`backup.recoverIfInterrupted`) since Phase 6; step 6 (orphan sweep) since Phase 5.
 
 ## Reading and refreshing data (no global store)
 
@@ -110,6 +110,7 @@ Errors are never swallowed silently. No error text includes amounts or notes whe
   hisaab.db                 (managed by expo-sqlite; actual location per SDK)
   receipts/<attachmentId>.jpg
   backups/pre-restore-<timestamp>.hisaab   (only the latest one kept)
+  receipts-incoming/, receipts-old/, restore-journal.json   (only during a restore; see BACKUP_AND_RESTORE.md)
 <cacheDirectory>/
   staging/                  (picker copies, backup build, restore staging)
   exports/                  (CSV and backup files before sharing)

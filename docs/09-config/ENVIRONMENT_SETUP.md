@@ -14,7 +14,7 @@ Everything here is free.
 | Android Studio | 2026.2.1.8 via `winget install --id Google.AndroidStudio` → `C:\Program Files\Android\Android Studio` (3.3 GB) |
 | JDK | Android Studio's bundled `jbr` = **OpenJDK 25.0.3**. `Verify:` on the first Gradle build that this Gradle/AGP accepts JDK 25; if not, install a JDK 17/21 and point `JAVA_HOME` to it |
 | Android SDK | **`C:\Android\Sdk`** (2.6 GB): cmdline-tools 23.0, platform-tools 37.0.1, platforms/android-37.0, build-tools/37.0.0, ndk/27.1.12297006 — the versions React Native 0.88 / Expo SDK 58 use (compileSdk 37, buildTools 37.0.0, NDK 27.1.12297006). Licences accepted |
-| Emulator / system image | Not installed (real phone first) |
+| Emulator / system image | AVD `Medium_Phone_API_37.0` (Android 37, x86_64, Google Play image, 2 GB RAM, WHPX acceleration) — used for the Phase 6 backup spike |
 
 Machine: Intel i5-8250U, 12 GB RAM, C: = 240 GB SSD (≈ 76 GB free after install), D: = 1 TB HDD (project lives here).
 
@@ -91,6 +91,14 @@ If the SDK's CMake 3.22.1 is ever reinstalled, copy ninja 1.12.1 over it again.
 5. If the app shows "There was a problem loading the project … Failed to connect to localhost", the USB port forward was dropped (e.g. cable hiccup): run `adb reverse tcp:8081 tcp:8081` again and tap Reload.
 6. If `npm run android` fails with "Expo stopped waiting for the ADB device property/boot query", adb is slow: unlock the phone, `adb kill-server`, reconnect the cable, accept "Allow USB debugging" again, then retry.
 7. To inspect the dev app's database: `adb shell "run-as com.shivambgs15.hisaab.dev cat files/SQLite/hisaab.db > /data/local/tmp/h.db"`, then `adb pull /data/local/tmp/h.db` and open it read-only (dev build only — release builds are not debuggable).
+8. Copying binary files out of the dev app (DB, backups): in **Git Bash**, `adb exec-out run-as com.shivambgs15.hisaab.dev cat <path> > file` (copy `-wal`/`-shm` too for the DB). PowerShell's `>` re-encodes bytes and corrupts the file; a redirect to `/sdcard/...` inside `adb shell` produced an empty file on the emulator (2026-10-26).
+
+## Emulator (Phase 6)
+
+- AVD `Medium_Phone_API_37.0` (2 GB RAM). Start: `C:\Android\Sdk\emulator\emulator.exe -avd Medium_Phone_API_37.0 -no-snapshot-save -no-boot-anim` — cold boot took ~4.5 min on this machine. First dev build for it: `npx expo run:android --no-bundler --device emulator-5554` (~16 min, builds x86_64).
+- Android 17 asks the **debug** build for "nearby devices" (`ACCESS_LOCAL_NETWORK`, used by the dev client to reach Metro). With `adb reverse` it's still needed on the emulator: `adb shell pm grant com.shivambgs15.hisaab.dev android.permission.ACCESS_LOCAL_NETWORK`.
+- Rendering is software-only (`ro.hardware.egl=emulation`): animations (spinners) eat CPU and slow long JS work. Measure performance on a real phone.
+- `dumpsys meminfo <package>` forces a GC in the app; sampling it every 2 s also slows the app a little.
 
 ## Windows long paths
 

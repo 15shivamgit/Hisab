@@ -60,8 +60,30 @@ All strings live in `src/content/strings.ts`, keyed by screen. This doc is the r
 | Delete udhaar entry | Delete this entry? | {name}'s balance will change to {newBalanceLabel}. | Delete |
 | Flip warning | Check this amount | {name} currently {currentLabel}. After this entry, {newLabel}. Is that correct? | Yes, save / Change amount |
 | Settled | {name} is settled 🎉 | Remove the return date? | Remove / Keep |
-| Restore | Restore this backup? | This will replace all current data on this phone ({counts}). Your current data will be saved as a safety backup first. Type RESTORE to continue. | Restore |
-| Delete all data | Delete all data? | This permanently deletes all entries, receipts, people and budgets on this phone. Type DELETE to continue. | Delete everything |
+| Restore | Restore this backup? | Backup from {date} ({backupCounts}). This will replace all current data on this phone ({currentCounts}). Your current data will be saved as a safety backup first. Type RESTORE to continue. | Restore |
+| Delete all data | Delete all data? | This permanently deletes all entries, receipts, people and budgets on this phone. This can't be undone. Type DELETE to continue. (+ "Create backup first") | Delete everything |
+
+Typed confirmations show a field labelled "Type RESTORE" / "Type DELETE"; the confirm button stays disabled until the word matches (any case).
+
+## Backup, export, nudge (Phase 6)
+
+| Key | Text |
+|---|---|
+| more.data / more.dangerZone | Data · Danger zone |
+| backup.lastBackup | Last backup: {date, time} |
+| backup.never | You have never made a backup. |
+| backup.counts | {n} entries · {n} receipts · ~{size} MB |
+| backup.create / creating | Create backup · Creating backup… |
+| backup.missingReceipts | {n} receipts are missing and won't be in the backup. |
+| backup.restore / checking / restoring | Restore from backup… · Checking backup… · Restoring… |
+| backup.undo / undoHint | Undo last restore · Brings back the data you had before the last restore. |
+| backup.technicalDetails | Show technical details |
+| exportCsv.intro | Save your entries as a spreadsheet file (Excel, Google Sheets). |
+| exportCsv periods | This month · Last month · All entries · Custom (From / To) |
+| exportCsv.nothing | No entries in this period. |
+| exportCsv.note | Udhaar export comes with the Udhaar feature. |
+| deleteAll.backupFirst / done | Create backup first · All data deleted |
+| nudge.never / daysAgo / action | You haven't backed up yet. · Last backup {n} days ago. · Back up now |
 
 ## Errors
 

@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-26 — Phase 5 approved by the owner.
 - 2026-10-23 — Phase 5: receipts. Camera and gallery picker (photo picker, no storage permission), camera-denied dialog, compression pipeline (≤ 1600 px, JPEG 0.7, EXIF orientation applied and EXIF/GPS stripped), receipts in the add/edit form (changes apply on save), thumbnails on the detail screen, full-screen viewer (swipe, pinch/double-tap zoom, Replace, Delete, missing-file tile), file moves rolled back if the DB write fails, orphan sweep every 7 days, recovery of a camera photo after Android kills the app. expo-image-picker, expo-image-manipulator, CAMERA permission. 290 tests. Verified on the phone. Phase 5 awaiting owner approval.
 - 2026-10-23 — Phase 4 approved by the owner.
 - 2026-10-22 — Phase 4: transaction form (add/edit/duplicate, unsaved-changes guard), list with day groups, Upcoming, search (incl. exact amount), filters, sort, infinite scroll; detail with delete confirmation; categories screen (move up/down, edit sheet with icons and colours, archive, delete rules); dashboard (this month, net, quick add, spending by category list, recent); transaction/category/dashboard services; 14 UI components; react-hook-form, @hookform/resolvers v5, datetimepicker. 260 tests. Verified on the phone. Phase 4 awaiting owner approval.

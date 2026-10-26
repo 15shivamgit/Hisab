@@ -61,13 +61,18 @@ Rows use the DB column names. Device-only settings are excluded.
 4. Stream into a ZIP in `cache/exports/` with `fflate` (receipts stored without re-compression — JPEG is already compressed).
 5. Compute SHA-256 for `data.json` and each receipt (`expo-crypto`).
 6. Re-open the finished ZIP and verify the manifest parses (cheap self-check).
-7. Share sheet. On successful share/save: set `last_backup_at = now`, `data_changed_since_backup = false`. (`Verify:` whether the share result reliably reports success on Android; if not, set it when the share sheet closes and say "Backup created".)
+7. Share sheet. On successful share/save: set `last_backup_at = now`, `data_changed_since_backup = false`. (`Verify:` whether the share result reliably reports success on Android; if not, set it when the share sheet closes and say "Backup created".) **Verified 2026-10-26:** `expo-sharing` `shareAsync` resolves `Promise<void>` when the sheet closes and does not report whether the file was saved. Implemented as the fallback (owner agreed): the sheet closing counts as a backup.
+
+**Implementation notes (Phase 6):**
+- ZIP entries are written in this order: `data.json` (deflated), receipts (stored), `manifest.json` (deflated, last because it holds the checksums). Order inside a ZIP doesn't matter to readers.
+- The file is first written as `<name>.partial`, checked (step 6), then renamed — a crash never leaves a half-written `.hisaab`.
+- Backups are read through the ZIP **central directory** (`src/lib/zip/zipReader.ts`), not fflate's streaming `Unzip`: for entries written with a data descriptor (fflate's `Zip` always writes them), the streaming reader finds the end of an entry by scanning for a 4-byte signature, and those bytes can occur inside a JPEG. Shown in a test on 2026-10-26: a 4,096-byte entry came back as 100 bytes. The central directory gives every entry's exact size and offset, and lets the allowlist and limits run before anything is extracted.
 
 ## Restore (`backupService.inspect` → confirm → `backupService.restore`)
 
 ### 1. Pick and stage (nothing changes yet)
 
-- `expo-document-picker` → copy into `cache/staging/restore-<uuid>/backup.zip`.
+- `expo-document-picker` → copy into `cache/staging/restore-<uuid>/backup.zip`. (Implemented: the picker itself copies the file into the app cache (`copyToCacheDirectory`), so the "archive size + 50 MB" check runs right after picking; that temporary copy is deleted after inspection.)
 - Limits: archive ≤ 2 GB; ≤ 5,000 receipt entries; each receipt ≤ 10 MB; `data.json` ≤ 50 MB; total uncompressed ≤ 2.5 GB.
 - Free space (`STORAGE_FULL` if not met), because during a restore the staged backup, its extracted receipts, the safety backup, and the current data all exist at once:
   - before copying the picked file: free ≥ archive size + 50 MB;
@@ -92,6 +97,8 @@ Output: a `ValidationReport` with counts and created date.
 ### 3. Confirm (BAK-02)
 
 Dialog: "Restore backup from 21 Oct 2026? This will **replace all current data** on this phone (1,240 entries, 312 receipts, 18 people). Your current data will be saved as a safety backup first." User must type **RESTORE** or press-and-hold the button.
+
+Implemented (2026-10-26): typed **RESTORE** (any case). The body names both sides — "Backup from 26 Oct 2026 (5,000 entries, 300 receipts). This will replace all current data on this phone (5,010 entries, 305 receipts)…" — so the user sees what comes in and what is replaced. Cancel deletes the staged files.
 
 ### 4. Apply (BAK-04, BAK-05)
 
@@ -121,9 +128,28 @@ Nudge on dashboard when **all** of:
 
 Dismissing the nudge sets `backup_nudge_dismissed_until = today + 3 days`.
 
+Implemented (Phase 6): `src/services/backupNudge.ts`; the card sits under the dashboard header: "Last backup 8 days ago." / "You haven't backed up yet." + [Back up now] + ×. "Older than 7 days" is measured in hours (more than 7 × 24 h since `last_backup_at`). Until udhaar exists (Phase 7) the entry count is transactions only.
+
 ## Phase 6 spike (must pass before finishing the phase)
 
 Generate 300 synthetic receipts (~300 KB each, ~90 MB) + 5,000 transactions on the slowest available test phone/emulator (2–3 GB RAM). Backup and restore must complete without crash; record time and peak memory in this doc. If it fails, propose a native ZIP module (ADR-009 amendment).
+
+### Spike result — passed (2026-10-26)
+
+Device: Android emulator `Medium_Phone_API_37.0` (Android 37, x86_64, **2 GB RAM**, 4 cores, software GPU), debug build. Data: 5,000 transactions + 300 receipts of 300,000 random bytes (incompressible like JPEG), made by the debug-only Developer tools screen. Memory = `dumpsys meminfo` TOTAL PSS of the app process, sampled every 2–3 s.
+
+| Step | Time | Peak PSS (baseline ≈ 423–429 MB, debug build) | Result |
+|---|---|---|---|
+| Create backup (Developer tools) | 36.2 s first run, 23.3 s later | 454 MB (+31 MB) | 86.1 MB `.hisaab`, 302 entries; opens with an independent ZIP reader (fflate `unzipSync` in Node) |
+| Inspect + restore (incl. safety backup of 86 MB) | 52.4 s (inspect 19.3 s) | 481 MB (+52 MB) | 5,000 / 300 rows; 300 files in `receipts/`; staging empty; one safety backup |
+
+Memory stays flat because files are handled one at a time; the 86 MB archive is never in memory. **No native ZIP module is needed.** The same backup from the Backup screen took 79–83 s on this emulator: its software-rendered spinner competes for the 4 CPU cores (99% janky frames in `gfxinfo`). To be measured on a real phone during the round-trip test.
+
+### Crash recovery — manual test passed (2026-10-26, emulator)
+
+With the Developer tools pause (20 s) and `am force-stop`:
+- Killed while the journal said `stage: "db"` (before the DB transaction): next start → rolled back. Old data (5,010 entries / 305 receipts) intact, 305 files, `receipts-incoming/` and journal removed.
+- Killed while the journal said `stage: "files"` (DB committed, folders not swapped yet: `receipts/` = 305 old, `receipts-incoming/` = 300 new): next start → finished. New data 5,000 / 300, 300 files, no `receipts-old/`, `receipts-incoming/`, or journal.
 
 ## Acceptance
 

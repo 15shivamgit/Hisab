@@ -12,6 +12,7 @@ import { ListRow } from '@/components/ListRow';
 import { Skeleton } from '@/components/Skeleton';
 import { strings } from '@/content/strings';
 import type { TxnType } from '@/db/types';
+import { BackupNudge } from '@/features/dashboard/components/BackupNudge';
 import { TransactionRow } from '@/features/transactions/components/TransactionRow';
 import { useDbQuery } from '@/hooks/useDbQuery';
 import { useToday } from '@/hooks/useToday';
@@ -159,6 +160,7 @@ export function DashboardScreen() {
         <AppText variant="title" accessibilityRole="header">
           {formatMonthYear(today)}
         </AppText>
+        <BackupNudge today={today} />
         {body}
       </ScrollView>
     </SafeAreaView>

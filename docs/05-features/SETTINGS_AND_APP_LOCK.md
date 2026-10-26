@@ -12,6 +12,8 @@ Sections:
 5. **About** — Version (versionName + versionCode), privacy statement, open-source licences, "Each phone has its own separate data", **Copy diagnostic info** (SET-09)
 6. **Danger zone** — Delete all data
 
+Until the full settings screen (Phase 9), the More tab has **Manage** (Categories), **Data** (Backup & restore, Export CSV) and **Danger zone** (Delete all data) — Phase 6.
+
 ## App lock (SET-02)
 
 - Enable: requires `LocalAuthentication.hasHardwareAsync()` or a device credential, and `getEnrolledLevelAsync()` ≥ secret (device has PIN/pattern/password). If not: "Set a screen lock on your phone first." Authenticate once to confirm before enabling.

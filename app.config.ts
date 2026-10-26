@@ -58,6 +58,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         microphonePermission: false,
       },
     ],
+    // expo-document-picker and expo-sharing need no config plugin: Hisaab only opens the
+    // system picker and sends files; it doesn't receive shares from other apps.
+    // Release builds are signed with the owner's keystore (BUILD_AND_RELEASE.md).
+    ...(IS_RELEASE ? ['./plugins/withReleaseSigning'] : []),
   ],
   experiments: {
     typedRoutes: true,

@@ -17,6 +17,8 @@ Status: Approved · Phase: 6 (CSV), 8 (reports) · Requirements: RPT-01…05
 
 From Reports (current period) and from More → Export.
 
+**Phase 6 implementation:** More → Export CSV with **This month · Last month · All entries · Custom** (From/To dates); the file is shared through the share sheet. "No entries in this period." when the range is empty. Reports export comes in Phase 8, udhaar CSV in Phase 7. The period presets were chosen by the developer (the spec did not list them) — the owner can change them.
+
 ### Transactions CSV (RPT-04)
 
 `hisaab-transactions-2026-10-01_to_2026-10-31.csv`
@@ -41,7 +43,7 @@ From Reports (current period) and from More → Export.
 
 - UTF-8 **with BOM** so Excel shows ₹ and Hindi names correctly; comma separator; CRLF line endings; RFC 4180 quoting.
 - Amounts as plain decimal rupees with 2 decimals (`1234.50`), no `₹`, no grouping — for spreadsheets.
-- Formula-injection guard: text cells starting with `=`, `+`, `-`, `@` are prefixed with `'`.
+- Formula-injection guard: text cells starting with `=`, `+`, `-`, `@` are prefixed with `'`. Tab and carriage return are treated the same way (OWASP CSV-injection guidance). Numbers (amounts, receipt counts) are written as numbers.
 - File written to `cache/exports`, then share sheet (save to Drive/Files, send via WhatsApp/email). Old exports in cache are cleared on next export.
 
 ## Acceptance

@@ -30,17 +30,19 @@ Services implement use cases. They own transactions (`db.transaction`), call rep
 | | `ensurePermission(): 'granted' \| 'denied'` | Asked only when needed |
 | `dashboardService` | `getSummary(today): DashboardSummary` | Month totals, recent 5, top categories, budgets, udhaar totals, overdue/due-soon |
 | `reportService` | `getReport(range, today): Report` | Totals, category breakdown, daily totals, upcoming |
-| `exportService` | `transactionsCsv(range)` / `udhaarCsv()` | Writes to `cache/exports`, opens share sheet |
+| `exportService` | `transactionsCsv(range)` / `udhaarCsv()` | Writes to `cache/exports`, opens share sheet. Implemented (Phase 6): `createExportService(files).transactionsCsv(db, range \| null)` → `{ uri, fileName, rows }` or `null` when the range has no entries; oldest first; `null` range = all entries, named by the first and last dates; the screen opens the share sheet. `udhaarCsv` comes in Phase 7 |
 | `backupService` | `create(): BackupResult` | See BACKUP_AND_RESTORE.md |
 | | `inspect(fileUri): ValidationReport` | Stage + validate only; changes nothing |
 | | `restore(report)` | Apply a validated staged backup |
 | | `recoverIfInterrupted()` | Startup crash recovery |
-| `dataService` | `deleteAllData()` | One DB transaction: delete all user tables (keep `schema_migrations` and device-only settings), reseed default categories, set `data_changed_since_backup = false` (`last_backup_at` kept) → then delete `receipts/`, `backups/` (pre-restore safety backups — otherwise "deleted" data would remain inside the app), `cache/staging/`, `cache/exports/` → cancel all reminders → `notifyChanged(all)` |
+| | *As implemented (Phase 6)* | `createBackupService({ files, sha256, sweepOrphans, appVersion, pauseAt? })`, app instance `src/services/backup/index.ts` (`pauseAt` only in debug builds, for the crash test). `create(db, clock): BackupResult { uri, fileName, sizeBytes, counts, missingFiles }` (file in `cache/exports`, the screen opens the share sheet) · `markBackedUp(db, clock)` (sheet closed) · `inspect(db, fileUri, 'file' \| 'undo'): ValidationReport` · `discard(report)` · `restore(db, clock, report)` · `recoverIfInterrupted(db, clock): 'none' \| 'finished' \| 'rolled-back'` (also clears leftover restore staging) · `safetyBackupUri()` · `estimateBackupBytes(db)`. Errors: `BACKUP_INVALID` with `detail` `NOT_BACKUP` / `NEWER_VERSION` / `DAMAGED` (the message names the failed check, never a value), `STORAGE_FULL`, `UNKNOWN` with `SAFETY_BACKUP_FAILED` / `RESTORE_FAILED`. Format and Zod schemas: `src/services/backup/format.ts`; cross-row checks: `integrity.ts`; schema upgrades: `upgrade.ts` |
+| `backupNudgeService` | `get(db, now)` / `dismiss(db, clock)`; rule `backupNudgeFor(input, now)` | DASH-08 (Phase 6) |
+| `dataService` | `deleteAllData()` | One DB transaction: delete all user tables (keep `schema_migrations` and device-only settings), reseed default categories, set `data_changed_since_backup = false` (`last_backup_at` kept) → then delete `receipts/`, `backups/` (pre-restore safety backups — otherwise "deleted" data would remain inside the app), `cache/staging/`, `cache/exports/` → cancel all reminders → `notifyChanged(all)`. Implemented (Phase 6) as `createDataService(files).deleteAllData(db, clock)`; also removes `receipts-incoming/`, `receipts-old/`, and a restore journal; also clears `backup_nudge_dismissed_until`. Reminders join in Phase 7 |
 | `appLockService` | `isAvailable()` / `authenticate()` / `shouldLock(lastBackgroundAt, now)` | |
 | | `runWithoutLock(fn)` | Wraps calls that open a system screen (camera, gallery, document picker, share sheet, WhatsApp/SMS link). Returning within 5 minutes does not lock (ADR-016) |
 | | `applySecureFlag(enabled)` | Sets/clears the secure flag with `expo-screen-capture` when app lock is turned on/off |
 | `diagnosticsService` | `record(error, where)` / `entries()` / `buildReport(info): Promise<string>` | Local error log (last 50, `code` + `detail` + `where` only) and a shareable report without personal data (ARCHITECTURE.md § Diagnostics). Built by `createDiagnosticsService({ files, clock, appVersion })`; the app instance is `src/services/diagnostics.ts`. Implemented in Phase 3 |
-| `startupService` | `startDatabase(clock): Promise<{ db, schemaVersion }>` | Startup steps 1–4; records failures in diagnostics. Phase 3 |
+| `startupService` | `startDatabase(clock): Promise<{ db, schemaVersion }>` | Startup steps 1–5 (step 5, restore recovery, since Phase 6); records failures in diagnostics. Phase 3 |
 
 ## Pure libraries (`src/lib`) — must have unit tests
 
@@ -51,7 +53,9 @@ Services implement use cases. They own transactions (`db.transaction`), call rep
 | `clock.ts` | `Clock { now(): Date }`, `systemClock`. Business code never calls `Date.now()` |
 | `balance.ts` | `signedAmount(entry)`, `balanceOf(entries)`, `runningBalances(entriesAsc)`, `balanceLabel(balance): 'will_get' \| 'owe' \| 'settled'`, `wouldFlip(before, entry)` |
 | `budget.ts` | `budgetProgress(spent, budget): { percent, remaining, state: 'normal' \| 'warning' \| 'over' }` |
-| `csv.ts` | `toCsv(headers, rows)` with RFC 4180 escaping and UTF-8 BOM; formula-injection guard (prefix `'` to cells starting with `= + - @`) |
+| `csv.ts` | `toCsv(headers, rows)` with RFC 4180 escaping and UTF-8 BOM; formula-injection guard (prefix `'` to cells starting with `= + - @`, and also tab / carriage return). Numbers are written as-is |
+| `zip/zipWriter.ts` | `createZipWriter(sink, modified)` → `addStored(name, bytes)`, `addDeflated(name, bytes)`, `finish()`; fflate `Zip`, one entry in memory at a time |
+| `zip/zipReader.ts` | `readZipDirectory(source, { maxEntries })` (central directory; rejects ZIP64, encryption, multi-disk, out-of-range entries), `entryDataOffset(source, entry)` (checks the local header matches), `ZipFormatError` |
 | `ids.ts` | `newId()`, `isUuid(s)` |
 | `paths.ts` | `receiptRelativePath(id)`, `isSafeReceiptPath(s)` (regex `^receipts/[0-9a-f-]{36}\.jpg$`), `toAbsolute(rel)` |
 | `errors.ts` | `AppError(code, message, { detail?, cause? })`, `isAppError`, `toAppError` |

@@ -28,6 +28,8 @@ Root stack
 ├─ /categories
 ├─ /budgets
 ├─ /backup
+├─ /export                             → Export CSV (Phase 6)
+├─ /dev-tools                          → debug builds only (backup spike, crash test)
 ├─ /settings
 └─ /about
 ```

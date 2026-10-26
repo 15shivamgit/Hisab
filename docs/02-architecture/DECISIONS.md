@@ -54,6 +54,7 @@ Format: Context → Decision → Consequences. New decisions get the next number
 **Context.** Merge restore creates hard conflict cases. Partial restores can corrupt data.
 **Decision.** A single `.hisaab` file = ZIP containing `manifest.json`, `data.json`, `receipts/*.jpg`, built and read with `fflate` (pure JS). Restore is replace-only: validate fully → safety backup → DB swap in one transaction → receipt folder swap with a journal for crash recovery.
 **Consequences.** Simple mental model ("restore = go back to that backup"). Phase 6 must include a memory spike with ~300 receipts on a low-end device; if `fflate` is too heavy, a native ZIP module will be proposed as an ADR amendment.
+**Amendment (2026-10-26, Phase 6).** The spike passed on a 2 GB emulator (backup +31 MB, restore +52 MB over baseline; BACKUP_AND_RESTORE.md § Spike result), so no native module is needed. Writing uses fflate's `Zip`; **reading uses our own central-directory reader** (`src/lib/zip/zipReader.ts`) with fflate only for inflating `data.json`/`manifest.json`, because fflate's streaming `Unzip` can cut a stored entry short when its bytes contain a ZIP signature. Files are read and written through `expo-file-system` file handles in pieces.
 
 ## ADR-010 — Android Auto Backup disabled
 

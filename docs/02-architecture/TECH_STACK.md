@@ -71,6 +71,9 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | expo-constants, expo-linking | 58.0.12, 58.0.14 | expo-router peers |
 | expo-image-picker | 58.0.10 | Phase 5. Camera + Android photo picker; config plugin sets the camera text and `microphonePermission: false` |
 | expo-image-manipulator | 58.0.15 | Phase 5. `ImageManipulator.manipulate(uri).resize()` → `renderAsync()` → `saveAsync({ compress: 0.7, format: JPEG })` |
+| fflate | 0.8.3 | Phase 6 (approved 2026-10-26). MIT, no dependencies, pure JS. Metro uses its browser build (no workers needed: only sync APIs are used); Jest uses the Node build |
+| expo-document-picker | 58.0.4 | Phase 6 (approved 2026-10-26). Restore: `getDocumentAsync({ type: '*/*', copyToCacheDirectory: true })` — `.hisaab` arrives as zip, octet-stream, or no type |
+| expo-sharing | 58.0.20 | Phase 6 (approved 2026-10-26). `shareAsync(uri, { mimeType, dialogTitle })` for backup and CSV. **No config plugin added**: its plugin only sets up *receiving* shares, which Hisaab doesn't do |
 | expo-symbols | 58.0.4 | All app icons (Material Symbols). Approved by owner 2026-10-21 (Option A) |
 | expo-font | 58.0.9 | Peer of expo-symbols (already part of `expo`) |
 | react-native-gesture-handler | 3.3.0 | |
@@ -103,3 +106,12 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 - **`react-native-zoom-toolkit` 5.1.1 removed.** It was approved by the owner, but on the phone (gesture-handler 3.3 + Reanimated 4.7) the pinch zoom snapped back to 1× as soon as the fingers lifted, and double-tap zoomed for a moment and then reset. Replaced by our own `ZoomableImage` (pinch 1×–5× that stays, double-tap 2.5× toggle, one-finger pan only while zoomed and clamped to the image edges). The maths is in `zoomMath.ts` with unit tests. Owner checked it on the phone.
 - gesture-handler 3.3 still exports the `Gesture` / `GestureDetector` builder API used by `ZoomableImage`. Shared values use `.get()` / `.set()` because the React Compiler lint rule (`react-hooks/immutability`) rejects `.value =` assignments.
 - `expo-image-manipulator` re-encoding **applies the EXIF orientation and strips EXIF/GPS** (checked on the phone with a 4000×3000 test JPEG stored sideways with EXIF Orientation 6 and a fake GPS tag: the saved receipt was upright, 1200×1600, 51 KB, no EXIF segment).
+
+### Phase 6 findings (2026-10-26)
+
+- **fflate streaming `Unzip` is not safe for our backups**: for an entry written with a data descriptor it ends the entry at the first `PK\x07\x08` / `PK\x01\x02` / `PK\x03\x04` byte pattern, which can occur in JPEG data (test: 4,096 bytes in, 100 bytes out). Backups are read through the central directory instead (ADR-009 amendment). fflate's `Zip` writer, `inflateSync`, `strToU8`/`strFromU8` are used.
+- `expo-file-system` (SDK 58) `File.open(FileMode.ReadOnly | Truncate)` gives a `FileHandle` with `offset`, `readBytes(n)`, `writeBytes(bytes)` — used for streaming. `Directory.move(dest)` **moves into** `dest` if it exists and renames otherwise; `deviceBackupFiles.move` therefore refuses an existing destination (checked in the Android source, `CopyMoveStrategy.kt`).
+- `expo-crypto` `digest(SHA256, bytes)` hashes a whole buffer (no incremental API); fine for the per-item size limits.
+- `expo-sharing` `shareAsync` resolves when the sheet closes; it doesn't say whether anything was saved.
+- Release signing: local config plugin `plugins/withReleaseSigning.js` (release variant only); see BUILD_AND_RELEASE.md.
+- The Android 17 emulator asks the debug build for `ACCESS_LOCAL_NETWORK` (dev client ↔ Metro). Release builds block INTERNET; the release manifest is checked in this phase's APK verification.

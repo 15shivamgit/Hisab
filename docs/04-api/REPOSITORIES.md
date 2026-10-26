@@ -125,3 +125,5 @@ interface TxnFilter {
 | `dumpAll(db): BackupData` | All tables except `schema_migrations` and device-only settings |
 | `replaceAll(db, data: BackupData)` | Must be called inside a transaction; deletes children → parents, inserts parents → children |
 | `integrityReport(db): { fkViolations: number }` | `PRAGMA foreign_key_check` |
+
+Implemented (Phase 6, `src/db/repositories/backupRepository.ts`): `BACKUP_TABLES` (tables and columns, parent → child), `dumpAll(db)` (call inside a transaction for one snapshot), `counts(db)`, `deleteAll(tx)`, `replaceAll(tx, data, now)` (also replaces portable settings), `insertRows(tx, table, rows)` (50 rows per INSERT), `foreignKeyViolations(db): number` (named for what it returns, instead of `integrityReport`).
