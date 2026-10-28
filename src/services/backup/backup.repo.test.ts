@@ -5,6 +5,8 @@ import type { DbClient } from '@/db/client';
 import { attachmentRepository } from '@/db/repositories/attachmentRepository';
 import { backupRepository } from '@/db/repositories/backupRepository';
 import { budgetRepository } from '@/db/repositories/budgetRepository';
+import { personRepository } from '@/db/repositories/personRepository';
+import { udhaarRepository } from '@/db/repositories/udhaarRepository';
 import { categoryRepository } from '@/db/repositories/categoryRepository';
 import { settingsRepository } from '@/db/repositories/settingsRepository';
 import { transactionRepository } from '@/db/repositories/transactionRepository';
@@ -135,7 +137,14 @@ describe('create (BAK-01)', () => {
 
     expect(result.fileName).toMatch(/^hisaab-backup-2026-10-21-\d{4}\.hisaab$/);
     expect(result.uri).toBe(`${CACHE}exports/${result.fileName}`);
-    expect(result.counts).toEqual({ categories: 21, transactions: 3, attachments: 2, budgets: 1 });
+    expect(result.counts).toEqual({
+      categories: 21,
+      transactions: 3,
+      attachments: 2,
+      budgets: 1,
+      people: 0,
+      udhaarEntries: 0,
+    });
     expect(result.missingFiles).toBe(0);
 
     const entries = await entriesOf(a, result.uri);
@@ -150,7 +159,7 @@ describe('create (BAK-01)', () => {
     expect(manifest).toMatchObject({
       format: 'hisaab-backup',
       formatVersion: 1,
-      schemaVersion: 1,
+      schemaVersion: 2,
       appVersion: '1.0.0',
       dataSha256: sha(entries['data.json']!),
       missingFiles: [],
@@ -516,5 +525,94 @@ describe('failures and crash recovery (BAK-05)', () => {
     expect(b.fs.uris(`${CACHE}staging/`).length).toBeGreaterThan(0);
     expect(await b.service.recoverIfInterrupted(b.db, later)).toBe('none');
     expect(b.fs.uris(`${CACHE}staging/`)).toEqual([]);
+  });
+});
+
+describe('udhaar in backups (schema 2)', () => {
+  async function seedUdhaar(p: Phone) {
+    const rahul = await personRepository.create(
+      p.db,
+      { name: 'Rahul', phone: '9876543210' },
+      TEST_NOW,
+    );
+    await personRepository.update(p.db, rahul.id, { returnByDate: '2026-10-25' }, TEST_NOW);
+    await udhaarRepository.create(
+      p.db,
+      {
+        personId: rahul.id,
+        direction: 'gave',
+        amountPaise: 1_000_000,
+        entryDate: TEST_TODAY,
+        paymentMethod: 'upi',
+        note: 'Hospital',
+      },
+      TEST_NOW,
+    );
+    await udhaarRepository.create(
+      p.db,
+      {
+        personId: rahul.id,
+        direction: 'got',
+        amountPaise: 300_000,
+        entryDate: TEST_TODAY,
+        paymentMethod: 'cash',
+      },
+      TEST_NOW,
+    );
+  }
+
+  test('people and entries round trip with their balances', async () => {
+    const a = await phone();
+    await seedSample(a);
+    await seedUdhaar(a);
+    const backup = await a.service.create(a.db, clock);
+    expect(backup.counts).toMatchObject({ people: 1, udhaarEntries: 2 });
+
+    const b = await phone();
+    b.fs.put(`${CACHE}p.hisaab`, await a.fs.store.readAll(backup.uri));
+    await b.service.restore(b.db, later, await b.service.inspect(b.db, `${CACHE}p.hisaab`, 'file'));
+    const { settings: _a, ...aTables } = await backupRepository.dumpAll(a.db);
+    const { settings: _b, ...bTables } = await backupRepository.dumpAll(b.db);
+    expect(bTables).toEqual(aTables);
+    expect(await udhaarRepository.totals(b.db)).toMatchObject({ youWillGetPaise: 700_000 });
+  });
+
+  test('a schema-1 backup (before udhaar) restores into this app and clears people', async () => {
+    const a = await phone();
+    await seedSample(a);
+    const entries = await entriesOf(a, (await a.service.create(a.db, clock)).uri);
+    // Turn it into what Phase 6 wrote: no people/udhaar keys, schemaVersion 1.
+    editJson(entries, 'data.json', (d) => {
+      delete d.people;
+      delete d.udhaarEntries;
+    });
+    editJson(entries, 'manifest.json', (m) => {
+      m.schemaVersion = 1;
+      delete m.counts.people;
+      delete m.counts.udhaarEntries;
+    });
+    resealData(entries);
+
+    const b = await phone();
+    await seedUdhaar(b);
+    const report = await b.service.inspect(b.db, putArchive(b, entries), 'file');
+    expect(report.counts).toMatchObject({ transactions: 3, people: 0, udhaarEntries: 0 });
+    await b.service.restore(b.db, later, report);
+    expect(await backupRepository.counts(b.db)).toMatchObject({
+      transactions: 3,
+      people: 0,
+      udhaarEntries: 0,
+    });
+  });
+
+  test('an udhaar entry whose person is missing is rejected', async () => {
+    const a = await phone();
+    await seedUdhaar(a);
+    const entries = await entriesOf(a, (await a.service.create(a.db, clock)).uri);
+    editJson(entries, 'data.json', (d) => {
+      d.udhaarEntries[0].person_id = newId();
+    });
+    resealData(entries);
+    await expectRejected(a, putArchive(a, entries), 'DAMAGED');
   });
 });

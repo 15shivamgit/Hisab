@@ -7,6 +7,7 @@ import { isValidLocalDate } from '@/lib/dates';
 import { isUuid } from '@/lib/ids';
 import { MAX_PAISE, MIN_PAISE } from '@/lib/money';
 import { isSafeReceiptPath } from '@/lib/paths';
+import { normalizePhone } from '@/lib/phone';
 
 export const BACKUP_FORMAT = 'hisaab-backup';
 export const BACKUP_FORMAT_VERSION = 1;
@@ -113,6 +114,32 @@ const attachmentRow = z.strictObject({
   created_at: isoDateTime,
 });
 
+const personRow = z.strictObject({
+  id: uuid,
+  name: z.string().refine((s) => s.trim().length >= 1 && s.trim().length <= 60),
+  phone: z
+    .string()
+    .refine((s) => normalizePhone(s) === s)
+    .nullable(),
+  notes: z.string().max(500).nullable(),
+  return_by_date: localDate.nullable(),
+  archived_at: isoDateTime.nullable(),
+  created_at: isoDateTime,
+  updated_at: isoDateTime,
+});
+
+const udhaarEntryRow = z.strictObject({
+  id: uuid,
+  person_id: uuid,
+  direction: z.enum(['gave', 'got']),
+  amount_paise: paise,
+  entry_date: localDate,
+  payment_method: z.enum(['cash', 'upi', 'bank_transfer', 'card', 'other']),
+  note: z.string().max(500).nullable(),
+  created_at: isoDateTime,
+  updated_at: isoDateTime,
+});
+
 const budgetRow = z.strictObject({
   id: uuid,
   category_id: uuid.nullable(),
@@ -135,6 +162,8 @@ export const dataSchema = z.strictObject({
   transactions: z.array(transactionRow),
   transactionAttachments: z.array(attachmentRow),
   budgets: z.array(budgetRow),
+  people: z.array(personRow),
+  udhaarEntries: z.array(udhaarEntryRow),
 });
 
 export type BackupFileData = z.infer<typeof dataSchema>;

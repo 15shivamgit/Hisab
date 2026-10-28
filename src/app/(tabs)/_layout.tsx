@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import { strings } from '@/content/strings';
 import { pendingPhoto } from '@/features/receipts/pendingPhoto';
+import { clearLastTap, lastTappedPersonId, onReminderTapped } from '@/platform/notifications';
 import { devicePicker } from '@/platform/picker';
 import { diagnostics } from '@/services/diagnostics';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -20,6 +21,17 @@ export default function TabsLayout() {
       (found) => found && router.push('/transaction/new'),
       (error: unknown) => diagnostics.record(error, 'pendingPhoto'),
     );
+  }, [router]);
+
+  // A tapped udhaar reminder opens that person's ledger (UDHAAR.md § Return-by date).
+  useEffect(() => {
+    const open = (id: string) => {
+      clearLastTap();
+      router.push({ pathname: '/person/[id]', params: { id } });
+    };
+    const coldStart = lastTappedPersonId();
+    if (coldStart) open(coldStart);
+    return onReminderTapped(open);
   }, [router]);
 
   return (

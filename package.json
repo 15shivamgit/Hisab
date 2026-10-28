@@ -26,6 +26,7 @@
     "expo-image-manipulator": "~58.0.15",
     "expo-image-picker": "~58.0.10",
     "expo-linking": "~58.0.14",
+    "expo-notifications": "~58.1.6",
     "expo-router": "~58.0.25",
     "expo-sharing": "~58.0.20",
     "expo-splash-screen": "~58.0.11",
@@ -63,6 +64,7 @@
     "globalSetup": "<rootDir>/src/test/globalSetup.js",
     "setupFiles": [
       "<rootDir>/src/test/setup.ts"
-    ]
+    ],
+    "testTimeout": 20000
   }
 }

@@ -65,6 +65,31 @@ All strings live in `src/content/strings.ts`, keyed by screen. This doc is the r
 
 Typed confirmations show a field labelled "Type RESTORE" / "Type DELETE"; the confirm button stays disabled until the word matches (any case).
 
+## Udhaar (Phase 7)
+
+| Key | Text |
+|---|---|
+| udhaar.filters | All · You will get · You owe · Settled · Overdue |
+| udhaar.sort | Sort: Amount · Name · Recent |
+| udhaar.lastEntry / noEntriesYet | Last entry {date} · No entries yet |
+| udhaar.overdueSince / setReturnDate | Overdue since {date} · Set return date |
+| udhaar.dueToday / dueIn | Due today · Due in {n} days |
+| udhaar.menu | Edit person · Clear return date · Archive / Unarchive · Delete person |
+| udhaar.archiveOnlySettled | Only a settled person can be archived. |
+| udhaar.deleteOnlyEmpty | A person with entries can only be archived. |
+| udhaar.deletePerson | Delete {name}? — This person has no entries. They will be removed from Hisaab. |
+| udhaar.notUdhaarNote | Udhaar is not income or expense. |
+| udhaarEntry.afterThis | After this: {You will get ₹X / You owe ₹X / Settled} |
+| udhaarEntry.flip | Check this amount — {name} currently: {label}. After this entry: {label}. Is that correct? [Change amount] [Yes, save] |
+| udhaarEntry.delete | Delete this entry? — This entry of {amount} will be deleted. {name}'s balance will change to {label}. |
+| udhaarEntry.settled | {name} is settled 🎉 — Remove the return date? [Keep] [Remove] |
+| person.phoneHint | Used for WhatsApp and SMS reminders. |
+| returnBy.notificationsOff | Notifications are off for Hisaab, so this date shows only inside the app. You can turn them on in Settings. [Close] [Open settings] |
+| remind.noPhone | Add a phone number to send by WhatsApp or SMS. |
+| remind.couldNotOpen | Couldn't open that app. Try Share instead. |
+| dash.willGetFrom / oweTo | from {n} people · to {n} people |
+| exportCsv.udhaar | Udhaar — All udhaar entries, with each person's balance after every entry. [Export udhaar CSV] · No udhaar entries yet. |
+
 ## Backup, export, nudge (Phase 6)
 
 | Key | Text |

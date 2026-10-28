@@ -73,6 +73,7 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | expo-image-manipulator | 58.0.15 | Phase 5. `ImageManipulator.manipulate(uri).resize()` → `renderAsync()` → `saveAsync({ compress: 0.7, format: JPEG })` |
 | fflate | 0.8.3 | Phase 6 (approved 2026-10-26). MIT, no dependencies, pure JS. Metro uses its browser build (no workers needed: only sync APIs are used); Jest uses the Node build |
 | expo-document-picker | 58.0.4 | Phase 6 (approved 2026-10-26). Restore: `getDocumentAsync({ type: '*/*', copyToCacheDirectory: true })` — `.hisaab` arrives as zip, octet-stream, or no type |
+| expo-notifications | 58.1.6 | Phase 7 (approved 2026-10-28). Local DATE-trigger reminders only. Bundles `firebase-messaging` 25.0.1 on Android: inactive without `google-services.json`; its push permission `c2dm.permission.RECEIVE` is blocked in `app.config.ts`; release has no INTERNET. Plugin: white 96 px `notification-icon.png` (cut from the monochrome app icon) + brand colour |
 | expo-sharing | 58.0.20 | Phase 6 (approved 2026-10-26). `shareAsync(uri, { mimeType, dialogTitle })` for backup and CSV. **No config plugin added**: its plugin only sets up *receiving* shares, which Hisaab doesn't do |
 | expo-symbols | 58.0.4 | All app icons (Material Symbols). Approved by owner 2026-10-21 (Option A) |
 | expo-font | 58.0.9 | Peer of expo-symbols (already part of `expo`) |

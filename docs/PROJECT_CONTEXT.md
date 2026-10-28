@@ -49,8 +49,8 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 | 3 | Database foundation | **Approved** (2026-10-22) |
 | 4 | Transactions, categories, basic dashboard | **Approved** (2026-10-23) |
 | 5 | Receipts | **Approved** (2026-10-26) |
-| 6 | Backup, restore, CSV export | **Done — awaiting owner approval** (verified on emulator and phone 2026-10-28; first release APK 1.0.0 (1)) |
-| 7 | Udhaar | Not started |
+| 6 | Backup, restore, CSV export | **Approved** (2026-10-28) |
+| 7 | Udhaar | **Done — awaiting owner approval** (verified on phone 2026-10-28) |
 | 8 | Budgets and reports | Not started |
 | 9 | Settings, app lock, onboarding, polish | Not started |
 | 10 | QA and hardening | Not started |

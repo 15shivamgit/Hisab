@@ -88,10 +88,12 @@ Report: [reports/PHASE_06.md](reports/PHASE_06.md)
 
 **Scope:** Migration 0002 (`people`, `udhaar_entries`), backup `schemaVersion` 2 + upgrade path from v1 backups, people list, person form, ledger, entry form with flip warning, return-by date, local notifications, reminder share (WhatsApp/SMS/share/copy), udhaar dashboard card, udhaar CSV.
 **Acceptance:**
-- [ ] UDH-01…12, DASH-05, DASH-06, DASH-07 (udhaar buttons), RPT-05.
-- [ ] FIN-U* cases pass, including "udhaar never affects income/expense".
-- [ ] v1 backup restores into v2 app.
-- [ ] Notification fires on device (manual); permission denial handled.
+- [x] UDH-01…12, DASH-05, DASH-06, DASH-07 (udhaar buttons), RPT-05.
+- [x] FIN-U* cases pass, including "udhaar never affects income/expense" (tests + on the phone).
+- [x] v1 backup restores into v2 app (test with a schema-1 backup).
+- [x] Notification fires on device (manual); permission denial handled; also after a phone reboot.
+
+Report: [reports/PHASE_07.md](reports/PHASE_07.md)
 
 ## Phase 8 — Budgets and reports
 

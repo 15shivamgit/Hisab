@@ -1,9 +1,18 @@
 // Dashboard data in one call (DASHBOARD.md). Phase 4: this-month totals, recent
-// transactions, spending by category. Udhaar, budgets, and the backup nudge join later.
+// transactions, spending by category. Phase 7: udhaar card. Budgets join in Phase 8.
 
 import type { DbClient } from '@/db/client';
+import { personRepository } from '@/db/repositories/personRepository';
 import { transactionRepository } from '@/db/repositories/transactionRepository';
-import type { DateRange, LocalDate, Paise, TransactionListItem } from '@/db/types';
+import { udhaarRepository } from '@/db/repositories/udhaarRepository';
+import type {
+  DateRange,
+  LocalDate,
+  Paise,
+  PersonWithBalance,
+  TransactionListItem,
+  UdhaarTotals,
+} from '@/db/types';
 import { monthRange } from '@/lib/dates';
 
 export interface CategorySpend {
@@ -26,6 +35,20 @@ export interface DashboardSummary {
   topCategories: CategorySpend[];
   /** False on first run → show the welcome card. */
   hasAnyTransactions: boolean;
+  /** DASH-05/06. null until the user has at least one person (card hidden). */
+  udhaar: { totals: UdhaarTotals; attention: PersonWithBalance[] } | null;
+}
+
+export const ATTENTION_COUNT = 3;
+
+/** Overdue first (longest overdue first), then due soon (soonest first). */
+function needsAttention(people: readonly PersonWithBalance[]): PersonWithBalance[] {
+  const byDate = (a: PersonWithBalance, b: PersonWithBalance) =>
+    (a.returnByDate ?? '').localeCompare(b.returnByDate ?? '');
+  return [
+    ...people.filter((p) => p.isOverdue).sort(byDate),
+    ...people.filter((p) => p.isDueSoon).sort(byDate),
+  ].slice(0, ATTENTION_COUNT);
 }
 
 export const RECENT_COUNT = 5;
@@ -43,6 +66,13 @@ export const dashboardService = {
     );
     const byCategory = await transactionRepository.sumByCategory(db, month, 'expense', today);
     const { count } = await transactionRepository.summary(db, {}, today);
+    const udhaar =
+      (await personRepository.count(db)) > 0
+        ? {
+            totals: await udhaarRepository.totals(db),
+            attention: needsAttention(await personRepository.listWithBalances(db, {}, today)),
+          }
+        : null;
     return {
       month,
       incomePaise,
@@ -58,6 +88,7 @@ export const dashboardService = {
         percent: expensePaise > 0 ? Math.floor((c.totalPaise * 100) / expensePaise) : 0,
       })),
       hasAnyTransactions: count > 0,
+      udhaar,
     };
   },
 };

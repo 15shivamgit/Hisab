@@ -29,7 +29,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // Each phase adds the permissions its feature needs (CAMERA in Phase 5,
     // POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9). The photo picker needs
     // no storage permission; expo-image-picker's storage permissions are blocked below.
-    permissions: ['android.permission.CAMERA'],
+    // POST_NOTIFICATIONS: udhaar return-by reminders (Phase 7), asked when a date is set.
+    permissions: ['android.permission.CAMERA', 'android.permission.POST_NOTIFICATIONS'],
     blockedPermissions: [
       'android.permission.RECORD_AUDIO',
       'android.permission.READ_EXTERNAL_STORAGE',
@@ -37,6 +38,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'android.permission.SYSTEM_ALERT_WINDOW',
       'android.permission.READ_MEDIA_IMAGES',
       'android.permission.READ_MEDIA_VIDEO',
+      // Push delivery from Firebase (pulled in by expo-notifications); reminders are local.
+      'com.google.android.c2dm.permission.RECEIVE',
       // ADR-012: release builds never reach the network. Dev builds need it for Metro.
       ...(IS_RELEASE ? ['android.permission.INTERNET'] : []),
     ],
@@ -60,6 +63,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     // expo-document-picker and expo-sharing need no config plugin: Hisaab only opens the
     // system picker and sends files; it doesn't receive shares from other apps.
+    // Local reminders only (no push config). White icon on transparent, brand colour.
+    [
+      'expo-notifications',
+      { icon: './assets/images/notification-icon.png', color: BRAND_ICON_BACKGROUND },
+    ],
     // Release builds are signed with the owner's keystore (BUILD_AND_RELEASE.md).
     ...(IS_RELEASE ? ['./plugins/withReleaseSigning'] : []),
   ],

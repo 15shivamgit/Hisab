@@ -36,6 +36,6 @@ Implemented in Phase 3: `src/db/migrations/runner.ts` (`migrate`), `src/db/init.
 | Version | Phase | Content |
 |---|---|---|
 | 1 | 3 | `schema_migrations`, `app_settings`, `categories`, `transactions`, `transaction_attachments`, `budgets` |
-| 2 | 7 | `people`, `udhaar_entries` |
+| 2 | 7 | `people`, `udhaar_entries` — **implemented** `src/db/migrations/0002_udhaar.ts` (2026-10-28). Test: a schema-1 DB with data upgrades and keeps everything. Backups: `upgrade.ts` step 2 adds empty `people` / `udhaarEntries` to schema-1 backups (test: a Phase 6 backup restores into this app) |
 
 Udhaar tables come in a separate migration because udhaar is built after backup (ADR-015). This also exercises the migration and backup-upgrade path before friends use the app.

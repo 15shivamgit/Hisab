@@ -85,6 +85,67 @@ export interface Budget {
   updatedAt: IsoDateTime;
 }
 
+// ── Udhaar (UDHAAR.md, FINANCIAL_RULES.md §4) ─────────────────────────────────
+
+export type UdhaarDirection = 'gave' | 'got';
+export const UDHAAR_DIRECTIONS: readonly UdhaarDirection[] = ['gave', 'got'];
+
+/** > 0 "You will get", < 0 "You owe", 0 "Settled" (FR-4.3). */
+export type BalanceLabel = 'will_get' | 'owe' | 'settled';
+
+export interface Person {
+  id: string;
+  name: string;
+  /** Normalised: digits with an optional leading '+'. */
+  phone: string | null;
+  notes: string | null;
+  returnByDate: LocalDate | null;
+  archivedAt: IsoDateTime | null;
+  createdAt: IsoDateTime;
+  updatedAt: IsoDateTime;
+}
+
+export interface PersonWithBalance extends Person {
+  /** Σ gave − Σ got; always derived (FR-4.2). */
+  balancePaise: Paise;
+  label: BalanceLabel;
+  entryCount: number;
+  lastEntryDate: LocalDate | null;
+  isOverdue: boolean;
+  isDueSoon: boolean;
+}
+
+export interface UdhaarEntry {
+  id: string;
+  personId: string;
+  direction: UdhaarDirection;
+  amountPaise: Paise;
+  entryDate: LocalDate;
+  paymentMethod: PaymentMethod;
+  note: string | null;
+  createdAt: IsoDateTime;
+  updatedAt: IsoDateTime;
+}
+
+export interface UdhaarEntryWithBalance extends UdhaarEntry {
+  /** The person's balance right after this entry. */
+  balanceAfterPaise: Paise;
+}
+
+export interface UdhaarEntryWithPerson extends UdhaarEntryWithBalance {
+  personName: string;
+}
+
+export type PeopleFilter = 'all' | 'will_get' | 'owe' | 'settled' | 'overdue';
+export type PeopleSort = 'amount_desc' | 'name_asc' | 'recent';
+
+export interface UdhaarTotals {
+  youWillGetPaise: Paise;
+  willGetCount: number;
+  youOwePaise: Paise;
+  oweCount: number;
+}
+
 export type TxnSort = 'date_desc' | 'date_asc' | 'amount_desc' | 'amount_asc';
 
 export interface TxnFilter {

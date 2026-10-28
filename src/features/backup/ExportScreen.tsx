@@ -60,6 +60,25 @@ export function ExportScreen() {
     }
   };
 
+  const runUdhaar = async () => {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const result = await exporter.udhaarCsv(db, today);
+      if (!result) {
+        setMessage(strings.exportCsv.udhaarNothing);
+        return;
+      }
+      await shareFile(result.uri, 'text/csv', strings.exportCsv.shareTitle);
+      toast(strings.exportCsv.done);
+    } catch (error) {
+      void diagnostics.record(error, 'export.udhaarCsv');
+      setMessage(strings.common.somethingWrong);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <Screen scroll>
       <View style={{ gap: spacing.lg }}>
@@ -106,9 +125,16 @@ export function ExportScreen() {
             {message}
           </AppText>
         ) : null}
-        <AppText variant="caption" color="textMuted">
-          {strings.exportCsv.note}
-        </AppText>
+        <View style={{ gap: spacing.sm, marginTop: spacing.lg }}>
+          <AppText variant="heading">{strings.exportCsv.udhaarTitle}</AppText>
+          <AppText color="textMuted">{strings.exportCsv.udhaarIntro}</AppText>
+          <Button
+            label={strings.exportCsv.udhaarExport}
+            variant="secondary"
+            onPress={() => void runUdhaar()}
+            disabled={busy}
+          />
+        </View>
       </View>
     </Screen>
   );

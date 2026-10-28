@@ -3,6 +3,7 @@ import { deviceBackupFiles } from '@/platform/backupFiles';
 import { getAppAndDeviceInfo } from '@/platform/deviceInfo';
 import { sha256Hex } from '@/platform/hash';
 import { createBackupService } from '@/services/backup/backupService';
+import { replanReminders } from '@/services/appServices';
 import { receipts } from '@/services/receipts';
 
 /** Debug builds only: set by the dev tools screen to pause a restore for the crash test. */
@@ -14,6 +15,7 @@ export const backup = createBackupService({
   files: deviceBackupFiles,
   sha256: sha256Hex,
   sweepOrphans: (db, now) => receipts.sweepOrphans(db, now),
+  afterRestore: (db) => replanReminders(db),
   appVersion: getAppAndDeviceInfo().appVersion,
   pauseAt: __DEV__
     ? (stage) => new Promise((resolve) => setTimeout(resolve, restoreDebug.pauseMs[stage]))

@@ -6,6 +6,8 @@ import { budgetRepository } from '@/db/repositories/budgetRepository';
 import { categoryRepository } from '@/db/repositories/categoryRepository';
 import { settingsRepository } from '@/db/repositories/settingsRepository';
 import { transactionRepository } from '@/db/repositories/transactionRepository';
+import { personRepository } from '@/db/repositories/personRepository';
+import { udhaarRepository } from '@/db/repositories/udhaarRepository';
 import { newId } from '@/lib/ids';
 import { backupNudgeFor, backupNudgeService } from '@/services/backupNudge';
 import { createDataService } from '@/services/dataService';
@@ -202,6 +204,8 @@ describe('delete all data (SET-06)', () => {
       transactions: 0,
       transactionAttachments: 0,
       budgets: 0,
+      people: 0,
+      udhaarEntries: 0,
     });
     expect((await categoryRepository.list(db, {})).some((c) => c.name === 'Pets')).toBe(false);
     expect(fs.uris()).toEqual([]);
@@ -209,5 +213,36 @@ describe('delete all data (SET-06)', () => {
     expect(await settingsRepository.get(db, 'last_backup_at')).toBe('2026-10-01T00:00:00.000Z');
     expect(await settingsRepository.get(db, 'data_changed_since_backup')).toBe(false);
     expect(await settingsRepository.get(db, 'backup_nudge_dismissed_until')).toBeNull();
+  });
+});
+
+describe('udhaar CSV (RPT-05)', () => {
+  test('columns, signed balance after each entry as a number, archived people included', async () => {
+    const db = await createTestDb();
+    const fs = memoryBackupFiles();
+    const exporter = createExportService(fs.store);
+    expect(await exporter.udhaarCsv(db, '2026-10-21')).toBeNull();
+    const amit = await personRepository.create(db, { name: '=Amit' }, TEST_NOW);
+    await udhaarRepository.create(
+      db,
+      {
+        personId: amit.id,
+        direction: 'got',
+        amountPaise: 60_000,
+        entryDate: '2026-10-05',
+        paymentMethod: 'cash',
+        note: 'Rent, Oct',
+      },
+      TEST_NOW,
+    );
+    const result = await exporter.udhaarCsv(db, '2026-10-21');
+    expect(result).toMatchObject({ fileName: 'hisaab-udhaar-2026-10-21.csv', rows: 1 });
+    const lines = strFromU8(fs.files.get(result!.uri)!.bytes.slice(3)).split('\r\n');
+    expect(lines[0]).toBe(
+      'date,person,direction,amount_inr,payment_method,note,person_balance_after,id',
+    );
+    expect(lines[1]).toMatch(
+      /^2026-10-05,'=Amit,got,600\.00,cash,"Rent, Oct",-600\.00,[0-9a-f-]{36}$/,
+    );
   });
 });

@@ -98,4 +98,4 @@ BACKUP_AND_RESTORE (Verify results, spike and crash-test results, implementation
 
 ## Owner approval
 
-- [ ] Approved to start Phase 7 — (owner, date)
+- [x] Approved to start Phase 7 — owner, 2026-10-28

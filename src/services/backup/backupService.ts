@@ -56,6 +56,8 @@ export interface BackupCounts {
   transactions: number;
   attachments: number;
   budgets: number;
+  people: number;
+  udhaarEntries: number;
 }
 
 export interface BackupResult {
@@ -90,6 +92,8 @@ export interface BackupServiceDeps {
   sha256: (bytes: Uint8Array) => Promise<string>;
   /** Runs after restore deletes/re-creates receipts, to clear leftovers. */
   sweepOrphans: (db: DbClient, now: Date) => Promise<unknown>;
+  /** Re-plans udhaar reminders for the restored people (ARCHITECTURE.md § Notifications). */
+  afterRestore?: (db: DbClient) => Promise<unknown>;
   appVersion: string;
   /** Debug only: lets a manual test kill the app in the middle of a restore. */
   pauseAt?: (stage: Journal['stage']) => Promise<void>;
@@ -111,6 +115,8 @@ function countsOf(data: BackupFileData | BackupData): BackupCounts {
     transactions: data.transactions.length,
     attachments: data.transactionAttachments.length,
     budgets: data.budgets.length,
+    people: data.people.length,
+    udhaarEntries: data.udhaarEntries.length,
   };
 }
 
@@ -533,6 +539,7 @@ export function createBackupService(deps: BackupServiceDeps) {
     files.remove(doc(JOURNAL));
     removeStagedRestores();
     await deps.sweepOrphans(db, now);
+    await deps.afterRestore?.(db);
     notifyChanged('all');
   }
 

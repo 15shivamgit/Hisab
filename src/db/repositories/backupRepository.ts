@@ -4,7 +4,7 @@
 import type { DbClient, SqlParam } from '@/db/client';
 import { settingsRepository, type PortableSettings } from '@/db/repositories/settingsRepository';
 
-/** Backed-up tables in parent → child order, with their columns (schema v1). */
+/** Backed-up tables in parent → child order, with their columns (schema v2). */
 export const BACKUP_TABLES = {
   categories: [
     'id',
@@ -42,6 +42,27 @@ export const BACKUP_TABLES = {
     'created_at',
   ],
   budgets: ['id', 'category_id', 'amount_paise', 'created_at', 'updated_at'],
+  people: [
+    'id',
+    'name',
+    'phone',
+    'notes',
+    'return_by_date',
+    'archived_at',
+    'created_at',
+    'updated_at',
+  ],
+  udhaar_entries: [
+    'id',
+    'person_id',
+    'direction',
+    'amount_paise',
+    'entry_date',
+    'payment_method',
+    'note',
+    'created_at',
+    'updated_at',
+  ],
 } as const;
 
 export type BackupTable = keyof typeof BACKUP_TABLES;
@@ -52,6 +73,8 @@ export interface BackupTables {
   transactions: BackupRow[];
   transactionAttachments: BackupRow[];
   budgets: BackupRow[];
+  people: BackupRow[];
+  udhaarEntries: BackupRow[];
 }
 
 export interface BackupData extends BackupTables {
@@ -64,6 +87,8 @@ export const TABLE_KEYS: Record<BackupTable, keyof BackupTables> = {
   transactions: 'transactions',
   transaction_attachments: 'transactionAttachments',
   budgets: 'budgets',
+  people: 'people',
+  udhaar_entries: 'udhaarEntries',
 };
 
 const PARENT_FIRST = Object.keys(BACKUP_TABLES) as BackupTable[];

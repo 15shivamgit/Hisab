@@ -11,8 +11,9 @@ import { ErrorState } from '@/components/ErrorState';
 import { ListRow } from '@/components/ListRow';
 import { Skeleton } from '@/components/Skeleton';
 import { strings } from '@/content/strings';
-import type { TxnType } from '@/db/types';
+import type { TxnType, UdhaarDirection } from '@/db/types';
 import { BackupNudge } from '@/features/dashboard/components/BackupNudge';
+import { UdhaarCard } from '@/features/dashboard/components/UdhaarCard';
 import { TransactionRow } from '@/features/transactions/components/TransactionRow';
 import { useDbQuery } from '@/hooks/useDbQuery';
 import { useToday } from '@/hooks/useToday';
@@ -25,22 +26,42 @@ export function DashboardScreen() {
   const today = useToday();
   const { spacing } = useTheme();
   const summary = useDbQuery((db) => dashboardService.getSummary(db, today), [today], {
-    tables: ['transactions', 'categories', 'app_settings'],
+    tables: ['transactions', 'categories', 'app_settings', 'people', 'udhaar_entries'],
   });
 
   const add = (type: TxnType) => router.push({ pathname: '/transaction/new', params: { type } });
+  const udhaarEntry = (direction: UdhaarDirection) =>
+    router.push({ pathname: '/person/pick', params: { direction } });
 
   const quickActions = (
-    <View style={[styles.row, { gap: spacing.sm }]}>
-      <View style={styles.fill}>
-        <Button label={`+ ${strings.quick.addExpense}`} onPress={() => add('expense')} />
+    <View style={{ gap: spacing.sm }}>
+      <View style={[styles.row, { gap: spacing.sm }]}>
+        <View style={styles.fill}>
+          <Button label={`+ ${strings.quick.addExpense}`} onPress={() => add('expense')} />
+        </View>
+        <View style={styles.fill}>
+          <Button
+            label={`+ ${strings.quick.addIncome}`}
+            variant="secondary"
+            onPress={() => add('income')}
+          />
+        </View>
       </View>
-      <View style={styles.fill}>
-        <Button
-          label={`+ ${strings.quick.addIncome}`}
-          variant="secondary"
-          onPress={() => add('income')}
-        />
+      <View style={[styles.row, { gap: spacing.sm }]}>
+        <View style={styles.fill}>
+          <Button
+            label={strings.quick.gave}
+            variant="secondary"
+            onPress={() => udhaarEntry('gave')}
+          />
+        </View>
+        <View style={styles.fill}>
+          <Button
+            label={strings.quick.got}
+            variant="secondary"
+            onPress={() => udhaarEntry('got')}
+          />
+        </View>
       </View>
     </View>
   );
@@ -78,6 +99,13 @@ export function DashboardScreen() {
           <AppText color="textMuted">{strings.dash.welcomeMessage}</AppText>
         </Card>
         {quickActions}
+        {summary.data.udhaar ? (
+          <UdhaarCard
+            totals={summary.data.udhaar.totals}
+            attention={summary.data.udhaar.attention}
+            today={today}
+          />
+        ) : null}
       </View>
     );
   } else {
@@ -112,6 +140,10 @@ export function DashboardScreen() {
         </Card>
 
         {quickActions}
+
+        {s.udhaar ? (
+          <UdhaarCard totals={s.udhaar.totals} attention={s.udhaar.attention} today={today} />
+        ) : null}
 
         <Card style={{ gap: spacing.xs }}>
           <AppText variant="heading">{strings.dash.spendingByCategory}</AppText>

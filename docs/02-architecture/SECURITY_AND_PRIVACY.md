@@ -40,14 +40,14 @@ No data is collected by the developer. (Play Store data-safety answer, if ever n
 | Permission | When requested | If denied |
 |---|---|---|
 | CAMERA | First time the user taps "Take photo" | Explain, offer gallery, "Open settings" (checked on the phone in Phase 5: "Don't allow" → "Camera access is off" dialog → "Use gallery" opens the photo picker) |
-| POST_NOTIFICATIONS (Android 13+) | First time a return-by date is set with reminders on | Date still saved; reminders shown in-app only |
+| POST_NOTIFICATIONS (Android 13+) | First time a return-by date is set with reminders on | Date still saved; reminders shown in-app only (checked on the phone in Phase 7: "Notifications are off…" dialog with Open settings) |
 | Biometric / device credential | When enabling app lock | Lock not enabled |
 | Storage / media | **Not requested** (photo picker and document picker don't need it; gallery pick verified without it in Phase 5) | — |
 | Contacts, SMS, location | **Never** | — |
 | INTERNET | Dev builds only; blocked in release (verified in the Phase 2 release APK) | — |
 | VIBRATE | Install time, no prompt (Expo template) | — |
 | `<applicationId>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | Added by AndroidX; app-private signature permission, no prompt | — |
-| Added by `expo-notifications` (e.g. RECEIVE_BOOT_COMPLETED, VIBRATE) | Install time, no prompt | — . Keeps scheduled reminders after reboot. `Verify:` exact list in Phase 11 |
+| Added by `expo-notifications` (e.g. RECEIVE_BOOT_COMPLETED, VIBRATE) | Install time, no prompt | — . Keeps scheduled reminders after reboot. `Verify:` exact list in Phase 11. Phase 7 dev build: RECEIVE_BOOT_COMPLETED, WAKE_LOCK, ACCESS_NETWORK_STATE (Firebase/WorkManager) and `c2dm.permission.RECEIVE` (Firebase push — **blocked** in release) |
 | SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM | **Not used** — reminders use inexact date triggers; a few minutes' delay is acceptable | — |
 
 `Verify:` in Phase 11, list the final merged manifest permissions and confirm no unexpected ones (some libraries add permissions automatically; remove with `blockedPermissions` if unneeded).

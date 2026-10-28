@@ -87,6 +87,8 @@ interface TxnFilter {
 | `delete(db, id)` | Throws `IN_USE` if any entries exist |
 | `reminderCandidates(db, today): { personId, name, balancePaise, returnByDate }[]` | `return_by_date ≥ today` and balance ≠ 0 |
 
+Implemented (Phase 7, `src/db/repositories/personRepository.ts`): as above, with `now` as the last argument of writes; filters/sorts run in JS on aggregated rows (amount = largest absolute balance first; search escapes `%`/`_`); plus `count(db)` and `sameNameCount(db, name, exceptId?)` for the duplicate-name warning. Errors: `VALIDATION` `person.name` / `person.phone` / `person.notes` / `PERSON_NOT_SETTLED`, `IN_USE` `PERSON_HAS_ENTRIES`.
+
 ## `udhaarRepository`
 
 | Function | Notes |
@@ -98,6 +100,8 @@ interface TxnFilter {
 | `delete(db, id)` | |
 | `totals(db): { youWillGetPaise, willGetCount, youOwePaise, oweCount }` | FR-4.9, archived people included if balance ≠ 0 (cannot archive non-zero anyway) |
 | `listAll(db, range?): UdhaarEntryWithPerson[]` | For CSV |
+
+Implemented (Phase 7, `src/db/repositories/udhaarRepository.ts`): as above plus `balanceOf(db, personId, exceptEntryId?)` (preview while editing); `delete` returns the deleted entry. Running balances use `entry_date, created_at, id` order. Future dates are rejected in the service, which knows "today".
 
 ## `budgetRepository`
 

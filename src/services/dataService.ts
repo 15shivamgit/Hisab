@@ -19,7 +19,11 @@ const DOCUMENT_PATHS = [
 ];
 const CACHE_PATHS = ['staging', 'exports'];
 
-export function createDataService(files: BackupFiles) {
+export function createDataService(
+  files: BackupFiles,
+  /** Re-plans reminders; with no people left this cancels them all. */
+  afterDelete: (db: DbClient, clock: Clock) => Promise<unknown> = async () => undefined,
+) {
   return {
     async deleteAllData(db: DbClient, clock: Clock): Promise<void> {
       const now = clock.now();
@@ -32,8 +36,8 @@ export function createDataService(files: BackupFiles) {
       // After the commit, so a failure can't leave rows pointing at deleted files.
       for (const path of DOCUMENT_PATHS) files.remove(files.documentUri(path));
       for (const path of CACHE_PATHS) files.remove(files.cacheUri(path));
-      // Phase 7: cancel scheduled udhaar reminders here.
       notifyChanged('all');
+      await afterDelete(db, clock);
     },
   };
 }

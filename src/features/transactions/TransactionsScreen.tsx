@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -27,6 +27,7 @@ import {
   type ListFilter,
 } from '@/features/transactions/listFilter';
 import { useDbQuery } from '@/hooks/useDbQuery';
+import { useDebounced } from '@/hooks/useDebounced';
 import { useToday } from '@/hooks/useToday';
 import { formatLocalDate } from '@/lib/dates';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -34,15 +35,6 @@ import { useTheme } from '@/theme/ThemeProvider';
 const PAGE = 50;
 const SORTS: TxnSort[] = ['date_desc', 'date_asc', 'amount_desc', 'amount_asc'];
 const TABLES = ['transactions', 'transaction_attachments', 'categories'] as const;
-
-function useDebounced(value: string, ms: number): string {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), ms);
-    return () => clearTimeout(timer);
-  }, [value, ms]);
-  return debounced;
-}
 
 export function TransactionsScreen() {
   const router = useRouter();

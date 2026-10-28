@@ -87,7 +87,9 @@ No interest, no loan statuses, no schedules. Udhaar is never income or expense (
 - Overdue persists in-app until settled or the date is changed. No repeated notifications in v1.
 - Notifications use the Android channel `udhaar-reminders` ("Udhaar reminders"), created by `reminderService.ensureChannel()` on startup.
 - Triggers are inexact date triggers (no exact-alarm permission); arriving a few minutes late is acceptable.
-- Scheduled reminders must survive a phone reboot. `Verify:` expo-notifications reschedules after boot on the current SDK; `reconcile()` on every app start is the fallback.
+- Scheduled reminders must survive a phone reboot. `Verify:` expo-notifications reschedules after boot on the current SDK; `reconcile()` on every app start is the fallback. **Checked 2026-10-28 (source):** expo-notifications 58.1.6 declares `RECEIVE_BOOT_COMPLETED` and a receiver for `BOOT_COMPLETED` / `REBOOT` / `QUICKBOOT_POWERON` / `MY_PACKAGE_REPLACED` that re-schedules stored notifications; Expo docs: "used to set up scheduled notifications when the device (re)starts". Reconcile also runs on every app start.
+
+**Implemented (Phase 7):** `src/services/reminderService.ts` (`reconcile` cancels all and re-schedules; DATE trigger on channel `udhaar-reminders`, `bestEffort` = inexact delivery), `src/platform/notifications.ts`. Reconcile runs at startup and after every udhaar/person change, restore, and delete-all. The permission is asked when a return-by date is set, not at startup; if denied, the date is saved and a dialog offers "Open settings". Tapping a reminder opens the person ledger (cold start and while running). Checked on the owner's phone 2026-10-28: prompt, deny path, notification at the reminder time ("Udhaar reminder — Test Rahul was to return ₹7,000 today.", brand colour, ₹ icon, channel `udhaar-reminders`), tap → ledger, reminder cancelled once settled.
 
 ## Remind via WhatsApp / SMS / share — UDH-09
 
@@ -97,7 +99,7 @@ No interest, no loan statuses, no schedules. Udhaar is never income or expense (
 - **Share…**: React Native `Share.share({ message })`.
 - **Copy text**.
 - The message is previewed and editable before sending. Templates differ for "you will get" vs "you owe" (the second is a "I'll return soon" note to self/friend).
-- `Verify:` Android 11+ package visibility — opening `https://` and `sms:` links via `Linking.openURL` without `canOpenURL` checks needs no `<queries>`; confirm behaviour.
+- `Verify:` Android 11+ package visibility — opening `https://` and `sms:` links via `Linking.openURL` without `canOpenURL` checks needs no `<queries>`; confirm behaviour. **Implemented without `canOpenURL`** (`RemindSheet`); a failure shows "Couldn't open that app. Try Share instead." WhatsApp/SMS were not opened on the owner's phone during testing (a dummy number could belong to a real person); URL formats are unit-tested (`src/lib/phone.test.ts`). Share was opened: the system sheet shows the text with Android's own **Copy** button, which covers "Copy text" without a clipboard library.
 
 ## Archive / delete — UDH-11
 

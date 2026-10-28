@@ -39,6 +39,8 @@ From Reports (current period) and from More → Export.
 
 `hisaab-udhaar-2026-10-21.csv` — columns: `date, person, direction (gave/got), amount_inr, payment_method, note, person_balance_after, id`.
 
+Implemented (Phase 7): More → Export CSV → "Export udhaar CSV" — every entry (archived people included), oldest first. `person_balance_after` is signed (negative = you owe) and written as a number, not formula-guarded (`csvNumber`).
+
 ### CSV rules
 
 - UTF-8 **with BOM** so Excel shows ₹ and Hindi names correctly; comma separator; CRLF line endings; RFC 4180 quoting.

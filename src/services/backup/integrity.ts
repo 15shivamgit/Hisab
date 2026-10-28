@@ -43,6 +43,17 @@ export function findIntegrityProblem(
     perTransaction.set(a.transaction_id, n);
   }
 
+  if (
+    hasDuplicates(data.people.map((p) => p.id)) ||
+    hasDuplicates(data.udhaarEntries.map((e) => e.id))
+  ) {
+    return 'DUPLICATE_ID';
+  }
+  const people = new Set(data.people.map((p) => p.id));
+  for (const e of data.udhaarEntries) {
+    if (!people.has(e.person_id)) return 'UDHAAR_PERSON_MISSING';
+  }
+
   const budgetKeys = data.budgets.map((b) => b.category_id ?? 'overall');
   if (hasDuplicates(budgetKeys)) return 'DUPLICATE_BUDGET';
   for (const b of data.budgets) {
@@ -72,7 +83,9 @@ export function findIntegrityProblem(
     counts.categories !== data.categories.length ||
     counts.transactions !== data.transactions.length ||
     counts.attachments !== data.transactionAttachments.length ||
-    counts.budgets !== data.budgets.length
+    counts.budgets !== data.budgets.length ||
+    (counts.people ?? 0) !== data.people.length ||
+    (counts.udhaarEntries ?? 0) !== data.udhaarEntries.length
   ) {
     return 'COUNT_MISMATCH';
   }
