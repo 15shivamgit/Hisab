@@ -3,7 +3,7 @@
 // Hisaab itself sends nothing (no SMS permission, no network).
 
 import { useState } from 'react';
-import { Linking, Share, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -16,6 +16,7 @@ import type { PersonWithBalance } from '@/db/types';
 import { smsUrl, whatsappUrl } from '@/lib/phone';
 import { diagnostics } from '@/services/diagnostics';
 import { useTheme } from '@/theme/ThemeProvider';
+import { openUrl, shareText } from '@/platform/system';
 
 export function RemindSheet({
   person,
@@ -44,7 +45,7 @@ function RemindBody({ person, onClose }: { person: PersonWithBalance; onClose: (
   const open = async (url: string) => {
     try {
       // No canOpenURL check: it would need <queries> entries (UDHAAR.md Verify note).
-      await Linking.openURL(url);
+      await openUrl(url);
       onClose();
     } catch (error) {
       void diagnostics.record(error, 'remind.openUrl');
@@ -54,7 +55,7 @@ function RemindBody({ person, onClose }: { person: PersonWithBalance; onClose: (
 
   const share = async () => {
     try {
-      await Share.share({ message });
+      await shareText(message);
       onClose();
     } catch (error) {
       void diagnostics.record(error, 'remind.share');

@@ -33,7 +33,7 @@ All strings live in `src/content/strings.ts`, keyed by screen. This doc is the r
 | txn.searchPlaceholder | Search notes or amount |
 | udhaar.addPerson | + Add person |
 | lock.screenshotNote | While app lock is on, screenshots of Hisaab are blocked. |
-| about.copyDiagnostics | Copy diagnostic info |
+| about.shareDiagnostics | Share diagnostic info (was "Copy diagnostic info"; share sheet, owner decision 2026-10-28) |
 | about.version | Version {versionName} ({versionCode}) |
 
 ## Empty states
@@ -84,6 +84,33 @@ Typed confirmations show a field labelled "Type RESTORE" / "Type DELETE"; the co
 | reports.udhaarNote | Udhaar is not included. |
 | reports.exportCsv | Export this period as CSV |
 | reports donut "Other" | Other |
+
+## Settings, lock, onboarding, About (Phase 9)
+
+| Key | Text |
+|---|---|
+| more sections | Manage · Data · Preferences · Security · About · Danger zone |
+| more.theme / options | Theme: System · Light · Dark |
+| more.weekStart / options | Week starts on: Monday · Sunday |
+| more.reminders / hint | Udhaar reminders — A notification on the return date. |
+| more.reminderTime | Reminder time |
+| more.notificationsOff | Notifications are off for Hisaab, so reminders will not show. You can turn them on in Settings. [Open settings] |
+| more.appLock / hint | App lock — Fingerprint or your phone screen lock. |
+| more.lockAfter / options | Lock after: Immediately · 30 s · 1 min · 5 min |
+| lock.title / message | Hisaab is locked — Unlock with your fingerprint or phone screen lock. [Unlock] |
+| lock.prompt / confirmPrompt | Unlock Hisaab · Confirm to turn on app lock |
+| lock.needsScreenLock | Set a screen lock on your phone first. |
+| lock.turnedOn (toast) | App lock is on |
+| lock.turnedOff (toast, once) | App lock was turned off because this phone no longer has a screen lock. |
+| onboarding 1 | Your money diary, only on your phone — No account and no internet. Everything you add stays on this phone and is never uploaded anywhere. |
+| onboarding 2 | Back up regularly — If you uninstall Hisaab or lose this phone, your data is gone. Make a backup file now and then and save it to Google Drive or send it to yourself. |
+| onboarding 3 | Keep it private — You can lock Hisaab with your fingerprint or phone screen lock. You can change this later in More. [Lock with fingerprint] switch |
+| onboarding buttons | Next · Back · Get started |
+| about.version | Version {versionName} ({versionCode}) |
+| about.privacy | Privacy promise (SECURITY_AND_PRIVACY.md) |
+| about.diagnosticsHint | For when something goes wrong: versions, phone model, and error codes. No amounts, names, phone numbers, or notes. |
+| licenses.intro | Hisaab is built with these open-source packages and their own open-source dependencies. Tap a package to read its licence. |
+| receipts.none | No receipts on this entry. |
 
 ## Udhaar (Phase 7)
 

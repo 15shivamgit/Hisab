@@ -3,6 +3,8 @@
 
 import * as ImagePicker from 'expo-image-picker';
 
+import { runWithoutLock } from '@/platform/lockSession';
+
 export interface PickedAsset {
   uri: string;
   mimeType?: string;
@@ -41,20 +43,26 @@ export interface Picker {
 
 export const devicePicker: Picker = {
   async takePhoto() {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    const permission = await runWithoutLock(() => ImagePicker.requestCameraPermissionsAsync());
     if (!permission.granted) return { status: 'denied', canAskAgain: permission.canAskAgain };
     // Full quality here; our own pipeline resizes and compresses once.
-    return toResult(await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 }));
+    return toResult(
+      await runWithoutLock(() =>
+        ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 }),
+      ),
+    );
   },
 
   async chooseFromGallery(limit) {
     return toResult(
-      await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsMultipleSelection: limit > 1,
-        selectionLimit: limit,
-        quality: 1,
-      }),
+      await runWithoutLock(() =>
+        ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsMultipleSelection: limit > 1,
+          selectionLimit: limit,
+          quality: 1,
+        }),
+      ),
     );
   },
 

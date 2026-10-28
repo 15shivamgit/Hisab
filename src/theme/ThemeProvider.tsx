@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
 import {
@@ -22,6 +22,7 @@ export interface Theme {
 }
 
 const ThemeContext = createContext<Theme | null>(null);
+const SetPreferenceContext = createContext<((preference: ThemePreference) => void) | null>(null);
 
 export function resolveScheme(
   preference: ThemePreference,
@@ -32,12 +33,14 @@ export function resolveScheme(
 }
 
 interface ThemeProviderProps {
-  /** Comes from settings once the database exists (Phase 3); follows the system until then. */
+  /** Starting preference. The `theme` setting replaces it once the database is open
+   *  (SettingsProvider → useSetThemePreference); until then the app follows the system. */
   preference?: ThemePreference;
   children: ReactNode;
 }
 
-export function ThemeProvider({ preference = 'system', children }: ThemeProviderProps) {
+export function ThemeProvider({ preference: initial = 'system', children }: ThemeProviderProps) {
+  const [preference, setPreference] = useState<ThemePreference>(initial);
   const systemScheme = useColorScheme();
   const scheme = resolveScheme(preference, systemScheme);
 
@@ -46,11 +49,21 @@ export function ThemeProvider({ preference = 'system', children }: ThemeProvider
     [scheme],
   );
 
-  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
+  return (
+    <SetPreferenceContext.Provider value={setPreference}>
+      <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+    </SetPreferenceContext.Provider>
+  );
 }
 
 export function useTheme(): Theme {
   const theme = useContext(ThemeContext);
   if (!theme) throw new Error('useTheme must be used inside <ThemeProvider>');
   return theme;
+}
+
+export function useSetThemePreference(): (preference: ThemePreference) => void {
+  const set = useContext(SetPreferenceContext);
+  if (!set) throw new Error('useSetThemePreference must be used inside <ThemeProvider>');
+  return set;
 }

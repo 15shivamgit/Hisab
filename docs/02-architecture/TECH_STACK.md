@@ -21,7 +21,7 @@ All items are free and open-source. **`Verify:`** before Phase 2, check the late
 | `expo-crypto` | `randomUUID()` for IDs, SHA-256 for backup file checksums | |
 | `expo-local-authentication` | App lock (biometric / device PIN) | |
 | `expo-notifications` | Local udhaar reminders | Local only — no push, no Expo push service |
-| `expo-screen-capture` | Hide content in app switcher when app lock is on | `Verify:` behaviour on current Android versions |
+| `expo-screen-capture` | Hide content in app switcher when app lock is on | `Verify:` behaviour on current Android versions — see SETTINGS_AND_APP_LOCK.md § Verify results |
 | `@react-native-community/datetimepicker` | Date picker | |
 | `react-native-gesture-handler`, `react-native-reanimated` | Gestures, pinch-zoom on receipt viewer | Usually included with the Expo Router template |
 | `react-hook-form`, `zod`, `@hookform/resolvers` | Forms and validation | Zod schemas also validate backup files |
@@ -75,6 +75,8 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | expo-document-picker | 58.0.4 | Phase 6 (approved 2026-10-26). Restore: `getDocumentAsync({ type: '*/*', copyToCacheDirectory: true })` — `.hisaab` arrives as zip, octet-stream, or no type |
 | expo-notifications | 58.1.6 | Phase 7 (approved 2026-10-28). Local DATE-trigger reminders only. Bundles `firebase-messaging` 25.0.1 on Android: inactive without `google-services.json`; its push permission `c2dm.permission.RECEIVE` is blocked in `app.config.ts`; release has no INTERNET. Plugin: white 96 px `notification-icon.png` (cut from the monochrome app icon) + brand colour |
 | react-native-svg | 15.16.0 | Phase 8 (approved 2026-10-28, chart option B, ADR-018). MIT. Version bundled with Expo SDK 58 (`npx expo install`). Native code: needs a new dev build |
+| expo-local-authentication | 58.0.2 | Phase 9 (approved 2026-10-28). MIT. Adds `USE_BIOMETRIC` and the deprecated `USE_FINGERPRINT` (Android 8 and older); depends on `androidx.biometric` 1.2.0-alpha04. No config plugin needed (its only option is the iOS Face ID text) |
+| expo-screen-capture | 58.0.6 | Phase 9 (approved 2026-10-28). MIT. Only `preventScreenCaptureAsync` / `allowScreenCaptureAsync` are used. Its manifest adds `READ_EXTERNAL_STORAGE` (≤ 32) and `READ_MEDIA_IMAGES` (33) for the screenshot listener we don't use: both are in `blockedPermissions` (without them the module only logs). It also adds `DETECT_SCREEN_CAPTURE` (34+): **kept**, because on Android 14+ the module registers a screenshot callback when it loads and the app crashed without it (seen on the phone). It is a normal permission — no prompt, no access to images |
 | expo-sharing | 58.0.20 | Phase 6 (approved 2026-10-26). `shareAsync(uri, { mimeType, dialogTitle })` for backup and CSV. **No config plugin added**: its plugin only sets up *receiving* shares, which Hisaab doesn't do |
 | expo-symbols | 58.0.4 | All app icons (Material Symbols). Approved by owner 2026-10-21 (Option A) |
 | expo-font | 58.0.9 | Peer of expo-symbols (already part of `expo`) |

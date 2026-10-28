@@ -13,7 +13,7 @@ Status: Approved · Last updated: 2026-10-21
 | Transactions, categories, budgets, settings | SQLite in app-private storage | Only inside backup/CSV files the user creates and shares |
 | Receipt images | App-private `receipts/` | Only inside backup files |
 | People (names, optional phone, notes), udhaar entries | SQLite | Only in backup/CSV, or the reminder text the user chooses to send |
-| Error log (codes, versions, counts — no personal data) | App-private `diagnostics/errors.json` | Only when the user taps "Copy diagnostic info" and sends it |
+| Error log (codes, versions, counts — no personal data) | App-private `diagnostics/errors.json` | Only when the user taps "Share diagnostic info" and sends it (share sheet; owner decision 2026-10-28) |
 
 No data is collected by the developer. (Play Store data-safety answer, if ever needed: "No data collected, no data shared".)
 
@@ -44,6 +44,8 @@ No data is collected by the developer. (Play Store data-safety answer, if ever n
 | Biometric / device credential | When enabling app lock | Lock not enabled |
 | Storage / media | **Not requested** (photo picker and document picker don't need it; gallery pick verified without it in Phase 5) | — |
 | Contacts, SMS, location | **Never** | — |
+| USE_BIOMETRIC (+ USE_FINGERPRINT for Android ≤ 8) | Install time; the system prompt appears when unlocking | App lock unavailable (Phase 9, expo-local-authentication) |
+| DETECT_SCREEN_CAPTURE (Android 14+) | Install time, no prompt; normal permission | Needed: expo-screen-capture crashes on load without it. Gives no access to images (Phase 9) |
 | INTERNET | Dev builds only; blocked in release (verified in the Phase 2 release APK) | — |
 | VIBRATE | Install time, no prompt (Expo template) | — |
 | `<applicationId>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | Added by AndroidX; app-private signature permission, no prompt | — |

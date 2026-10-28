@@ -5,6 +5,7 @@
 import * as Notifications from 'expo-notifications';
 // Named import: eslint's import/namespace can't follow the package's re-export of this enum.
 import { AndroidImportance } from 'expo-notifications';
+import { runWithoutLock } from '@/platform/lockSession';
 
 export const REMINDER_CHANNEL_ID = 'udhaar-reminders';
 
@@ -35,7 +36,8 @@ export const deviceNotifications: LocalNotifications = {
   async requestPermission() {
     const current = await Notifications.getPermissionsAsync();
     if (current.granted || !current.canAskAgain) return toPermission(current);
-    return toPermission(await Notifications.requestPermissionsAsync());
+    // The permission dialog pauses the app like any system screen (ADR-016).
+    return toPermission(await runWithoutLock(() => Notifications.requestPermissionsAsync()));
   },
   cancelAll: () => Notifications.cancelAllScheduledNotificationsAsync(),
   async schedule({ title, body, date, personId }) {

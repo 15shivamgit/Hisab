@@ -7,6 +7,7 @@ import { createDataService } from '@/services/dataService';
 import { diagnostics } from '@/services/diagnostics';
 import { createExportService } from '@/services/exportService';
 import { createReminderService } from '@/services/reminderService';
+import { createSettingsService } from '@/services/settingsService';
 import { createUdhaarService } from '@/services/udhaarService';
 
 export const reminders = createReminderService(deviceNotifications);
@@ -21,3 +22,4 @@ export function replanReminders(db: DbClient, clock: Clock = systemClock): Promi
 export const exporter = createExportService(deviceBackupFiles);
 export const dataService = createDataService(deviceBackupFiles, replanReminders);
 export const udhaar = createUdhaarService({ afterChange: replanReminders });
+export const settings = createSettingsService({ afterRemindersChange: replanReminders });

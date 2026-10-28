@@ -4,6 +4,7 @@
 import { Stack, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   StatusBar,
@@ -170,7 +171,20 @@ export function ReceiptViewerScreen({
           })}
           onMomentumScrollEnd={onPageChange}
         />
-      ) : null}
+      ) : (
+        <View style={[styles.fill, styles.missing]}>
+          {query.status === 'loading' ? (
+            <ActivityIndicator color={WHITE} size="large" />
+          ) : query.status === 'error' ? (
+            <>
+              <AppText style={{ color: WHITE }}>{strings.common.loadFailed}</AppText>
+              <Button label={strings.common.tryAgain} variant="secondary" onPress={query.reload} />
+            </>
+          ) : (
+            <AppText style={{ color: WHITE }}>{strings.receipts.none}</AppText>
+          )}
+        </View>
+      )}
       <SafeAreaView edges={['top']} style={styles.header} pointerEvents="box-none">
         <HeaderButton icon="close" label={strings.common.close} onPress={() => router.back()} />
         <AppText style={styles.counter} accessibilityLiveRegion="polite">

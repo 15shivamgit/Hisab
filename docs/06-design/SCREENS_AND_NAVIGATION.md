@@ -8,8 +8,8 @@ Routes map to files in `app/` (see [../02-architecture/PROJECT_STRUCTURE.md](../
 
 ```
 Root stack
-├─ onboarding (first run only)
-├─ lock (when app lock active)
+├─ onboarding (first run only)        → gate around the navigator, not a route (Phase 9)
+├─ lock (when app lock active)         → gate + full-screen Modal, not a route (Phase 9)
 ├─ (tabs)
 │  ├─ Home            /                → Dashboard
 │  ├─ Transactions    /transactions    → list, search, filters (?categoryId=&type=&start=&end= from Reports/Dashboard, Phase 8)
@@ -30,8 +30,10 @@ Root stack
 ├─ /backup
 ├─ /export                             → Export CSV (Phase 6)
 ├─ /dev-tools                          → debug builds only (backup spike, crash test)
-├─ /settings
-└─ /about
+├─ /about                              → version, privacy, licences, diagnostics (Phase 9)
+└─ /licenses                           → open-source licences (Phase 9)
+
+Settings (theme, week start, reminders, app lock) live on the More tab itself; there is no `/settings` route.
 ```
 
 ## Screen inventory

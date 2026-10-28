@@ -3,22 +3,29 @@ import { useState } from 'react';
 
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
+import { ErrorState } from '@/components/ErrorState';
 import { Icon } from '@/components/Icon';
 import { ListRow } from '@/components/ListRow';
 import { Screen } from '@/components/Screen';
+import { Skeleton } from '@/components/Skeleton';
 import { useToast } from '@/components/Toast';
 import { TypedConfirmDialog } from '@/components/TypedConfirmDialog';
 import { strings } from '@/content/strings';
+import { PreferencesCard } from '@/features/settings/PreferencesCard';
+import { SecurityCard } from '@/features/settings/SecurityCard';
 import { useDb } from '@/hooks/DatabaseContext';
+import { useSettings } from '@/hooks/SettingsContext';
 import { systemClock } from '@/lib/clock';
 import { dataService } from '@/services/appServices';
 import { diagnostics } from '@/services/diagnostics';
 import { useTheme } from '@/theme/ThemeProvider';
 
-// Phase 6: Manage, Data, Danger zone. Settings, app lock, and About come in Phase 9.
+// More tab (SETTINGS_AND_APP_LOCK.md § More tab): Manage, Data, Preferences, Security, About,
+// Danger zone.
 export default function MoreRoute() {
   const router = useRouter();
   const db = useDb();
+  const settings = useSettings();
   const toast = useToast();
   const { colors, spacing } = useTheme();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -88,6 +95,37 @@ export default function MoreRoute() {
         />
       </Card>
 
+      {section(strings.more.preferences)}
+      {settings.status === 'success' ? (
+        <PreferencesCard settings={settings.data} />
+      ) : settings.status === 'loading' ? (
+        <Skeleton height={160} />
+      ) : (
+        <ErrorState
+          title={strings.common.loadFailed}
+          message={strings.common.somethingWrong}
+          onRetry={settings.reload}
+        />
+      )}
+
+      {section(strings.more.security)}
+      {settings.status === 'success' ? (
+        <SecurityCard settings={settings.data} />
+      ) : settings.status === 'loading' ? (
+        <Skeleton height={72} />
+      ) : null}
+
+      {section(strings.more.about)}
+      <Card>
+        <ListRow
+          title={strings.more.aboutHisaab}
+          left={<Icon name="info" color={colors.primary} />}
+          right={chevron}
+          onPress={() => router.push('/about')}
+          accessibilityLabel={strings.more.aboutHisaab}
+        />
+      </Card>
+
       {section(strings.more.dangerZone)}
       <Card>
         <ListRow
@@ -98,9 +136,6 @@ export default function MoreRoute() {
         />
       </Card>
 
-      <AppText variant="caption" color="textMuted" style={{ marginTop: spacing.lg }}>
-        {strings.more.comingSoon}
-      </AppText>
       {__DEV__ ? (
         <Card style={{ marginTop: spacing.lg }}>
           <ListRow

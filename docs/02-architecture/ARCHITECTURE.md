@@ -64,7 +64,7 @@ Repositories check for a missing or wrong-type category themselves before writin
 4. Seed default categories if none exist.
 5. Run restore-journal recovery if a restore was interrupted ([../05-features/BACKUP_AND_RESTORE.md](../05-features/BACKUP_AND_RESTORE.md#crash-recovery)).
 6. Schedule background housekeeping (after first render): receipt orphan sweep (at most once per 7 days), reminder reconcile.
-7. If app lock is enabled → show lock screen before any data screen.
+7. If app lock is enabled → show lock screen before any data screen. Implemented in Phase 9 as `LockGate` (inside `SettingsProvider`, around `OnboardingGate` and the `Stack`): screens mount only after unlock.
 
 Any failure in steps 1–5 shows a full-screen error with "Try again" and "Share diagnostic info" (`diagnosticsService`, React Native's built-in `Share`; no data deleted automatically). A `DB_NEWER` error shows "Please update Hisaab" and no retry. Implemented in Phase 3: `src/services/startupService.ts` (steps 1–4) and `src/features/startup/StartupGate.tsx`, which wraps the root `Stack`; data screens get the client from `useDb()`. Step 5 (`backup.recoverIfInterrupted`) since Phase 6; step 6 (orphan sweep) since Phase 5.
 

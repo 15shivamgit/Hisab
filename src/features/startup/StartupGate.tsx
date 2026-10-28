@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Share, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { ErrorState } from '@/components/ErrorState';
@@ -16,6 +16,7 @@ import { reminders, replanReminders } from '@/services/appServices';
 import { receipts } from '@/services/receipts';
 import { startDatabase, type StartedDatabase } from '@/services/startupService';
 import { useTheme } from '@/theme/ThemeProvider';
+import { shareText } from '@/platform/system';
 
 type StartupState =
   | { status: 'loading' }
@@ -75,7 +76,7 @@ export function StartupGate({ children }: { children: ReactNode }) {
   const newer = state.error.code === 'DB_NEWER';
   const shareDiagnostics = async () => {
     const message = await diagnostics.buildReport(getAppAndDeviceInfo());
-    await Share.share({ message });
+    await shareText(message);
   };
 
   return (

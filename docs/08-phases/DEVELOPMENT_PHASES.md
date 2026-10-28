@@ -109,8 +109,10 @@ Report: [reports/PHASE_08.md](reports/PHASE_08.md)
 
 **Scope:** More tab, theme/week-start/reminder settings, app lock with timeout, recents hiding and system-screen suspension (ADR-016), onboarding, About + licences + "Copy diagnostic info", empty/loading/error state review on every screen.
 **Acceptance:**
-- [ ] SET-01…09.
-- [ ] Every screen has loading/empty/error states (checklist in PR/phase report).
+- [x] SET-01…09 (SET-09 via the share sheet, owner decision).
+- [x] Every screen has loading/empty/error states (checklist in the phase report).
+
+Report: [reports/PHASE_09.md](reports/PHASE_09.md)
 
 ## Phase 10 — QA and hardening
 

@@ -3,7 +3,7 @@
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -33,6 +33,7 @@ import { formatPaise } from '@/lib/money';
 import { reminders, udhaar } from '@/services/appServices';
 import { diagnostics } from '@/services/diagnostics';
 import { useTheme } from '@/theme/ThemeProvider';
+import { openAppSettings } from '@/platform/system';
 
 export function PersonLedgerScreen({ id }: { id: string }) {
   const db = useDb();
@@ -280,7 +281,7 @@ export function PersonLedgerScreen({ id }: { id: string }) {
         onCancel={() => setNotificationsOff(false)}
         onConfirm={() => {
           setNotificationsOff(false);
-          void Linking.openSettings();
+          void openAppSettings();
         }}
       />
     </View>

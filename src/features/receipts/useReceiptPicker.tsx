@@ -2,7 +2,7 @@
 // and error toasts (RECEIPTS.md § Sources, § Errors).
 
 import { useState } from 'react';
-import { Linking, View } from 'react-native';
+import { View } from 'react-native';
 
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Icon } from '@/components/Icon';
@@ -17,6 +17,7 @@ import type { ReceiptDraft } from '@/services/receiptService';
 import { receipts } from '@/services/receipts';
 import { diagnostics } from '@/services/diagnostics';
 import { useTheme } from '@/theme/ThemeProvider';
+import { openAppSettings } from '@/platform/system';
 
 function errorMessage(error: unknown): string {
   const detail = isAppError(error) ? error.detail : undefined;
@@ -103,7 +104,7 @@ export function useReceiptPicker(onDrafts: (drafts: ReceiptDraft[]) => void) {
         cancelLabel={strings.receipts.useGallery}
         onConfirm={() => {
           setDeniedFor(null);
-          void Linking.openSettings();
+          void openAppSettings();
         }}
         onCancel={() => {
           const remaining = deniedFor;

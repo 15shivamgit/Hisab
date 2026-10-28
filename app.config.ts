@@ -30,7 +30,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // POST_NOTIFICATIONS in Phase 7, USE_BIOMETRIC in Phase 9). The photo picker needs
     // no storage permission; expo-image-picker's storage permissions are blocked below.
     // POST_NOTIFICATIONS: udhaar return-by reminders (Phase 7), asked when a date is set.
-    permissions: ['android.permission.CAMERA', 'android.permission.POST_NOTIFICATIONS'],
+    // DETECT_SCREEN_CAPTURE is not blocked: on Android 14+ expo-screen-capture registers a
+    // screenshot callback when it loads and crashes without it (found on the phone, Phase 9).
+    // It is a normal permission (no prompt, no access to images); its READ_* ones stay blocked.
+    // USE_BIOMETRIC: app lock prompt (Phase 9); expo-local-authentication also adds the
+    // deprecated USE_FINGERPRINT for Android 8 and older.
+    permissions: [
+      'android.permission.CAMERA',
+      'android.permission.POST_NOTIFICATIONS',
+      'android.permission.USE_BIOMETRIC',
+    ],
     blockedPermissions: [
       'android.permission.RECORD_AUDIO',
       'android.permission.READ_EXTERNAL_STORAGE',

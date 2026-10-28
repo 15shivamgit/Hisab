@@ -2,6 +2,9 @@
 // Stores only error codes and where they happened — never messages, amounts,
 // names, phone numbers, or notes.
 
+import type { DbClient } from '@/db/client';
+import { LATEST_SCHEMA_VERSION } from '@/db/migrations';
+import { backupRepository } from '@/db/repositories/backupRepository';
 import type { IsoDateTime } from '@/lib/dates';
 import type { Clock } from '@/lib/clock';
 import { toAppError, type AppErrorCode } from '@/lib/errors';
@@ -97,3 +100,10 @@ export function createDiagnosticsService(deps: {
 }
 
 export type DiagnosticsService = ReturnType<typeof createDiagnosticsService>;
+
+/** Schema version and row counts for the report: numbers only, never row contents. */
+export async function databaseFacts(
+  db: DbClient,
+): Promise<Required<Pick<ReportInfo, 'schemaVersion' | 'counts'>>> {
+  return { schemaVersion: LATEST_SCHEMA_VERSION, counts: await backupRepository.counts(db) };
+}

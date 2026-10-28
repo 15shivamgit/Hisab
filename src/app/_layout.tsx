@@ -9,7 +9,10 @@ import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ToastProvider } from '@/components/Toast';
+import { LockGate } from '@/features/lock/LockGate';
+import { OnboardingGate } from '@/features/onboarding/OnboardingGate';
 import { StartupGate } from '@/features/startup/StartupGate';
+import { SettingsProvider } from '@/hooks/SettingsContext';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 export default function RootLayout() {
@@ -44,16 +47,22 @@ function RootNavigator() {
     <NavigationThemeProvider value={navigationTheme}>
       <ToastProvider>
         <StartupGate>
-          <Stack
-            screenOptions={{
-              contentStyle: { backgroundColor: colors.bg },
-              headerStyle: { backgroundColor: colors.surface },
-              headerTintColor: colors.text,
-              headerShadowVisible: false,
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
+          <SettingsProvider>
+            <LockGate>
+              <OnboardingGate>
+                <Stack
+                  screenOptions={{
+                    contentStyle: { backgroundColor: colors.bg },
+                    headerStyle: { backgroundColor: colors.surface },
+                    headerTintColor: colors.text,
+                    headerShadowVisible: false,
+                  }}
+                >
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                </Stack>
+              </OnboardingGate>
+            </LockGate>
+          </SettingsProvider>
         </StartupGate>
       </ToastProvider>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
