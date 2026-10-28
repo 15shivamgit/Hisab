@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-28 — Phase 6: backup (.hisaab ZIP with checksums, share sheet), restore (central-directory ZIP reader, strict allowlist and limits, Zod + integrity checks, typed RESTORE, safety backup, journaled swap, startup crash recovery, undo), CSV export (This month / Last month / All / Custom), delete all data (typed DELETE), dashboard backup nudge, More tab Data and Danger zone, release-signing config plugin, debug-only Developer tools. fflate, expo-document-picker, expo-sharing. Spike passed on a 2 GB emulator; crash recovery verified; round trip Hisaab Dev → release Hisaab on the owner's phone. Phase 6 awaiting owner approval.
 - 2026-10-26 — Phase 5 approved by the owner.
 - 2026-10-23 — Phase 5: receipts. Camera and gallery picker (photo picker, no storage permission), camera-denied dialog, compression pipeline (≤ 1600 px, JPEG 0.7, EXIF orientation applied and EXIF/GPS stripped), receipts in the add/edit form (changes apply on save), thumbnails on the detail screen, full-screen viewer (swipe, pinch/double-tap zoom, Replace, Delete, missing-file tile), file moves rolled back if the DB write fails, orphan sweep every 7 days, recovery of a camera photo after Android kills the app. expo-image-picker, expo-image-manipulator, CAMERA permission. 290 tests. Verified on the phone. Phase 5 awaiting owner approval.
 - 2026-10-23 — Phase 4 approved by the owner.
@@ -18,6 +19,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 - 2026-10-21 — Phase 2 (in progress): Expo SDK 58 app in `src/app/` with TypeScript strict, Expo Router native tabs (Home, Transactions, Udhaar, Reports, More — placeholders), sky-blue theme tokens + ThemeProvider (light/dark/system), base components (AppText, Screen, Button, Card, EmptyState), `app.config.ts` with dev/release variants (`com.shivambgs15.hisaab[.dev]`, `allowBackup=false`, INTERNET blocked in release), app icon PNGs, ESLint + Prettier, Jest 30 + RNTL 14 with token-contrast, theme, and Button tests. Dependency `expo-symbols` added for tab icons, pending owner approval.
 - 2026-10-21 — Phase 1 approved by the owner.
 - 2026-10-21 — Phase 1: initial specification set in `docs/` (overview, requirements, financial rules, architecture, ADRs, schema, internal API, feature specs, design, content, phases, config, testing).
+
+### Builds
+| Date | versionName | versionCode | Given to | Notes |
+|---|---|---|---|---|
+| 2026-10-28 | 1.0.0 | 1 | Owner only (own phone) | `hisaab-1.0.0-vc1.apk`, 51.1 MB, arm64-v8a + armeabi-v7a, signed with the release key (SHA-256 D3:D3:86:B8…41:8A). Permissions: CAMERA, VIBRATE, app-private receiver permission; no INTERNET; allowBackup=false |
 
 ### Removed
 - 2026-10-23 — `react-native-zoom-toolkit` (approved for the receipt viewer) removed after it failed on the phone with gesture-handler 3 / Reanimated 4 (zoom snapped back). Replaced by our own `ZoomableImage`; no new dependency.

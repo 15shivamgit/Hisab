@@ -75,12 +75,14 @@ Report: [reports/PHASE_05.md](reports/PHASE_05.md)
 
 **Scope:** BACKUP_AND_RESTORE.md fully, CSV export for transactions, backup nudge, delete-all-data.
 **Acceptance:**
-- [ ] BAK-01…07, RPT-04, DASH-08, SET-06.
-- [ ] Fixture tests for invalid/tampered/zip-slip/newer-version backups → no data change.
-- [ ] Crash-recovery manual test passes.
-- [ ] Performance spike (300 receipts) recorded and passing.
-- [ ] Round trip: backup on phone A → restore on emulator → identical counts and receipts open.
-- [ ] **Milestone: first signed release APK for the owner** (see BUILD_AND_RELEASE.md). Keystore created and backed up twice.
+- [x] BAK-01…07, RPT-04, DASH-08, SET-06.
+- [x] Fixture tests for invalid/tampered/zip-slip/newer-version backups → no data change.
+- [x] Crash-recovery manual test passes (emulator, both journal stages).
+- [x] Performance spike (300 receipts) recorded and passing (BACKUP_AND_RESTORE.md § Spike result).
+- [x] Round trip: backup in the owner's Hisaab Dev → restore into the freshly installed release Hisaab on the same phone (separate app, empty storage) → identical dashboard, counts, and receipts open. The emulator leg was skipped so the owner's photos weren't copied to another device (report P6-3).
+- [x] **Milestone: first signed release APK for the owner** — `hisaab-1.0.0-vc1.apk` (versionCode 1), installed on the owner's phone. Keystore created; owner reported two backup copies.
+
+Report: [reports/PHASE_06.md](reports/PHASE_06.md)
 
 ## Phase 7 — Udhaar
 

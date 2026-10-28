@@ -16,6 +16,13 @@ keytool -genkeypair -v -storetype PKCS12 -keystore hisaab-release.jks -alias his
 - Store passwords in a password manager (free options exist, e.g. Bitwarden free plan).
 - Back up `hisaab-release.jks` in **two** separate places (e.g. a pendrive + personal Google Drive).
 - Never put it in the project folder or git.
+- **Never open the `.jks` file in Notepad or any editor.** It is binary; saving it from an editor corrupts it beyond repair. (Happened on 2026-10-28 before anything was signed: the first keystore lost all `0x00`/`0x0D` bytes and Gradle reported "public key protected PKCS12 not supported". It was deleted and recreated.)
+
+**Created 2026-10-28** with the JDK 25 `keytool` (Android Studio `jbr`), `C:\Users\Shivam Kumar\.hisaab-keys\hisaab-release.jks`, alias `hisaab`, valid until 15 Mar 2054. Signing values are in `%USERPROFILE%\.gradle\gradle.properties`. Checked with `gradlew :app:signingReport`.
+
+**Release certificate fingerprints** (compare every APK against these):
+- SHA-256: `D3:D3:86:B8:89:A6:9C:59:1D:7F:DE:1D:F0:B1:60:47:39:B7:87:E6:E7:2B:D7:88:7D:AB:A2:18:46:04:41:8A`
+- SHA-1: `07:B8:31:9D:83:3B:D5:02:F9:A9:91:08:17:06:2D:9B:7D:99:0B:6F`
 - Use this **same** key for local and EAS builds (don't let EAS generate a different one).
 
 ## 2. Build options
