@@ -1,5 +1,5 @@
 // Dashboard data in one call (DASHBOARD.md). Phase 4: this-month totals, recent
-// transactions, spending by category. Phase 7: udhaar card. Budgets join in Phase 8.
+// transactions, spending by category. Phase 7: udhaar card. Phase 8: budget card.
 
 import type { DbClient } from '@/db/client';
 import { personRepository } from '@/db/repositories/personRepository';
@@ -14,6 +14,7 @@ import type {
   UdhaarTotals,
 } from '@/db/types';
 import { monthRange } from '@/lib/dates';
+import { budgetService, type BudgetLine } from '@/services/budgetService';
 
 export interface CategorySpend {
   categoryId: string;
@@ -37,6 +38,8 @@ export interface DashboardSummary {
   hasAnyTransactions: boolean;
   /** DASH-05/06. null until the user has at least one person (card hidden). */
   udhaar: { totals: UdhaarTotals; attention: PersonWithBalance[] } | null;
+  /** DASH-04. null when no budget is set (the card shows "Set a monthly budget"). */
+  budgets: { overall: BudgetLine | null; top: BudgetLine[] } | null;
 }
 
 export const ATTENTION_COUNT = 3;
@@ -89,6 +92,7 @@ export const dashboardService = {
       })),
       hasAnyTransactions: count > 0,
       udhaar,
+      budgets: await budgetService.dashboardCard(db, today),
     };
   },
 };

@@ -99,3 +99,9 @@ Format: Context → Decision → Consequences. New decisions get the next number
 **Context.** ARCHITECTURE.md planned `withExclusiveTransactionAsync` for writes. Reading expo-sqlite 58's source (Phase 3) showed it opens a **new connection** for every transaction and runs `BEGIN` before our callback. `PRAGMA foreign_keys` is per connection and is a no-op inside a transaction, so FK rules (RESTRICT, CASCADE) would silently not apply inside transactions.
 **Decision.** One connection for the app's lifetime. `createDbClient` (`src/db/client.ts`) serializes all operations through a promise queue; `transaction` runs `BEGIN IMMEDIATE`/`COMMIT`/`ROLLBACK` on that connection with a `tx` client that bypasses the queue. The same code wraps better-sqlite3 in tests.
 **Consequences.** Foreign keys are always on. No query can interleave with a transaction. Reads wait while a transaction runs (fine for a single-user app; transactions are short). Inside a transaction, code must use `tx`, never the outer client.
+
+## ADR-018 — Own chart components on react-native-svg
+
+**Context.** TECH_STACK.md planned `react-native-gifted-charts` for the Phase 8 charts. We need only two charts: a donut (category breakdown) and simple bars (trend).
+**Decision.** Owner chose option B on 2026-10-28: add only `react-native-svg` (the Expo SDK 58 bundled version) and write `DonutChart` (SVG circles with dash offsets) and `BarChart` (plain Views) in `src/components/charts/`.
+**Consequences.** One native dependency instead of a chart library plus its peer dependencies. We own the accessibility (each chart has a label with the numbers) and the theming. New chart types later mean more of our own code.

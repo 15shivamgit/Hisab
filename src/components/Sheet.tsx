@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -21,7 +21,9 @@ export function Sheet({ visible, title, onClose, children, footer }: SheetProps)
   const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.container}>
+      {/* A Modal is its own window: the screen does not resize for the keyboard, so the sheet
+          lifts itself; otherwise the keyboard covers the amount field and Save. */}
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Pressable
           style={styles.backdrop}
           onPress={onClose}
@@ -60,7 +62,7 @@ export function Sheet({ visible, title, onClose, children, footer }: SheetProps)
           </ScrollView>
           {footer ? <View style={{ padding: spacing.md }}>{footer}</View> : null}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

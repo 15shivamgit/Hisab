@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -44,6 +44,26 @@ export function TransactionsScreen() {
   const [searchText, setSearchText] = useState('');
   const search = useDebounced(searchText, 300);
   const [filter, setFilter] = useState<ListFilter>(EMPTY_FILTER);
+
+  // Opened from a report's category row: show that category in that period (RPT-02).
+  const params = useLocalSearchParams<{
+    categoryId?: string;
+    type?: string;
+    start?: string;
+    end?: string;
+  }>();
+  const paramKey = params.categoryId ? [params.categoryId, params.start, params.end].join('|') : '';
+  const [appliedParams, setAppliedParams] = useState('');
+  if (paramKey && paramKey !== appliedParams && params.start && params.end) {
+    setAppliedParams(paramKey);
+    setFilter({
+      ...EMPTY_FILTER,
+      type: params.type === 'income' ? 'income' : params.type === 'expense' ? 'expense' : undefined,
+      categoryIds: [params.categoryId as string],
+      period: 'custom',
+      custom: { start: params.start, end: params.end },
+    });
+  }
   const [sort, setSort] = useState<TxnSort>('date_desc');
   const [limit, setLimit] = useState(PAGE);
   const [showFilters, setShowFilters] = useState(false);

@@ -39,6 +39,7 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 | ADR-015 | Backup moved before udhaar in the phase plan. Owner gets a release APK at Phase 6; friends only after Phase 11 (amended 2026-10-21). |
 | ADR-016 | App lock: no lock when returning from camera/gallery/share within 5 min; while lock is on, screenshots of the app are blocked (secure flag). |
 | ADR-017 | One SQLite connection; all operations and transactions serialized by `createDbClient` so foreign keys always apply (expo-sqlite's exclusive transactions use a separate connection). |
+| ADR-018 | Charts are our own components on `react-native-svg` (donut) and plain Views (bars); no chart library. |
 
 ## Phase status
 
@@ -50,8 +51,8 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 | 4 | Transactions, categories, basic dashboard | **Approved** (2026-10-23) |
 | 5 | Receipts | **Approved** (2026-10-26) |
 | 6 | Backup, restore, CSV export | **Approved** (2026-10-28) |
-| 7 | Udhaar | **Done — awaiting owner approval** (verified on phone 2026-10-28) |
-| 8 | Budgets and reports | Not started |
+| 7 | Udhaar | **Approved** (2026-10-28) |
+| 8 | Budgets and reports | Done — awaiting owner approval |
 | 9 | Settings, app lock, onboarding, polish | Not started |
 | 10 | QA and hardening | Not started |
 | 11 | Release APK and friend distribution | Not started |

@@ -27,7 +27,7 @@ All items are free and open-source. **`Verify:`** before Phase 2, check the late
 | `react-hook-form`, `zod`, `@hookform/resolvers` | Forms and validation | Zod schemas also validate backup files |
 | `date-fns` | Date ranges, formatting helpers | Tree-shakeable; only via `src/lib/dates.ts` |
 | `fflate` | Create/read ZIP backup files in pure JS | Streaming API, no native code. Phase 6 spike must confirm memory use with 300 receipts (ADR-009). |
-| `react-native-gifted-charts` + `react-native-svg` (+ its gradient peer dep) | Charts | `Verify:` current peer deps and Expo compatibility. Fallback: simple View-based bars. |
+| `react-native-svg` 15.16.0 (Expo SDK 58 bundled version) | Charts: donut drawn with SVG circles | **Phase 8, ADR-018:** `react-native-gifted-charts` was not added. Our own components in `src/components/charts/` (`DonutChart` on SVG, `BarChart` on plain Views) cover the two charts we need with one dependency. |
 | Pinch-zoom image component | Receipt viewer | **Own component** `src/features/receipts/components/ZoomableImage.tsx` on gesture-handler + reanimated (no extra library). `react-native-zoom-toolkit` was approved and tried first but failed on the phone (see Phase 5 findings). |
 
 **Not used:** Zustand/Redux (ADR-013), SecureStore (ADR-011), any ORM (ADR-002), Sentry/Firebase/analytics (NFR-02), `expo-updates` (no OTA — it would need network).
@@ -74,6 +74,7 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | fflate | 0.8.3 | Phase 6 (approved 2026-10-26). MIT, no dependencies, pure JS. Metro uses its browser build (no workers needed: only sync APIs are used); Jest uses the Node build |
 | expo-document-picker | 58.0.4 | Phase 6 (approved 2026-10-26). Restore: `getDocumentAsync({ type: '*/*', copyToCacheDirectory: true })` — `.hisaab` arrives as zip, octet-stream, or no type |
 | expo-notifications | 58.1.6 | Phase 7 (approved 2026-10-28). Local DATE-trigger reminders only. Bundles `firebase-messaging` 25.0.1 on Android: inactive without `google-services.json`; its push permission `c2dm.permission.RECEIVE` is blocked in `app.config.ts`; release has no INTERNET. Plugin: white 96 px `notification-icon.png` (cut from the monochrome app icon) + brand colour |
+| react-native-svg | 15.16.0 | Phase 8 (approved 2026-10-28, chart option B, ADR-018). MIT. Version bundled with Expo SDK 58 (`npx expo install`). Native code: needs a new dev build |
 | expo-sharing | 58.0.20 | Phase 6 (approved 2026-10-26). `shareAsync(uri, { mimeType, dialogTitle })` for backup and CSV. **No config plugin added**: its plugin only sets up *receiving* shares, which Hisaab doesn't do |
 | expo-symbols | 58.0.4 | All app icons (Material Symbols). Approved by owner 2026-10-21 (Option A) |
 | expo-font | 58.0.9 | Peer of expo-symbols (already part of `expo`) |

@@ -61,6 +61,13 @@ export default function MoreRoute() {
           onPress={() => router.push('/categories')}
           accessibilityLabel={strings.more.categories}
         />
+        <ListRow
+          title={strings.more.budgets}
+          left={<Icon name="savings" color={colors.primary} />}
+          right={chevron}
+          onPress={() => router.push('/budgets')}
+          accessibilityLabel={strings.more.budgets}
+        />
       </Card>
 
       {section(strings.more.data)}

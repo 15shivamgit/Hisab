@@ -57,6 +57,7 @@ All strings live in `src/content/strings.ts`, keyed by screen. This doc is the r
 | Discard form | Discard changes? | Your changes won't be saved. | Discard |
 | Delete category (no entries) | Delete "{name}"? | This category will be removed{budget? " along with its monthly budget"}. | Delete |
 | Category in use | "{name}" is in use | It's used by {n} entries. Archive it instead? It will be hidden for new entries. | Archive |
+| Remove budget (Phase 8) | Remove the {name} budget? ("overall" for the monthly budget) | Your entries stay. Only the budget is removed. | Remove |
 | Delete udhaar entry | Delete this entry? | {name}'s balance will change to {newBalanceLabel}. | Delete |
 | Flip warning | Check this amount | {name} currently {currentLabel}. After this entry, {newLabel}. Is that correct? | Yes, save / Change amount |
 | Settled | {name} is settled 🎉 | Remove the return date? | Remove / Keep |
@@ -64,6 +65,25 @@ All strings live in `src/content/strings.ts`, keyed by screen. This doc is the r
 | Delete all data | Delete all data? | This permanently deletes all entries, receipts, people and budgets on this phone. This can't be undone. Type DELETE to continue. (+ "Create backup first") | Delete everything |
 
 Typed confirmations show a field labelled "Type RESTORE" / "Type DELETE"; the confirm button stays disabled until the word matches (any case).
+
+## Budgets and reports (Phase 8)
+
+| Key | Text |
+|---|---|
+| budgets numbers | ₹{spent} of ₹{budget} · ₹{left} left / · {n}% used · ₹{left} left / · ₹{over} over |
+| budgets.exceedHint | Your category budgets add up to more than your overall budget. |
+| budgets.rules | The same budget applies every month. Udhaar and future-dated entries don't count. |
+| budgets.allHaveBudgets | Every expense category already has a budget. |
+| budgets.saved / removed (toasts) | Budget saved · Budget removed |
+| budgets dashboard card | Budget · Manage · Set a monthly budget |
+| reports periods | Week · Month · Custom (From / To) |
+| reports summary | Income · Expense · Net · Avg spend per day |
+| reports.entries | {n} entry / {n} entries |
+| reports.upcoming | Upcoming in this period: {n} entries (₹{amount}) — counted on their dates. |
+| reports.noData | No {expense\|income} in this period. |
+| reports.udhaarNote | Udhaar is not included. |
+| reports.exportCsv | Export this period as CSV |
+| reports donut "Other" | Other |
 
 ## Udhaar (Phase 7)
 

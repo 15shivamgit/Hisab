@@ -13,6 +13,16 @@ Status: Approved · Phase: 6 (CSV), 8 (reports) · Requirements: RPT-01…05
 - Empty period: "No entries in this period."
 - Caption: "Udhaar is not included."
 
+**Phase 8 implementation:** Reports tab (`src/features/reports/ReportsScreen.tsx`, data from `reportService.getReport`).
+
+- Week / Month / Custom segmented control. ◀ ▶ step by one period; ▶ is disabled when the next period would start after today. Custom shows From / To date fields (end before start → error, no report).
+- Avg spend per day = expense ÷ days elapsed in the period up to today, rounded down to the paisa; a past period uses all its days.
+- Category rows show icon, name, amount, "% · N entries". Tap → Transactions tab with the category, type and period filter applied (route params `categoryId`, `type`, `start`, `end`).
+- Donut shows the top 5 categories; the rest are merged into one grey "Other" slice (the list below shows every category).
+- Trend: daily bars when the range has ≤ 31 days (Week, Month, short Custom), otherwise weekly bars. Bars for future days stay empty.
+- "Export this period as CSV" exports the shown range (same file as More → Export).
+- Charts are our own components on `react-native-svg` (TECH_STACK.md, ADR-018). Each chart has an accessibility label that states the numbers; colour is never the only signal.
+
 ## CSV export
 
 From Reports (current period) and from More → Export.

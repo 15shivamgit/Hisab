@@ -12,7 +12,7 @@ Root stack
 ├─ lock (when app lock active)
 ├─ (tabs)
 │  ├─ Home            /                → Dashboard
-│  ├─ Transactions    /transactions    → list, search, filters
+│  ├─ Transactions    /transactions    → list, search, filters (?categoryId=&type=&start=&end= from Reports/Dashboard, Phase 8)
 │  ├─ Udhaar          /udhaar          → people list with balances
 │  ├─ Reports         /reports
 │  └─ More            /more            → settings hub

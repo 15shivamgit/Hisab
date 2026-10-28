@@ -99,9 +99,11 @@ Report: [reports/PHASE_07.md](reports/PHASE_07.md)
 
 **Scope:** Budgets screen and dashboard card, Reports tab (week/month/custom, category breakdown, trend chart), dashboard donut chart.
 **Acceptance:**
-- [ ] BUD-01…04, RPT-01…03, DASH-03, DASH-04.
-- [ ] FIN-B* and FIN-R* cases pass.
-- [ ] Charts readable in both themes and with font scale 150%.
+- [x] BUD-01…04, RPT-01…03, DASH-03, DASH-04 (DASH-03 tap goes to filtered Transactions — see report).
+- [x] FIN-B* and FIN-R* cases pass.
+- [x] Charts readable in both themes and with font scale 150% (icon clipping P8-1 is a Phase 4 component issue).
+
+Report: [reports/PHASE_08.md](reports/PHASE_08.md)
 
 ## Phase 9 — Settings, app lock, onboarding, polish
 

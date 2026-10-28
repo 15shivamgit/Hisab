@@ -20,6 +20,8 @@ Status: Approved · Phase: 4 (basic), 7 (udhaar cards), 8 (budgets, charts) · R
 7. **Spending by category** (DASH-03) — donut chart + top 5 list with amount and %. Tap → Reports filtered to that category.
 8. **Recent transactions** (DASH-02) — last 5 (not future-dated). "See all" → Transactions tab.
 
+**Phase 8:** budget card (`BudgetCard`: overall + up to 3 category budgets with the highest percentage, "Manage"; empty: "Set a monthly budget" button) between the udhaar card and spending; spending by category now has a donut (top 5 + grey "Other" for the rest of the month's expense, total in the centre) above the top-5 list. **Deviation:** tapping a category opens the **Transactions** tab filtered to that category and this month, not Reports — Reports has no category filter, and the filtered list is the same view Reports opens on a category tap.
+
 **Phase 7:** quick actions `I gave` / `I got` (→ person picker, or Add person when nobody exists yet) and the udhaar card (`UdhaarCard`: totals with counts, up to 3 people — overdue first, then due soon — and "See all"); hidden until the first person, shown on the first-run screen too.
 
 **Phase 6:** backup nudge added under the header (`BackupNudge`, rule in `src/services/backupNudge.ts`).
