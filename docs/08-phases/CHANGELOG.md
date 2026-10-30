@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-30 — Phase 11: release **1.1.0 (versionCode 2)** built and verified (release checklist in PHASE_11.md); regression on the owner's phone after the Expo update (five journeys offline, reminder notification, app lock) on a separate Hisaab QA app; installed over 1.0.0 on the owner's phone — data and receipts intact (AC-30). Awaiting the owner's distribution to friends.
 - 2026-10-30 — Phase 11 started. Owner decisions: AC-28 accepted (cold start ~2.1 s, independent of data size); Expo patch update (expo 58.0.21, react-native 0.88.1, 13 more Expo packages, jest-expo 58.0.13; 446 tests pass; `licenses.json` regenerated); launcher-badge and install-referrer permissions blocked (P7-1); release version **1.1.0, versionCode 2**.
 - 2026-10-30 — Phase 10 follow-ups on the owner's phone: airplane-mode pass (five journeys on a separate Hisaab QA app, AC-22 ✅); cold-start timing with 5,000 entries ≈ 2.0–2.3 s, same as with 20 entries (AC-28: data size has no effect; start-up sits at the 2 s line). New `APP_VARIANT=qa` for such tests. Fixed: the keyboard covered the buttons of typed confirmations (Restore, Delete all data).
 - 2026-10-30 — Phase 10 approved by the owner. Before Phase 11: airplane-mode pass (AC-22) and the 5,000-entry timing (AC-28) on the owner's phone.
@@ -34,6 +35,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ### Builds
 | Date | versionName | versionCode | Given to | Notes |
 |---|---|---|---|---|
+| 2026-10-30 | 1.1.0 | 2 | Owner (installed over 1.0.0, data kept); ready for friends | `hisaab-1.1.0-vc2.apk`, 55.1 MB, arm64-v8a + armeabi-v7a, minSdk 26, release key (SHA-256 D3:D3:86:B8…41:8A). Adds udhaar, budgets, reports, settings, app lock, onboarding. Permissions: CAMERA, POST_NOTIFICATIONS, USE_BIOMETRIC, USE_FINGERPRINT, VIBRATE, RECEIVE_BOOT_COMPLETED, DETECT_SCREEN_CAPTURE, ACCESS_NETWORK_STATE, WAKE_LOCK, app-private receiver permission; no INTERNET; allowBackup=false |
 | 2026-10-28 | 1.0.0 | 1 | Owner only (own phone) | `hisaab-1.0.0-vc1.apk`, 51.1 MB, arm64-v8a + armeabi-v7a, signed with the release key (SHA-256 D3:D3:86:B8…41:8A). Permissions: CAMERA, VIBRATE, app-private receiver permission; no INTERNET; allowBackup=false |
 
 ### Removed

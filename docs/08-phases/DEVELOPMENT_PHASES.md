@@ -127,6 +127,8 @@ Report: [reports/PHASE_10.md](reports/PHASE_10.md)
 
 **Scope:** Signed release APK, INTERNET permission removed (ADR-012), manifest review, install on owner's and friends' phones, friend install guide, update-over-install test.
 **Acceptance:**
-- [ ] [../10-testing/RELEASE_CHECKLIST.md](../10-testing/RELEASE_CHECKLIST.md) fully checked.
-- [ ] Update from previous APK keeps data (tested).
+- [x] [../10-testing/RELEASE_CHECKLIST.md](../10-testing/RELEASE_CHECKLIST.md) checked up to "Distribute" (owner's steps open).
+- [x] Update from previous APK keeps data (tested on the owner's phone, 1.0.0 → 1.1.0).
+
+Report: [reports/PHASE_11.md](reports/PHASE_11.md)
 - [ ] Optional: Play Store preparation notes reviewed (no fee paid unless owner decides).
