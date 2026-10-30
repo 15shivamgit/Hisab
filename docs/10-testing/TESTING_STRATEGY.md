@@ -52,6 +52,7 @@ Camera, gallery, share sheet, notifications, and biometric prompts are tested ma
 - The emulators on the owner's PC sometimes show "System UI isn't responding" while Maestro starts; `common/dismiss-anr.yaml` taps "Wait". Not an app problem (the app alone ran 60 s without any ANR).
 - On Android, `hideKeyboard` presses Back: don't use it inside a sheet (it closes the sheet). Prefer `scrollUntilVisible` for Save. `eraseText` deletes 50 characters one by one; pass a count.
 - Run one flow at a time (`maestro test e2e/<flow>.yaml`); a full run takes ~16 minutes.
+- **On a real phone:** build and install the **QA variant** (`APP_VARIANT=qa`, package `com.shivambgs15.hisaab.qa`, see APP_CONFIG.md), copy `e2e/` and change every `appId` to the QA package (check none still says `.dev`), run the copies, then uninstall Hisaab QA. Done on the owner's phone in Phase 10 (airplane mode).
 
 ## Commands
 

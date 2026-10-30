@@ -1,23 +1,30 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 // See docs/09-config/APP_CONFIG.md. APP_VARIANT=release builds the real app;
+// APP_VARIANT=qa builds "Hisaab QA" (release-like, debug-signed, its own package) for
+// tests on a real phone without touching the owner's data (Phase 10);
 // anything else builds "Hisaab Dev", which installs next to it with its own data.
 const IS_RELEASE = process.env.APP_VARIANT === 'release';
+const IS_QA = process.env.APP_VARIANT === 'qa';
 
 const BRAND_ICON_BACKGROUND = '#0284C7';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: IS_RELEASE ? 'Hisaab' : 'Hisaab Dev',
+  name: IS_RELEASE ? 'Hisaab' : IS_QA ? 'Hisaab QA' : 'Hisaab Dev',
   slug: 'hisaab',
   // Separate schemes so the dev and release apps don't both claim the same links.
-  scheme: IS_RELEASE ? 'hisaab' : 'hisaab-dev',
+  scheme: IS_RELEASE ? 'hisaab' : IS_QA ? 'hisaab-qa' : 'hisaab-dev',
   version: '1.0.0', // versionName shown to users
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
   icon: './assets/images/icon.png',
   android: {
-    package: IS_RELEASE ? 'com.shivambgs15.hisaab' : 'com.shivambgs15.hisaab.dev',
+    package: IS_RELEASE
+      ? 'com.shivambgs15.hisaab'
+      : IS_QA
+        ? 'com.shivambgs15.hisaab.qa'
+        : 'com.shivambgs15.hisaab.dev',
     versionCode: 1, // MUST increase for every APK given to anyone
     allowBackup: false, // ADR-010
     adaptiveIcon: {
@@ -50,7 +57,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       // Push delivery from Firebase (pulled in by expo-notifications); reminders are local.
       'com.google.android.c2dm.permission.RECEIVE',
       // ADR-012: release builds never reach the network. Dev builds need it for Metro.
-      ...(IS_RELEASE ? ['android.permission.INTERNET'] : []),
+      ...(IS_RELEASE || IS_QA ? ['android.permission.INTERNET'] : []),
     ],
   },
   plugins: [

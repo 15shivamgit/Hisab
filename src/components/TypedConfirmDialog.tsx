@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -46,58 +46,68 @@ function DialogBody({
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={cancel}>
-      <Pressable style={styles.backdrop} onPress={cancel} accessibilityLabel={strings.common.close}>
+      {/* The typed word opens the keyboard; without this it covered the Restore / Delete
+          buttons (found on the phone in Phase 10). A Modal is its own window, so the
+          stock component measures correctly here. */}
+      <KeyboardAvoidingView behavior="padding" style={styles.fill}>
         <Pressable
-          accessibilityRole="alert"
-          style={[
-            styles.card,
-            {
-              backgroundColor: colors.surface,
-              borderRadius: radius.lg,
-              padding: spacing.lg,
-              gap: spacing.md,
-            },
-          ]}
+          style={styles.backdrop}
+          onPress={cancel}
+          accessibilityLabel={strings.common.close}
         >
-          <AppText variant="heading">{title}</AppText>
-          <AppText color="textMuted">{body}</AppText>
-          <TextField
-            label={strings.backup.typeToConfirm(word)}
-            value={typed}
-            onChangeText={setTyped}
-            autoCapitalize="characters"
-            autoCorrect={false}
-            editable={!busy}
-          />
-          {extra ? (
-            <Button label={extra.label} variant="ghost" onPress={extra.onPress} disabled={busy} />
-          ) : null}
-          <View style={[styles.actions, { gap: spacing.sm }]}>
-            <View style={styles.action}>
-              <Button
-                label={strings.common.cancel}
-                variant="secondary"
-                onPress={cancel}
-                disabled={busy}
-              />
+          <Pressable
+            accessibilityRole="alert"
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.surface,
+                borderRadius: radius.lg,
+                padding: spacing.lg,
+                gap: spacing.md,
+              },
+            ]}
+          >
+            <AppText variant="heading">{title}</AppText>
+            <AppText color="textMuted">{body}</AppText>
+            <TextField
+              label={strings.backup.typeToConfirm(word)}
+              value={typed}
+              onChangeText={setTyped}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              editable={!busy}
+            />
+            {extra ? (
+              <Button label={extra.label} variant="ghost" onPress={extra.onPress} disabled={busy} />
+            ) : null}
+            <View style={[styles.actions, { gap: spacing.sm }]}>
+              <View style={styles.action}>
+                <Button
+                  label={strings.common.cancel}
+                  variant="secondary"
+                  onPress={cancel}
+                  disabled={busy}
+                />
+              </View>
+              <View style={styles.action}>
+                <Button
+                  label={confirmLabel}
+                  variant="danger"
+                  onPress={onConfirm}
+                  disabled={!matches}
+                  loading={busy}
+                />
+              </View>
             </View>
-            <View style={styles.action}>
-              <Button
-                label={confirmLabel}
-                variant="danger"
-                onPress={onConfirm}
-                disabled={!matches}
-                loading={busy}
-              />
-            </View>
-          </View>
+          </Pressable>
         </Pressable>
-      </Pressable>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',

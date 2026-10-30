@@ -77,10 +77,10 @@ npm audit --omit=dev; npm ls --all (no missing/invalid packages)
 | AC-09, AC-13 (E) | ✅ | `udhaar.yaml`: "You will get ₹7,000"; flip warning on got 8,000 |
 | AC-01 persistence (E) | ✅ | `persistence.yaml`: entry after stop + relaunch |
 | Android 7.0 | ❌ → minSdk 26 | Crash log (expo-modules-core, dev launcher); APK now refuses Android 7 |
-| AC-22 airplane mode | ✅ emulator / ⏭ phone | All journeys ran with "Active default network: none"; owner chose to do the phone check later |
+| AC-22 airplane mode | ✅ emulator + phone | Emulators: all journeys with "Active default network: none". Owner's phone (2026-10-30, airplane mode on): all five journeys pass on **Hisaab QA** (copies of the flows retargeted to `com.shivambgs15.hisaab.qa`; a USB drop interrupted `filters` once, the rerun passed); Reports opens; Create backup and Export CSV open the share sheet (closed with Back, nothing sent) |
 | AC-26 font 200 % | ✅ with P3 | Screenshots: dashboard, form, transactions |
 | AC-27 TalkBack | ✅ tree / ⏭ gestures | Labels, roles, and states audited; a real TalkBack walkthrough is left for the owner (optional) |
-| AC-28 5,000 entries < 2 s on a mid-range phone | ⏭ | Queries 4–7 ms; emulator 6–7 s is start-up cost. Measure on the owner's phone with the Phase 11 release APK |
+| AC-28 5,000 entries < 2 s on a mid-range phone | ⚠ ~2.1 s, not data | Owner's phone, Hisaab QA (release-type build), cold start → dashboard loaded, 6 runs each, pixel probe ~0.25 s: **5,000 entries 2.00–2.28 s**, **20 entries 2.00–2.36 s** (same full dashboard), empty app (welcome card) 1.69–1.78 s. Activity launch alone: 0.85 s. 5,000 entries add no measurable time; the full dashboard's cold start sits right at the 2 s line. Warm return is instant. Owner to decide (§ 7) |
 | P9-1 (before Android 14) | ✅ | Android 8: lock, secure flag, unlock, auto-off |
 | Security checklist | ✅ | SECURITY_AND_PRIVACY.md |
 | Coverage goals | ✅ | 100 % for the four libs; repositories ≥ 90 % |
@@ -91,6 +91,7 @@ npm audit --omit=dev; npm ls --all (no missing/invalid packages)
 |---|---|---|---|
 | P10-1 | P3 | At font 200 %, tab labels truncate ("Trans…", "Repo…"), long category names truncate, and the + button can cover the last row (it scrolls) | Accept |
 | P10-2 | P3 | Changing the system font size while Hisaab is open recreates the screen: navigation goes back to the dashboard and an unsaved form is lost (theme changes don't). No crash in release (was P8-2) | Accept |
+| P10-5 | P2 → fixed | Typed confirmations (Restore, Delete all data): the keyboard covered Cancel/Restore/Delete, and Back closes the dialog, so the only way on was the keyboard's ✓ key. Found on the phone while restoring into Hisaab QA. Fix: `KeyboardAvoidingView` inside the dialog's Modal. Verified on the phone with "Delete all data?" typing only "DEL" (confirm stays disabled), then Cancel — data unchanged | Done |
 | P10-3 | Info | The emulators on this PC are slow (12 GB RAM shared with other projects); "System UI isn't responding" appears when Maestro starts, and the Android 13 emulator was unusable. The app itself ran 60 s without an ANR | Use airplane mode + `dismiss-anr.yaml` |
 | P10-4 | ✅ Closed | D1/D2 verified on the owner's phone too (vivo V2205, Android 14, dev build reloaded via Metro, 2026-10-30): with the keyboard open, Save sits right above it on the expense, add person, and udhaar entry forms; without the keyboard, Save sits above the gesture bar. Nothing saved; forms discarded | Done |
 | P9-2 | P3 | With a lock timeout other than "Immediately", content can show briefly before the cover | Accept |
@@ -103,10 +104,12 @@ See § 2 (docs row).
 
 ## 7. Exact next steps
 
-1. ~~Keyboard fix on the phone (P10-4)~~ — done. Airplane-mode pass on the phone (AC-22) when convenient (the PC uses the phone's hotspot, so its internet is off during the test).
+1. ~~Keyboard fix on the phone (P10-4)~~ — done. ~~Airplane mode on the phone (AC-22)~~ — done. ~~AC-28 on the phone~~ — measured (~2.1 s cold start, independent of data size).
+   - Method: a separate **Hisaab QA** app (APP_VARIANT=qa, own package, release-type, debug-signed) installed next to the owner's apps; a 5,000-entry `.hisaab` was generated on the PC with the app's own backup code and restored in Hisaab QA. Afterwards Hisaab QA, the test backups, and the probe files were removed; airplane mode is off; the owner's Hisaab and Hisaab Dev data were never touched.
 2. Owner approves Phase 10.
-3. Phase 11: release APK — Expo patch update (re-run `npm audit`), P7-1 permissions, AC-28 timing on the phone, install-over-old-version (AC-30), friend distribution.
+3. Owner decides whether ~2.1 s cold start is acceptable for AC-28 or Phase 11 should try to shorten app start-up.
+4. Phase 11: release APK — Expo patch update (re-run `npm audit`), P7-1 permissions, AC-28 timing on the phone, install-over-old-version (AC-30), friend distribution.
 
 ## Owner approval
 
-- [ ] Approved to start Phase 11 — (owner, date)
+- [x] Approved to start Phase 11 — owner, 2026-10-30

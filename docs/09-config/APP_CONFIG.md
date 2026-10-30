@@ -4,14 +4,17 @@ Status: Approved (`Verify:` every config key against current Expo docs in Phase 
 
 ## Variants
 
-| | Development | Release |
-|---|---|---|
-| `APP_VARIANT` env | `development` (default) | `release` |
-| App name | Hisaab Dev | Hisaab |
-| Application ID | `com.shivambgs15.hisaab.dev` | `com.shivambgs15.hisaab` (Q1 — decided 2026-10-21; **cannot change later** without losing the update path) |
-| Dev client | yes | no |
-| INTERNET permission | yes (Metro) | blocked (ADR-012) |
-| Developer screen (seed test data, file listing) | yes | not included |
+| | Development | Release | QA (Phase 10) |
+|---|---|---|---|
+| `APP_VARIANT` env | `development` (default) | `release` | `qa` |
+| App name | Hisaab Dev | Hisaab | Hisaab QA |
+| Application ID | `com.shivambgs15.hisaab.dev` | `com.shivambgs15.hisaab` (Q1 — decided 2026-10-21; **cannot change later** without losing the update path) | `com.shivambgs15.hisaab.qa` |
+| Dev client | yes | no | no (built with `assembleRelease`, bundled JS) |
+| Signing | debug | owner's release key | debug — never given to anyone |
+| INTERNET permission | yes (Metro) | blocked (ADR-012) | blocked |
+| Developer screen (seed test data, file listing) | yes | not included | not included |
+
+**QA variant:** a release-like test app that installs next to Hisaab and Hisaab Dev with its own data, so tests on the owner's phone (performance with 5,000 entries restored from a generated backup, airplane mode) never touch real data. Uninstall it after the test.
 
 ## `app.config.ts` (sketch)
 
