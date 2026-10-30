@@ -5,6 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versions follow `versio
 ## [Unreleased]
 
 ### Added
+- 2026-10-30 — Phase 11 approved by the owner. All 11 phases complete: Hisaab v1 (1.1.0, versionCode 2). Next work follows friend feedback.
 - 2026-10-30 — Phase 11: release **1.1.0 (versionCode 2)** built and verified (release checklist in PHASE_11.md); regression on the owner's phone after the Expo update (five journeys offline, reminder notification, app lock) on a separate Hisaab QA app; installed over 1.0.0 on the owner's phone — data and receipts intact (AC-30). Awaiting the owner's distribution to friends.
 - 2026-10-30 — Phase 11 started. Owner decisions: AC-28 accepted (cold start ~2.1 s, independent of data size); Expo patch update (expo 58.0.21, react-native 0.88.1, 13 more Expo packages, jest-expo 58.0.13; 446 tests pass; `licenses.json` regenerated); launcher-badge and install-referrer permissions blocked (P7-1); release version **1.1.0, versionCode 2**.
 - 2026-10-30 — Phase 10 follow-ups on the owner's phone: airplane-mode pass (five journeys on a separate Hisaab QA app, AC-22 ✅); cold-start timing with 5,000 entries ≈ 2.0–2.3 s, same as with 20 entries (AC-28: data size has no effect; start-up sits at the 2 s line). New `APP_VARIANT=qa` for such tests. Fixed: the keyboard covered the buttons of typed confirmations (Restore, Delete all data).

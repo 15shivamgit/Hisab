@@ -99,4 +99,4 @@ TECH_STACK (versions), SECURITY_AND_PRIVACY (audit, P7-1), BUILD_AND_RELEASE (fr
 
 ## Owner approval
 
-- [ ] Phase 11 complete — (owner, date)
+- [x] Phase 11 complete — owner, 2026-10-30. Distribution to friends, the keystore-backup check, and AC-31 stay with the owner (§ 7).
