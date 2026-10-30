@@ -5,14 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Stack, usePreventRemove, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 
+import { FormFooter } from '@/components/FormFooter';
+import { KeyboardAvoider } from '@/components/KeyboardAvoider';
 import { AmountInput } from '@/components/AmountInput';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -106,10 +102,10 @@ export function UdhaarEntryScreen(props: Props) {
       ? strings.udhaarEntry.newGot
       : strings.udhaarEntry.newGave;
   return (
-    <KeyboardAvoidingView behavior="padding" style={[styles.fill, { backgroundColor: colors.bg }]}>
+    <KeyboardAvoider style={[styles.fill, { backgroundColor: colors.bg }]}>
       <Stack.Screen options={{ title }} />
       {body}
-    </KeyboardAvoidingView>
+    </KeyboardAvoider>
   );
 }
 
@@ -129,7 +125,7 @@ function EntryForm({
   const db = useDb();
   const router = useRouter();
   const toast = useToast();
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
   const [submitError, setSubmitError] = useState<string>();
   const [flipFor, setFlipFor] = useState<UdhaarEntryFormValues | null>(null);
   const [settled, setSettled] = useState<PersonWithBalance | null>(null);
@@ -320,29 +316,14 @@ function EntryForm({
         ) : null}
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          {
-            padding: spacing.md,
-            gap: spacing.sm,
-            borderTopColor: colors.border,
-            backgroundColor: colors.bg,
-          },
-        ]}
-      >
-        {submitError ? (
-          <AppText color="danger" accessibilityLiveRegion="polite">
-            {submitError}
-          </AppText>
-        ) : null}
+      <FormFooter error={submitError}>
         <Button
           label={strings.common.save}
           onPress={() => void submit()}
           loading={busy}
           testID="save-button"
         />
-      </View>
+      </FormFooter>
 
       <ConfirmDialog
         visible={flipFor !== null}
@@ -420,5 +401,4 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   wrap: { flexDirection: 'row', flexWrap: 'wrap' },
-  footer: { borderTopWidth: StyleSheet.hairlineWidth },
 });

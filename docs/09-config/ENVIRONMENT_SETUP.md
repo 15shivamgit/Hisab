@@ -45,7 +45,7 @@ Recommendation for this machine: install Android Studio and the SDK on **C: (SSD
 | VS Code | Extensions: ESLint, Prettier |
 | Android Studio | Install: Android SDK Platform (SDK's target API), SDK Build-Tools, Platform-Tools, Android Emulator, one system image (e.g. a Pixel with Google APIs) |
 | JDK | Use the JDK bundled with Android Studio (`jbr`) unless the SDK requires another version. `Verify:` required JDK version |
-| Maestro CLI | Phase 10. `Verify:` current Windows installation method |
+| Maestro CLI | **Installed 2026-10-29: cli-2.11.0** (Apache-2.0, free; Maestro Cloud not used). Verified method (docs.maestro.dev, Windows): download `maestro.zip` from the GitHub release, unzip to `C:\maestro`, add `C:\maestro\bin` to the user PATH (done with `[Environment]::SetEnvironmentVariable`, not `setx`, which can truncate PATH). Needs Java 17+: Android Studio's `jbr` via `JAVA_HOME`. Maestro sends anonymous analytics by default: user env var `MAESTRO_CLI_NO_ANALYTICS=1` turns it off |
 
 ## Environment variables (PowerShell, user scope)
 

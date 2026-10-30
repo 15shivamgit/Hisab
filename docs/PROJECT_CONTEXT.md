@@ -53,8 +53,8 @@ Full reasoning in [02-architecture/DECISIONS.md](02-architecture/DECISIONS.md).
 | 6 | Backup, restore, CSV export | **Approved** (2026-10-28) |
 | 7 | Udhaar | **Approved** (2026-10-28) |
 | 8 | Budgets and reports | **Approved** (2026-10-28) |
-| 9 | Settings, app lock, onboarding, polish | Done — awaiting owner approval |
-| 10 | QA and hardening | Not started |
+| 9 | Settings, app lock, onboarding, polish | **Approved** (2026-10-29) |
+| 10 | QA and hardening | Done — awaiting owner approval |
 | 11 | Release APK and friend distribution | Not started |
 
 Details: [08-phases/DEVELOPMENT_PHASES.md](08-phases/DEVELOPMENT_PHASES.md)

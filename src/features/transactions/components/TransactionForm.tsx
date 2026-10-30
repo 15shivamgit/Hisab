@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { FormFooter } from '@/components/FormFooter';
 import { AmountInput } from '@/components/AmountInput';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -249,24 +250,9 @@ export function TransactionForm({
         {receipts}
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          {
-            padding: spacing.md,
-            gap: spacing.sm,
-            borderTopColor: colors.border,
-            backgroundColor: colors.bg,
-          },
-        ]}
-      >
-        {submitError ? (
-          <AppText color="danger" accessibilityLiveRegion="polite">
-            {submitError}
-          </AppText>
-        ) : null}
+      <FormFooter error={submitError}>
         <Button label={submitLabel} onPress={submit} loading={isSubmitting} testID="save-button" />
-      </View>
+      </FormFooter>
 
       <CategoryFormSheet
         visible={creatingCategory}
@@ -286,5 +272,4 @@ export function TransactionForm({
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   wrap: { flexDirection: 'row', flexWrap: 'wrap' },
-  footer: { borderTopWidth: StyleSheet.hairlineWidth },
 });

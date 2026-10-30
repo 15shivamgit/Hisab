@@ -56,11 +56,13 @@ No data is collected by the developer. (Play Store data-safety answer, if ever n
 
 ## Secure coding checklist (used in Phase 10 review)
 
-- [ ] All SQL parameterised; dynamic `ORDER BY` from allowlist only
-- [ ] Every file path built from IDs via `src/lib/paths.ts`, never from user/backup strings
-- [ ] Backup import enforces limits and allowlist before writing anything
-- [ ] Error messages and diagnostics contain no personal data
-- [ ] No network calls anywhere (`grep` for `fetch`, `XMLHttpRequest`, `WebSocket`)
-- [ ] Release manifest permissions reviewed
-- [ ] `allowBackup=false` confirmed in merged manifest
-- [ ] Keystore not in repo; `.gitignore` covers `*.jks`, `*.keystore`, `credentials.json`
+- [x] All SQL parameterised; dynamic `ORDER BY` from allowlist only — Phase 10: every interpolated SQL piece is a constant, a `?` placeholder list, the `SORT_SQL` map, or (backup restore) a column list from the constant `BACKUP_TABLES`; values are always bound
+- [x] Every file path built from IDs via `src/lib/paths.ts`, never from user/backup strings — receipt paths are checked three times: Zod `isSafeReceiptPath`, the integrity check `relative_path === receipts/<id>.jpg`, and `toAbsolute` / `resolveUri` at use
+- [x] Backup import enforces limits and allowlist before writing anything (Phase 6 fixtures, AC-18)
+- [x] Error messages and diagnostics contain no personal data (AC-37 seeded-data test)
+- [x] No network calls anywhere — no `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, or `sendBeacon` in `src/`; the only URL is the user-tapped `wa.me` link. Also no `console.*`, `eval`, or `new Function`
+- [x] Release manifest permissions reviewed (merged manifest of a release-type build, Phase 10): exported components are only `MainActivity`, the Firebase receiver (guarded by `c2dm.permission.SEND`) and ProfileInstaller (guarded by `DUMP`); launcher-badge and install-referrer permissions remain (P7-1, Phase 11)
+- [x] `allowBackup=false` confirmed in merged manifest
+- [x] Keystore not in repo; `.gitignore` covers `*.jks`, `*.keystore`, `credentials.json` (plus `*.apk`, `*.hisaab`); `git ls-files` shows none
+- [x] `npm audit --omit=dev` (2026-10-29): 16 advisories (4 high), all in build/CLI tooling — `@expo/cli` (node-forge, its own zod 3.25.76) and `@expo/config` / `jest-config` (deepmerge). None is in the app bundle; the app’s zod is 4.6.7 (already fixed). `npm audit fix --force` would downgrade Expo to 51 and must not be used. Re-check after the Expo patch update in Phase 11
+- [x] Debug-only tools: `/dev-tools` renders nothing in release; the restore crash-test pause is `__DEV__` only. Deep links (`hisaab://`) only open screens; saving needs a tap and deleting needs a confirmation

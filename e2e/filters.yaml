@@ -1,0 +1,31 @@
+# Journey 2: three entries, filter by category, then search.
+appId: com.shivambgs15.hisaab.dev
+name: Filter and search transactions
+---
+- runFlow: common/fresh-start.yaml
+- runFlow:
+    file: common/add-expense.yaml
+    env: { AMOUNT: '100', CATEGORY: 'Food & Dining', DESCRIPTION: 'Tea' }
+- runFlow:
+    file: common/add-expense.yaml
+    env: { AMOUNT: '200', CATEGORY: 'Transport', DESCRIPTION: 'Bus' }
+- runFlow:
+    file: common/add-expense.yaml
+    env: { AMOUNT: '300', CATEGORY: 'Food & Dining', DESCRIPTION: 'Dinner' }
+- tapOn: 'Transactions'
+- assertVisible: '3 entries'
+# Category filter: only the two Food & Dining entries.
+- tapOn: 'Filters'
+- tapOn: 'Food & Dining'
+- tapOn: 'Apply'
+- assertVisible: '2 entries'
+- assertVisible: 'Dinner'
+- assertNotVisible: 'Bus'
+- tapOn: 'Clear all'
+- assertVisible: '3 entries'
+- tapOn: 'Search notes or amount'
+- inputText: 'Bus'
+- hideKeyboard
+- assertVisible: '1 entry'
+- assertVisible: 'Bus'
+- assertNotVisible: 'Dinner'

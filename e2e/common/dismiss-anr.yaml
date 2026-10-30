@@ -1,0 +1,9 @@
+# The emulators on the owner's PC are slow; system apps sometimes show "isn't responding".
+# Dismiss it with "Wait" so it doesn't hide the app. Not an app problem.
+appId: com.shivambgs15.hisaab.dev
+---
+- runFlow:
+    when:
+      visible: 'Wait'
+    commands:
+      - tapOn: 'Wait'

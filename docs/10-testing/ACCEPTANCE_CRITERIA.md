@@ -49,7 +49,9 @@ Verified in Phase 10 (and earlier phases where listed). Method: **A** = automate
 
 | Device | Android version | RAM | Used for |
 |---|---|---|---|
-| Owner's phone | (fill) | (fill) | Daily use, all M checks |
-| Emulator — low-end profile | min supported | 2 GB | Performance, backup spike |
-| Emulator — latest Android | latest | 4 GB+ | Permissions, notifications behaviour |
+| Owner's phone | vivo V2205, Android 14 | (owner) | Daily use, all M checks |
+| Emulator — low-end profile | `Hisaab_API26_Min`: Android 8.0 (API 26, min supported since Phase 10), 2 GB | 2 GB | Oldest supported version smoke + E2E |
+| Emulator — Android 7 | `Hisaab_API24_LowEnd`: Android 7.0, 2 GB | 2 GB | Showed the Android 7 crash (NFR-04) |
+| Emulator — Android 13 | `Hisaab_API33`: Android 13, 3 GB | 3 GB | P9-1 (screen capture before Android 14) |
+| Emulator — latest Android | `Medium_Phone_API_37.0`: Android 17, 2 GB | 2 GB | E2E (Maestro), performance, accessibility |
 | A friend's phone (if available) | (fill) | (fill) | Install/update test |

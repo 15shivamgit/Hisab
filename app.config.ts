@@ -77,6 +77,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-notifications',
       { icon: './assets/images/notification-icon.png', color: BRAND_ICON_BACKGROUND },
     ],
+    // Android 8.0+ only: Expo SDK 58 crashes on Android 7 (plugins/withMinSdk.js).
+    './plugins/withMinSdk',
     // Release builds are signed with the owner's keystore (BUILD_AND_RELEASE.md).
     ...(IS_RELEASE ? ['./plugins/withReleaseSigning'] : []),
   ],

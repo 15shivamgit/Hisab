@@ -41,7 +41,7 @@ Bottom tabs (5): **Home · Transactions · Udhaar · Reports · More**. Details 
 
 - Labels above fields (not placeholder-only).
 - Inline errors below the field in danger colour + icon; announced to screen readers.
-- Save button pinned above the keyboard (`KeyboardAvoidingView` / keyboard-aware scroll); never hidden.
+- Save button pinned above the keyboard; never hidden. Implemented with `KeyboardAvoider` (a `KeyboardAvoidingView` that measures its own window position, because under a native header the stock one pads too little — Phase 10) and `FormFooter` (adds the bottom safe-area inset so the button is never under the 3-button navigation bar — Phase 10). Sheets use `Sheet`, which does both itself.
 - Optional fields collapsed under "More details" (description, notes) on small screens.
 - Unsaved-changes guard on back.
 

@@ -1,0 +1,13 @@
+# Fresh install state: clear data, launch, walk through onboarding without app lock.
+appId: com.shivambgs15.hisaab.dev
+---
+- launchApp:
+    clearState: true
+- runFlow: dismiss-anr.yaml
+- extendedWaitUntil:
+    visible: 'Next'
+    timeout: 30000
+- tapOn: 'Next'
+- tapOn: 'Next'
+- tapOn: 'Get started'
+- assertVisible: 'Welcome to Hisaab'

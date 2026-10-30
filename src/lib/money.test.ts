@@ -100,3 +100,9 @@ describe('assertPaise', () => {
     expect(() => assertPaise(value)).toThrow(),
   );
 });
+
+test('paiseToRupeeString rejects fractional paise (CSV never gets a rounded value)', () => {
+  expect(() => paiseToRupeeString(10.5)).toThrow(
+    expect.objectContaining({ detail: 'NOT_INTEGER' }),
+  );
+});

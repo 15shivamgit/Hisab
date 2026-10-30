@@ -1,0 +1,15 @@
+# Adds an expense from the dashboard. Params: AMOUNT, CATEGORY, DESCRIPTION.
+appId: com.shivambgs15.hisaab.dev
+---
+- tapOn: '+ Expense'
+- inputText: ${AMOUNT}
+- hideKeyboard
+- tapOn: ${CATEGORY}
+- scrollUntilVisible:
+    element: 'e.g. Lunch'
+- tapOn: 'e.g. Lunch'
+- inputText: ${DESCRIPTION}
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Save'
+- tapOn: 'Save'

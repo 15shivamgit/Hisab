@@ -1,0 +1,17 @@
+# Journey 5: an entry survives stopping and relaunching the app.
+appId: com.shivambgs15.hisaab.dev
+name: Entry persists after restart
+---
+- runFlow: common/fresh-start.yaml
+- runFlow:
+    file: common/add-expense.yaml
+    env:
+      AMOUNT: '275'
+      CATEGORY: 'Transport'
+      DESCRIPTION: 'Auto fare'
+- assertVisible: '−₹275'
+- stopApp
+- launchApp
+- assertVisible: '−₹275'
+- scrollUntilVisible:
+    element: 'Auto fare'

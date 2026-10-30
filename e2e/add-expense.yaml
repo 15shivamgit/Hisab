@@ -1,0 +1,28 @@
+# Journey 1: add an expense, see it on the dashboard, edit the amount, delete it.
+appId: com.shivambgs15.hisaab.dev
+name: Add, edit, delete an expense
+---
+- runFlow: common/fresh-start.yaml
+- runFlow:
+    file: common/add-expense.yaml
+    env:
+      AMOUNT: '450'
+      CATEGORY: 'Food & Dining'
+      DESCRIPTION: 'Lunch'
+- assertVisible: '−₹450'
+- scrollUntilVisible:
+    element: 'Lunch'
+- tapOn: 'Lunch'
+- tapOn: 'Edit'
+- tapOn: '450'
+- eraseText: 6
+- inputText: '500'
+- hideKeyboard
+- scrollUntilVisible:
+    element: 'Save'
+- tapOn: 'Save'
+- assertVisible: '−₹500.00'
+- tapOn: 'Delete'
+- assertVisible: 'Delete this entry?'
+- tapOn: 'Delete'
+- assertVisible: 'Welcome to Hisaab'

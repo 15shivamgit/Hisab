@@ -89,7 +89,13 @@ export function DonutChart({
         </G>
       </Svg>
       {centerTop ? (
-        <AppText variant="caption" color="textMuted" numberOfLines={1}>
+        <AppText
+          variant="caption"
+          color="textMuted"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          style={{ maxWidth: size - thickness * 2 - 8 }}
+        >
           {centerTop}
         </AppText>
       ) : null}

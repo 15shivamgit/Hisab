@@ -74,7 +74,7 @@ The real file is [`app.config.ts`](../../app.config.ts). Differences from the sk
   - release: `applicationId 'com.shivambgs15.hisaab'`, `versionCode 1`, `versionName "1.0.0"`, `android:allowBackup="false"`, INTERNET and all blocked permissions marked `tools:node="remove"`, scheme `hisaab`;
   - development: `com.shivambgs15.hisaab.dev`, name "Hisaab Dev", INTERNET present (Metro), scheme `hisaab-dev`.
   - The template manifest also declares `android.permission.VIBRATE` (harmless, no prompt).
-- **Merged manifest verified on a built release APK (2026-10-22, `aapt dump badging`):** permissions are only `android.permission.VIBRATE` and `com.shivambgs15.hisaab.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (added by AndroidX; a signature-level permission private to the app). No INTERNET. `allowBackup=0x0`. minSdk 24, targetSdk 36, compileSdk 37.
+- **Merged manifest verified on a built release APK (2026-10-22, `aapt dump badging`):** permissions are only `android.permission.VIBRATE` and `com.shivambgs15.hisaab.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (added by AndroidX; a signature-level permission private to the app). No INTERNET. `allowBackup=0x0`. minSdk 24, targetSdk 36, compileSdk 37. **Phase 10: minSdk raised to 26 (Android 8.0)** by `plugins/withMinSdk.js` (sets `android.minSdkVersion` in `gradle.properties`, which Expo's autolinking reads) — NFR-04.
 
 ## Versioning
 

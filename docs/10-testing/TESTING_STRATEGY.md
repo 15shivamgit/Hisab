@@ -43,6 +43,16 @@ Status: Approved · Last updated: 2026-10-21
 
 Camera, gallery, share sheet, notifications, and biometric prompts are tested manually (system UI is unreliable to automate).
 
+**Phase 10 notes (how they actually run):**
+
+- Flows live in `e2e/`; `e2e/common/fresh-start.yaml` clears data and walks through onboarding; `common/add-expense.yaml` takes `AMOUNT`, `CATEGORY`, `DESCRIPTION`.
+- **Never run them on a phone with real data**: every flow starts with `clearState: true`.
+- Build under test: the dev variant built with `assembleRelease` for `x86_64` (bundled JS, debug-signed, same package as the dev app), installed on the emulator.
+- Put the emulator in **airplane mode** first (`adb shell cmd connectivity airplane-mode enable`): it stops Play Store self-updates that made the emulator too slow, and it proves the journeys work offline.
+- The emulators on the owner's PC sometimes show "System UI isn't responding" while Maestro starts; `common/dismiss-anr.yaml` taps "Wait". Not an app problem (the app alone ran 60 s without any ANR).
+- On Android, `hideKeyboard` presses Back: don't use it inside a sheet (it closes the sheet). Prefer `scrollUntilVisible` for Save. `eraseText` deletes 50 characters one by one; pass a count.
+- Run one flow at a time (`maestro test e2e/<flow>.yaml`); a full run takes ~16 minutes.
+
 ## Commands
 
 ```
@@ -50,7 +60,7 @@ npm run typecheck
 npm run lint
 npm test                 # unit + repo + service + component
 npm run test:coverage
-maestro test e2e/        # emulator running, release-like build installed
+maestro test e2e/add-expense.yaml   # one flow at a time; emulator running, release-like build installed, airplane mode
 ```
 
 ## Reporting

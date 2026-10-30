@@ -118,8 +118,10 @@ Report: [reports/PHASE_09.md](reports/PHASE_09.md)
 
 **Scope:** Full test run, Maestro E2E flows, offline (airplane mode) pass, real-device matrix, accessibility review, security review checklist, performance with 5,000 transactions, bug fixing.
 **Acceptance:**
-- [ ] All items in [../10-testing/ACCEPTANCE_CRITERIA.md](../10-testing/ACCEPTANCE_CRITERIA.md).
-- [ ] No open P1/P2 defects; known P3 listed.
+- [x] All items in [../10-testing/ACCEPTANCE_CRITERIA.md](../10-testing/ACCEPTANCE_CRITERIA.md) that belong to Phases 1–10, with the exceptions listed in the report (AC-22 on the phone, AC-27 with real TalkBack gestures, AC-28 on a real phone → Phase 11 release APK).
+- [x] No open P1/P2 defects; known P3 listed.
+
+Report: [reports/PHASE_10.md](reports/PHASE_10.md)
 
 ## Phase 11 — Release APK and friend distribution
 

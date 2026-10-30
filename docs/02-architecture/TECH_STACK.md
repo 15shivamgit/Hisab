@@ -42,7 +42,7 @@ All items are free and open-source. **`Verify:`** before Phase 2, check the late
 | `jest`, `jest-expo` | Unit/component tests |
 | `@testing-library/react-native` | Component tests |
 | `better-sqlite3` + `@types/better-sqlite3` | Run real SQLite in Node for repository tests via the `DbClient` adapter. `Verify:` prebuilt binaries install on Windows for the Node version used. |
-| Maestro CLI (installed separately, not npm) | E2E flows on emulator/device. `Verify:` Windows installation steps. Maestro Cloud is **not** used. |
+| Maestro CLI (installed separately, not npm) | E2E flows on emulator/device. Phase 10: cli-2.11.0, analytics off (ENVIRONMENT_SETUP.md). Maestro Cloud is **not** used. |
 
 ## Tools
 

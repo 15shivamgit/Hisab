@@ -1,7 +1,8 @@
 import { Stack, usePreventRemove, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { KeyboardAvoider } from '@/components/KeyboardAvoider';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { ErrorState } from '@/components/ErrorState';
 import { useToast } from '@/components/Toast';
@@ -188,7 +189,7 @@ export function TransactionEditorScreen(props: EditorProps) {
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={[styles.fill, { backgroundColor: colors.bg }]}>
+    <KeyboardAvoider style={[styles.fill, { backgroundColor: colors.bg }]}>
       <Stack.Screen options={{ title }} />
       <View style={[styles.fill, { paddingBottom: spacing.xs }]}>{body}</View>
       <ConfirmDialog
@@ -210,7 +211,7 @@ export function TransactionEditorScreen(props: EditorProps) {
         }}
       />
       {picker.element}
-    </KeyboardAvoidingView>
+    </KeyboardAvoider>
   );
 }
 

@@ -2,14 +2,10 @@
 
 import { Stack, usePreventRemove, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 
+import { FormFooter } from '@/components/FormFooter';
+import { KeyboardAvoider } from '@/components/KeyboardAvoider';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
@@ -199,30 +195,15 @@ export function PersonFormScreen(props: Props) {
             error={errors.notes}
           />
         </ScrollView>
-        <View
-          style={[
-            styles.footer,
-            {
-              padding: spacing.md,
-              gap: spacing.sm,
-              borderTopColor: colors.border,
-              backgroundColor: colors.bg,
-            },
-          ]}
-        >
-          {submitError ? (
-            <AppText color="danger" accessibilityLiveRegion="polite">
-              {submitError}
-            </AppText>
-          ) : null}
+        <FormFooter error={submitError}>
           <Button label={strings.person.save} onPress={() => void save()} loading={saving} />
-        </View>
+        </FormFooter>
       </>
     );
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={[styles.fill, { backgroundColor: colors.bg }]}>
+    <KeyboardAvoider style={[styles.fill, { backgroundColor: colors.bg }]}>
       <Stack.Screen
         options={{ title: editId ? strings.person.editTitle : strings.person.newTitle }}
       />
@@ -242,12 +223,11 @@ export function PersonFormScreen(props: Props) {
           leave?.repeat();
         }}
       />
-    </KeyboardAvoidingView>
+    </KeyboardAvoider>
   );
 }
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  footer: { borderTopWidth: StyleSheet.hairlineWidth },
 });

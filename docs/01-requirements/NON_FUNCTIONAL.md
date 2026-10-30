@@ -7,7 +7,7 @@ Status: Approved · Last updated: 2026-10-21
 | NFR-01 | Offline | Every feature works in airplane mode. The app performs no network requests. |
 | NFR-02 | Privacy | No analytics, telemetry, crash reporting, ads, or remote config. Data never leaves the phone except when the user explicitly exports, backs up, or shares. |
 | NFR-03 | Cost | ₹0. See [../00-overview/ZERO_COST_POLICY.md](../00-overview/ZERO_COST_POLICY.md). |
-| NFR-04 | Platform | Android only. `Verify:` minimum Android version supported by the chosen Expo SDK; target the SDK's default `targetSdkVersion`. |
+| NFR-04 | Platform | Android only. **Minimum Android 8.0 (API 26)**, target the SDK's default `targetSdkVersion` (36). Verified in Phase 10: Expo's docs list SDK 58 as "Android 7+", but on an Android 7.0 emulator both release and debug builds crash at start (Expo modules use `java.nio.file` and `java.time`, which exist from Android 8). Owner decision 2026-10-30: minSdk 26 via `plugins/withMinSdk.js`, so Android 7 phones are refused at install instead of crashing. |
 | NFR-05 | Performance | Cold start to usable dashboard < 2 s on a mid-range phone with 5,000 transactions. Transaction list scrolls smoothly (FlatList with pagination of 50; FlashList only if profiling shows a need and the owner approves the dependency). Dashboard queries < 100 ms with 5,000 transactions. |
 | NFR-06 | Data integrity | Foreign keys ON; all multi-step writes in a single DB transaction; no stored derived balances; backup/restore never leaves partial state. |
 | NFR-07 | Durability | Data persists across app restarts, force-stops, and phone reboots. Receipts remain viewable after restart. |

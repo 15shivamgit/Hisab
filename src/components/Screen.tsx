@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
+import { KeyboardAvoider } from '@/components/KeyboardAvoider';
 import { AppText } from '@/components/AppText';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -46,9 +47,7 @@ export function Screen({
   return (
     <SafeAreaView edges={edges} style={[styles.fill, { backgroundColor: colors.bg }]}>
       {keyboardAvoiding ? (
-        <KeyboardAvoidingView behavior="padding" style={styles.fill}>
-          {content}
-        </KeyboardAvoidingView>
+        <KeyboardAvoider style={styles.fill}>{content}</KeyboardAvoider>
       ) : (
         content
       )}

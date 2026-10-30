@@ -1,0 +1,20 @@
+# Journey 4: set a monthly budget, spend, see the warning state.
+appId: com.shivambgs15.hisaab.dev
+name: Budget warning state
+---
+- runFlow: common/fresh-start.yaml
+- runFlow:
+    file: common/add-expense.yaml
+    env:
+      AMOUNT: '850'
+      CATEGORY: 'Groceries'
+      DESCRIPTION: 'Vegetables'
+- scrollUntilVisible:
+    element: 'Set a monthly budget'
+- tapOn: 'Set a monthly budget'
+- tapOn: 'Set budget'
+- inputText: '1000'
+# No hideKeyboard here: on Android it presses Back, which closes the sheet. The sheet
+# stays above the keyboard, so Save is reachable.
+- tapOn: 'Save'
+- assertVisible: '₹850 of ₹1,000 · 85% used · ₹150 left'
