@@ -9,13 +9,37 @@ const IS_QA = process.env.APP_VARIANT === 'qa';
 
 const BRAND_ICON_BACKGROUND = '#0284C7';
 
+/** Icon-badge permissions of various launchers, added by ShortcutBadger (expo-notifications). */
+const LAUNCHER_BADGE_PERMISSIONS = [
+  'com.android.launcher.permission.READ_SETTINGS',
+  'com.android.launcher.permission.WRITE_SETTINGS',
+  'com.android.launcher.permission.INSTALL_SHORTCUT',
+  'com.android.launcher.permission.UNINSTALL_SHORTCUT',
+  'com.sec.android.provider.badge.permission.READ',
+  'com.sec.android.provider.badge.permission.WRITE',
+  'com.htc.launcher.permission.READ_SETTINGS',
+  'com.htc.launcher.permission.UPDATE_SHORTCUT',
+  'com.sonyericsson.home.permission.BROADCAST_BADGE',
+  'com.sonymobile.home.permission.PROVIDER_INSERT_BADGE',
+  'com.anddoes.launcher.permission.UPDATE_COUNT',
+  'com.majeur.launcher.permission.UPDATE_BADGE',
+  'com.huawei.android.launcher.permission.CHANGE_BADGE',
+  'com.huawei.android.launcher.permission.READ_SETTINGS',
+  'com.huawei.android.launcher.permission.WRITE_SETTINGS',
+  'android.permission.READ_APP_BADGE',
+  'com.oppo.launcher.permission.READ_SETTINGS',
+  'com.oppo.launcher.permission.WRITE_SETTINGS',
+  'me.everything.badger.permission.BADGE_COUNT_READ',
+  'me.everything.badger.permission.BADGE_COUNT_WRITE',
+];
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: IS_RELEASE ? 'Hisaab' : IS_QA ? 'Hisaab QA' : 'Hisaab Dev',
   slug: 'hisaab',
   // Separate schemes so the dev and release apps don't both claim the same links.
   scheme: IS_RELEASE ? 'hisaab' : IS_QA ? 'hisaab-qa' : 'hisaab-dev',
-  version: '1.0.0', // versionName shown to users
+  version: '1.1.0', // versionName shown to users
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
   icon: './assets/images/icon.png',
@@ -25,7 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       : IS_QA
         ? 'com.shivambgs15.hisaab.qa'
         : 'com.shivambgs15.hisaab.dev',
-    versionCode: 1, // MUST increase for every APK given to anyone
+    versionCode: 2, // MUST increase for every APK given to anyone
     allowBackup: false, // ADR-010
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon-foreground.png',
@@ -56,6 +80,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'android.permission.READ_MEDIA_VIDEO',
       // Push delivery from Firebase (pulled in by expo-notifications); reminders are local.
       'com.google.android.c2dm.permission.RECEIVE',
+      // P7-1 (owner decision 2026-10-30): launcher icon-badge permissions that
+      // expo-notifications' ShortcutBadger adds (Hisaab never sets a badge), and Google
+      // Play's install-referrer permission (install tracking).
+      ...LAUNCHER_BADGE_PERMISSIONS,
+      'com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE',
       // ADR-012: release builds never reach the network. Dev builds need it for Metro.
       ...(IS_RELEASE || IS_QA ? ['android.permission.INTERNET'] : []),
     ],

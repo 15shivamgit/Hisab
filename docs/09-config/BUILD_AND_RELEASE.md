@@ -89,11 +89,12 @@ Full checklist: [../10-testing/RELEASE_CHECKLIST.md](../10-testing/RELEASE_CHECK
 ### Friend install guide (send as text)
 
 > **Hisaab install karne ka tarika**
+> 0. Phone Android 8.0 ya usse naya hona chahiye (Settings → About phone → Android version).
 > 1. Link se `hisaab-x.y.z.apk` download karo.
 > 2. Open karo. Phone "unknown apps" ki permission maangega → us app (Drive/Files/Chrome) ke liye **Allow** karo.
 > 3. Play Protect warning aaye toh **More details → Install anyway** (app Play Store se nahi hai isliye aata hai).
 > 4. **Important:** Aapka data sirf aapke phone mein rehta hai. Mere ya kisi aur ke phone se koi connection nahi hai.
-> 5. More → Backup se backup banakar Google Drive mein save karte raho. App uninstall kiya toh data chala jayega.
+> 5. More → Backup & restore se backup banakar Google Drive mein save karte raho. App uninstall kiya toh data chala jayega.
 > 6. **Update:** naya APK aaye toh purana uninstall **mat** karo — seedha naya install karo, data safe rahega.
 
 `Verify:` current Play Protect dialog wording.

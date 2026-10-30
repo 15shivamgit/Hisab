@@ -60,10 +60,10 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 
 | Package | Version | Notes |
 |---|---|---|
-| expo | 58.0.17 | Phase 5 patch update (was 58.0.16) |
-| react-native | 0.88.0 | New Architecture, edge-to-edge |
+| expo | 58.0.21 | Phase 11 patch update (was 58.0.17; owner approved 2026-10-30, `npx expo install --fix`, 15 Expo packages + react-native 0.88.1 + jest-expo 58.0.13) |
+| react-native | 0.88.1 | New Architecture, edge-to-edge |
 | react | 19.3.0 | |
-| expo-router | 58.0.25 | Routes live in `src/app/` (SDK 58 template convention) |
+| expo-router | 58.0.28 | Routes live in `src/app/` (SDK 58 template convention) |
 | expo-dev-client | 58.0.14 | |
 | expo-splash-screen | 58.0.11 | |
 | expo-status-bar | 58.0.4 | |
@@ -73,7 +73,7 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | expo-image-manipulator | 58.0.15 | Phase 5. `ImageManipulator.manipulate(uri).resize()` → `renderAsync()` → `saveAsync({ compress: 0.7, format: JPEG })` |
 | fflate | 0.8.3 | Phase 6 (approved 2026-10-26). MIT, no dependencies, pure JS. Metro uses its browser build (no workers needed: only sync APIs are used); Jest uses the Node build |
 | expo-document-picker | 58.0.4 | Phase 6 (approved 2026-10-26). Restore: `getDocumentAsync({ type: '*/*', copyToCacheDirectory: true })` — `.hisaab` arrives as zip, octet-stream, or no type |
-| expo-notifications | 58.1.6 | Phase 7 (approved 2026-10-28). Local DATE-trigger reminders only. Bundles `firebase-messaging` 25.0.1 on Android: inactive without `google-services.json`; its push permission `c2dm.permission.RECEIVE` is blocked in `app.config.ts`; release has no INTERNET. Plugin: white 96 px `notification-icon.png` (cut from the monochrome app icon) + brand colour |
+| expo-notifications | 58.1.7 | Phase 7 (approved 2026-10-28). Local DATE-trigger reminders only. Bundles `firebase-messaging` 25.0.1 on Android: inactive without `google-services.json`; its push permission `c2dm.permission.RECEIVE` is blocked in `app.config.ts`; release has no INTERNET. Plugin: white 96 px `notification-icon.png` (cut from the monochrome app icon) + brand colour |
 | react-native-svg | 15.16.0 | Phase 8 (approved 2026-10-28, chart option B, ADR-018). MIT. Version bundled with Expo SDK 58 (`npx expo install`). Native code: needs a new dev build |
 | expo-local-authentication | 58.0.2 | Phase 9 (approved 2026-10-28). MIT. Adds `USE_BIOMETRIC` and the deprecated `USE_FINGERPRINT` (Android 8 and older); depends on `androidx.biometric` 1.2.0-alpha04. No config plugin needed (its only option is the iOS Face ID text) |
 | expo-screen-capture | 58.0.6 | Phase 9 (approved 2026-10-28). MIT. Only `preventScreenCaptureAsync` / `allowScreenCaptureAsync` are used. Its manifest adds `READ_EXTERNAL_STORAGE` (≤ 32) and `READ_MEDIA_IMAGES` (33) for the screenshot listener we don't use: both are in `blockedPermissions` (without them the module only logs). It also adds `DETECT_SCREEN_CAPTURE` (34+): **kept**, because on Android 14+ the module registers a screenshot callback when it loads and the app crashed without it (seen on the phone). It is a normal permission — no prompt, no access to images |
@@ -84,7 +84,7 @@ Expo **SDK 58** (`expo` 58.0.16, latest stable; SDK 58.0.0 released 2026-09-29).
 | react-native-reanimated / react-native-worklets | 4.7.1 / 0.13.0 | |
 | react-native-safe-area-context | 5.10.1 | |
 | react-native-screens | 4.30.0 | |
-| expo-sqlite | 58.0.13 | Phase 3. One connection, serialized by `createDbClient` (ADR-017) |
+| expo-sqlite | 58.0.14 | Phase 3. One connection, serialized by `createDbClient` (ADR-017) |
 | expo-crypto | 58.0.7 | Phase 3. `randomUUID()` (sync) for IDs |
 | expo-file-system | 58.0.10 | Phase 3. New `File`/`Directory`/`Paths` API (the legacy API lives at `expo-file-system/legacy`; not used) |
 | zod | 4.6.7 | Phase 3. Settings validation; Phase 4 form schema |
