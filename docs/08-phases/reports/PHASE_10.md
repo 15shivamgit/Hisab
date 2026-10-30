@@ -92,7 +92,7 @@ npm audit --omit=dev; npm ls --all (no missing/invalid packages)
 | P10-1 | P3 | At font 200 %, tab labels truncate ("Trans…", "Repo…"), long category names truncate, and the + button can cover the last row (it scrolls) | Accept |
 | P10-2 | P3 | Changing the system font size while Hisaab is open recreates the screen: navigation goes back to the dashboard and an unsaved form is lost (theme changes don't). No crash in release (was P8-2) | Accept |
 | P10-3 | Info | The emulators on this PC are slow (12 GB RAM shared with other projects); "System UI isn't responding" appears when Maestro starts, and the Android 13 emulator was unusable. The app itself ran 60 s without an ANR | Use airplane mode + `dismiss-anr.yaml` |
-| P10-4 | Check | D1/D2 were verified on emulators; the owner's phone (Android 14, gesture navigation) still runs the Phase 9 dev build | Reload on the phone (JS only) |
+| P10-4 | ✅ Closed | D1/D2 verified on the owner's phone too (vivo V2205, Android 14, dev build reloaded via Metro, 2026-10-30): with the keyboard open, Save sits right above it on the expense, add person, and udhaar entry forms; without the keyboard, Save sits above the gesture bar. Nothing saved; forms discarded | Done |
 | P9-2 | P3 | With a lock timeout other than "Immediately", content can show briefly before the cover | Accept |
 | P7-1 | P3 | Release manifest still has launcher-badge / install-referrer permissions | Phase 11 |
 | — | Info | During this phase a mistyped doc-edit command made bash start `npm audit fix --force`; it failed (file locked by Gradle) and npm rolled back — `npm ls` shows no changes. Process fixed (scripts are now written to files) | Done |
@@ -103,7 +103,7 @@ See § 2 (docs row).
 
 ## 7. Exact next steps
 
-1. Owner connects the phone: reload the dev build and check Save stays above the keyboard on the expense, person, and udhaar forms (P10-4). Airplane-mode pass on the phone (AC-22) when convenient.
+1. ~~Keyboard fix on the phone (P10-4)~~ — done. Airplane-mode pass on the phone (AC-22) when convenient (the PC uses the phone's hotspot, so its internet is off during the test).
 2. Owner approves Phase 10.
 3. Phase 11: release APK — Expo patch update (re-run `npm audit`), P7-1 permissions, AC-28 timing on the phone, install-over-old-version (AC-30), friend distribution.
 
